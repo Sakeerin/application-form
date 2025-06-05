@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\http\Controllers\ApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::get('/', function () {
 Route::get('/register-form', function () {
     return view('main');
 });
+Route::post('/store', [ApplicationController::class,'store'])->name('store');
+
