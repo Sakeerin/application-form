@@ -21,5 +21,9 @@ Route::get('/', function () {
 Route::get('/register-form', function () {
     return view('main');
 });
+
+Route::get('/template-form', function () {
+    return view('template');
+});
 Route::post('/store', [ApplicationController::class,'store'])->name('store');
 

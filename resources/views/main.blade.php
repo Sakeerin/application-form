@@ -3,19 +3,22 @@
 @section('title', 'Register')
 
 @section('content')
+
     <body class="bg-gray-50 min-h-screen overflow-auto md:py-10">
         <div class="max-w-4xl mx-auto space-y-10">
 
             <!-- Header -->
             <div
-                class="bg-white rounded-xl md:rounded-t-xl rounded-t-none shadow-md p-4 md:p-8 grid grid-cols-2 gap-4 items-center mt-0 md:mt-4">
+                class="bg-white rounded-xl md:rounded-t-xl rounded-t-none shadow-md p-4 md:p-8 grid grid-cols-3 gap-4 items-center mt-0 md:mt-4">
                 <!-- ส่วนซ้าย -->
                 <div class="flex items-center min-w-0">
                     <span class="text-green-600 text-2xl md:text-3xl flex-shrink-0">
                         <i class="fa-solid fa-file-lines"></i>
                     </span>
-                    <h2 class="ml-3 text-base md:text-2xl font-medium truncate">
-                        ใบสมัครงาน <br class="block md:hidden" />(Application Form)
+                </div>
+                <div class="flex justify-center items-center text-center">
+                    <h2 class="text-base md:text-2xl font-medium leading-snug">
+                        ใบสมัครงาน <br> Application Form
                     </h2>
                 </div>
                 <!-- ส่วนขวา -->
@@ -138,7 +141,7 @@
                 <!-- Section: Required Documents -->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">
-                        ใบสมัครงานเป็นส่วนหนึ่งในการพิจารณา โปรดกรอกข้อความให้ครบถ้วน
+                        เอกสารประกอบการสมัครงาน
                     </h2>
                     <div class="grid md:grid-cols-3 gap-4">
                         <div>
@@ -1224,7 +1227,7 @@
                         <div class="flex items-center grid md:grid-cols-1 gap-6 items-end mt-6">
                             <div>
                                 <label class="block text-gray-700 font-semibold mb-1">
-                                    มีคำถามเพิ่มเติมที่อยากสอบถามหรือไม่?
+                                    อะไรคือสิ่งที่ทำให้คุณสนใจอยากทำงานกับบริษัทของเรา?
                                 </label>
                                 <textarea rows="4" name="morequestions"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 bg-gray-50 resize-none"></textarea>
