@@ -16,7 +16,7 @@
                             class="w-32 h-32 md:w-40 md:h-40 rounded-xl bg-white border-4 border-white object-cover shadow-lg" />
                     </div>
                     <!-- Back Button -->
-                    <button
+                    <button onclick="history.back()"
                         class="absolute top-3 left-3 bg-white bg-opacity-80 hover:bg-opacity-100 transition px-2 py-1 rounded flex items-center text-sm font-medium text-gray-600 shadow">
                         <i class="fa-solid fa-angle-left"></i> &nbsp;
                         Back
@@ -242,7 +242,7 @@
                         <div class="hidden md:block w-full md:w-72 flex-shrink-0 mt-8 md:mt-0">
                             <div class="space-y-4">
                                 <div class="flex flex-col gap-3">
-                                    <button
+                                    <a href="/register-form"
                                         class="w-full relative flex items-center justify-center font-bold py-2 h-10 rounded bg-green-600 text-white overflow-hidden group">
                                         <!-- View Job Text -->
                                         <span
@@ -255,7 +255,7 @@
                                             class="absolute opacity-0 translate-x-full transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                                             <i class="fa-solid fa-arrow-right"></i>
                                         </span>
-                                    </button>
+                                    </a>
                                     <!-- Refer a Friend with Share Dropdown -->
                                     <div class="relative group w-full">
                                         <div x-data="{ open: false, hideTimeout: null }" class="relative w-full">

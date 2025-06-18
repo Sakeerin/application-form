@@ -70,7 +70,7 @@
                             <span class="text-gray-500">VBeyond | Full Time</span>
                         </div>
                     </div>
-                    <button
+                    <a href="/template-form"
                         class="relative flex items-center justify-center py-2 w-26 h-10 rounded bg-green-600 text-white overflow-hidden group text-sm font-medium">
                         <!-- View Job Text -->
                         <span
@@ -83,7 +83,7 @@
                             class="absolute opacity-0 translate-x-full transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                             <i class="fa-solid fa-arrow-right"></i>
                         </span>
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Job Card -->
@@ -112,7 +112,6 @@
                         </span>
                     </button>
                 </div>
-
                 <!-- Job Card -->
                 <div
                     class="flex flex-col md:flex-row justify-between items-start md:items-center border p-4 rounded-lg shadow-sm bg-white">
