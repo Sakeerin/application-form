@@ -33,48 +33,49 @@
                 <!-- Section: แรก-->
                 <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
                     <!-- Profile Image -->
-                    <div class="flex flex-col items-center justify-start col-span-1" x-data="{
-                                                        previewUrl: '',
-                                                        errorMsg: '',
-                                                        isDragOver: false,
-                                                        fileInput: null,
-                                                        handleFiles(files) {
-                                                            this.errorMsg = '';
-                                                            if (!files?.length) return;
-                                                            const file = files[0];
-                                                            // ตรวจสอบประเภทไฟล์ด
-                                                            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                                                                this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
-                                                                this.clear();
-                                                                return;
-                                                            }
-                                                            // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
-                                                            if (file.size > 2 * 1024 * 1024) {
-                                                                this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
-                                                                this.clear();
-                                                                return;
-                                                            }
-                                                            // แสดงตัวอย่างรูป
-                                                            const reader = new FileReader();
-                                                            reader.onload = e => {
-                                                                this.previewUrl = e.target.result;
-                                                            };
-                                                            reader.readAsDataURL(file);
-                                                        },
-                                                        onDrop(e) {
-                                                            e.preventDefault();
-                                                            const dt = e.dataTransfer;
-                                                            const files = dt.files;
-                                                            this.handleFiles(files);
-                                                        },
-                                                        triggerInput() {
-                                                            this.$refs.fileInput.click();
-                                                        },
-                                                        clear() {
-                                                            this.previewUrl = '';
-                                                            this.$refs.fileInput.value = '';
-                                                        }
-                                                    }">
+                    <div class="flex flex-col items-center justify-start col-span-1"
+                        x-data="{
+                                                                                                                                                            previewUrl: '',
+                                                                                                                                                            errorMsg: '',
+                                                                                                                                                            isDragOver: false,
+                                                                                                                                                            fileInput: null,
+                                                                                                                                                            handleFiles(files) {
+                                                                                                                                                                this.errorMsg = '';
+                                                                                                                                                                if (!files?.length) return;
+                                                                                                                                                                const file = files[0];
+                                                                                                                                                                // ตรวจสอบประเภทไฟล์ด
+                                                                                                                                                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                                                                                                                                                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+                                                                                                                                                                    this.clear();
+                                                                                                                                                                    return;
+                                                                                                                                                                }
+                                                                                                                                                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
+                                                                                                                                                                if (file.size > 2 * 1024 * 1024) {
+                                                                                                                                                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+                                                                                                                                                                    this.clear();
+                                                                                                                                                                    return;
+                                                                                                                                                                }
+                                                                                                                                                                // แสดงตัวอย่างรูป
+                                                                                                                                                                const reader = new FileReader();
+                                                                                                                                                                reader.onload = e => {
+                                                                                                                                                                    this.previewUrl = e.target.result;
+                                                                                                                                                                };
+                                                                                                                                                                reader.readAsDataURL(file);
+                                                                                                                                                            },
+                                                                                                                                                            onDrop(e) {
+                                                                                                                                                                e.preventDefault();
+                                                                                                                                                                const dt = e.dataTransfer;
+                                                                                                                                                                const files = dt.files;
+                                                                                                                                                                this.handleFiles(files);
+                                                                                                                                                            },
+                                                                                                                                                            triggerInput() {
+                                                                                                                                                                this.$refs.fileInput.click();
+                                                                                                                                                            },
+                                                                                                                                                            clear() {
+                                                                                                                                                                this.previewUrl = '';
+                                                                                                                                                                this.$refs.fileInput.value = '';
+                                                                                                                                                            }
+                                                                                                                                                        }">
                         <div id="image-container"
                             :class="isDragOver ? 'border-green-700 border-4' : 'border-green-500 border-4'"
                             class="relative w-[200px] h-[200px] rounded-full border-dashed flex items-center justify-center bg-gray-100 hover:bg-green-100 transition mb-4"
@@ -251,11 +252,13 @@
                             <label for="name_eng" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (อังกฤษ) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng" @input="
-                nameEng = nameEng
-                    .replace(/[^a-zA-Z\s]/g, '') 
-                    .replace(/\b\w/g, l => l.toUpperCase()) 
-                            " class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng"
+                                @input="
+                                                                                                                    nameEng = nameEng
+                                                                                                                        .replace(/[^a-zA-Z\s]/g, '') 
+                                                                                                                        .replace(/\b\w/g, l => l.toUpperCase()) 
+                                                                                                                                "
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาอังกฤษ" required>
                         </div>
                     </div>
@@ -315,89 +318,10 @@
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                     </div>
-                </div>
 
-                <!-- Section: Personal Family Info and Status ประวัติครอบครัวและสถานะ -->
-                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
-                    <h2 class="text-lg font-bold text-green-600">ข้อมูลครอบครัว</h2>
                     <div>
-                        <div class="flex items-center grid md:grid-cols-[400px_2fr_3fr] gap-6 items-end">
-                            <!-- ข้อมูลพ่อ-แม่ -->
-                            <!-- ชื่อ-นามสกุล บิดา -->
-                            <div>
-                                <label for="dadname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล บิดา</label>
-                                <input type="text" name="dadname" id="dadname"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <!-- อาชีพ บิดา -->
-                            <div>
-                                <label for="dadjob" class="block text-gray-700 font-semibold">อาชีพ บิดา</label>
-                                <input type="text" name="dadjob" id="dadjob"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <!-- Radio Group (แนวตั้ง) -->
-                            <div class="flex flex-col gap-y-2 md:mt-0 lg:ml-24">
-                                <label for="dad_alive" class="flex items-center gap-2">
-                                    <input type="radio" id="dad_alive" name="dadalive" value="yes"
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
-                                </label>
-                                <label for="dad_deceased" class="flex items-center gap-2">
-                                    <input type="radio" id="dad_deceased" name="dadalive" value="no"
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
-                                </label>
-                            </div>
-
-                            <!-- ชื่อ-นามสกุล มารดา -->
-                            <div>
-                                <label for="momname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล มารดา</label>
-                                <input type="text" name="momname" id="momname"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <!-- อาชีพ มารดา -->
-                            <div>
-                                <label for="momjob" class="block text-gray-700 font-semibold">อาชีพ มารดา</label>
-                                <input type="text" name="momjob" id="momjob"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <!-- Radio Group (แนวตั้ง) -->
-                            <div class="flex flex-col gap-y-2 md:mt-0 lg:ml-24">
-                                <label for="mom_alive" class="flex items-center gap-2">
-                                    <input type="radio" id="mom_alive" name="momalive" value="yes"
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
-                                </label>
-                                <label for="mom_deceased" class="flex items-center gap-2">
-                                    <input type="radio" id="mom_deceased" name="momalive" value="no"
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h2 class="text-lg font-bold text-green-600">สถานภาพ</h2>
-                    <div class="flex items-center grid md:grid-cols-[20%_80%]">
-                        <!-- Row 1 -->
-                        <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส :</label>
-                        <div class="flex gap-4 mb-2">
-                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status"
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                โสด</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="married" name="status"
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                สมรส</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="widowed" name="status"
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                หม้าย</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="divorced" name="status"
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                หย่าร้าง</label>
-                        </div>
-                        <!-- Row 2 -->
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางทหาร :</label>
-                        <div class="flex gap-2">
+                        <div class="flex gap-6 mb-2 md:justify-between">
                             <label class="flex items-center gap-2" for="military_pending">
                                 <input type="radio" id="military_pending" name="militaryStatus"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
@@ -425,12 +349,126 @@
                     </div>
                 </div>
 
+                <!-- Section: Personal Family Info and Status ประวัติครอบครัวและสถานะ -->
+                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
+                    <h2 class="text-lg font-bold text-green-600">ข้อมูลครอบครัว</h2>
+                    <div class="flex items-center grid md:grid-cols-[20%_80%]">
+                        <!-- Row 1 -->
+                        <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส :</label>
+                        <div class="flex gap-4 mb-2">
+                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status"
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                โสด</label>
+                            <label class="flex items-center gap-2"><input type="radio" id="married" name="status"
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                สมรส</label>
+                            <label class="flex items-center gap-2"><input type="radio" id="widowed" name="status"
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                หม้าย</label>
+                            <label class="flex items-center gap-2"><input type="radio" id="divorced" name="status"
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                หย่าร้าง</label>
+                        </div>
+                        <!-- Row 2 -->
+                        <label class="block text-gray-700 font-semibold mb-1">ท่านมีบุตรหรือไม่ :</label>
+                        <div x-data="{ hasChildren: '' }">
+                            <div class="flex gap-4 mb-2">
+                                <label class="flex items-center gap-2">
+                                    <input type="radio" name="hasChildren" value="yes" x-model="hasChildren"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    มี
+                                    <!-- แสดงเมื่อเลือก "มี" -->
+                                    {{-- <div x-show="hasChildren === 'yes'" class="mt-2" x-transition>
+                                        <input type="text" name="children_count" id="children_count" min="1"
+                                            placeholder="จำนวนบุตร"
+                                            class="w-40 md:w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
+                                    </div> --}}
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <input type="radio" name="hasChildren" value="no" x-model="hasChildren"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    ไม่มี
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center grid md:grid-cols-[400px_3fr_2fr] gap-6 items-end">
+                            <!-- ข้อมูลพ่อ-แม่ -->
+                            <!-- ชื่อ-นามสกุล บิดา -->
+                            <div>
+                                <label for="dadname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล บิดา</label>
+                                <input type="text" name="dadname" id="dadname"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <!-- อาชีพ บิดา -->
+                            <div>
+                                <label for="dadjob" class="block text-gray-700 font-semibold">อาชีพ บิดา</label>
+                                <input type="text" name="dadjob" id="dadjob"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <!-- Radio Group (แนวตั้ง) -->
+                            <div class="flex flex-col gap-y-2 md:mt-0">
+                                <label for="dad_alive" class="flex items-center gap-2">
+                                    <input type="radio" id="dad_alive" name="dadalive" value="yes"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
+                                </label>
+                                <label for="dad_deceased" class="flex items-center gap-2">
+                                    <input type="radio" id="dad_deceased" name="dadalive" value="no"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
+                                </label>
+                            </div>
+
+                            <!-- ชื่อ-นามสกุล มารดา -->
+                            <div>
+                                <label for="momname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล มารดา</label>
+                                <input type="text" name="momname" id="momname"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <!-- อาชีพ มารดา -->
+                            <div>
+                                <label for="momjob" class="block text-gray-700 font-semibold">อาชีพ มารดา</label>
+                                <input type="text" name="momjob" id="momjob"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <!-- Radio Group (แนวตั้ง) -->
+                            <div class="flex flex-col gap-y-2 md:mt-0">
+                                <label for="mom_alive" class="flex items-center gap-2">
+                                    <input type="radio" id="mom_alive" name="momalive" value="yes"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
+                                </label>
+                                <label for="mom_deceased" class="flex items-center gap-2">
+                                    <input type="radio" id="mom_deceased" name="momalive" value="no"
+                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
+                                </label>
+                            </div>
+                            <!-- ชื่อ-นามสกุล คู่สมรส -->
+                            <div>
+                                <label for="spounsename" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล
+                                    คู่สมรส</label>
+                                <input type="text" name="spounsename" id="spounsename"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <!-- เบอร์โทรศัพท์ -->
+                            <div>
+                                <label for="spounse_phone" class="block text-gray-700 font-semibold">เบอร์โทรศัพท์</label>
+                                <input type="text" name="spounse" id="spounse_phone"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Section: Address & Contact ที่อยู่และช่องทางการติดต่อ-->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ที่อยู่และการติดต่อ</h2>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน <span
+                            <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ตามทะเบียนบ้าน <span
                                     class="text-red-500">*</span></label>
                             <input type="text" name="address" id="address" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
@@ -484,34 +522,83 @@
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                     </div>
+
+                    <!-- Section: Current Address -->
+                    <div x-data="{ sameAsRegistered: false }" class="space-y-6 mt-8">
+                        <h2 class="text-lg font-bold text-green-600">ที่อยู่ปัจจุบัน</h2>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" x-model="sameAsRegistered" class="accent-green-600 w-4 h-4">
+                            <span class="text-gray-700">ใช้ที่อยู่ตามทะเบียนบ้าน</span>
+                        </label>
+
+                        <div x-show="!sameAsRegistered" x-transition class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="curr_address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
+                                    <span class="text-red-500">*</span></label>
+                                <input type="text" name="curr_address" id="curr_address" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                    placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
+                            </div>
+
+                            <div>
+                                <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
+                                    <span class="text-red-500">*</span></label></label>
+                                <input type="text" name="curr_province" id="curr_province" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+
+                            <div>
+                                <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
+                                    <span class="text-red-500">*</span></label></label>
+                                <input type="text" name="curr_district" id="curr_district" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+
+                            <div>
+                                <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
+                                    <span class="text-red-500">*</span></label></label>
+                                <input type="text" name="curr_subdistrict" id="curr_subdistrict" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+
+                            <div>
+                                <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
+                                    <span class="text-red-500">*</span></label></label>
+                                <input type="text" name="curr_postcode" id="curr_postcode" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Section: ประวัติการศึกษา -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                                    educations: [{
-                                                        level: '',
-                                                        school: '',
-                                                        country: '',
-                                                        program: '',
-                                                        major: '',
-                                                        gpa: '',
-                                                        graduate_year: ''
-                                                    }],
-                                                    addRow() {
-                                                        this.educations.push({
-                                                            level: '',
-                                                            school: '',
-                                                            country: '',
-                                                            program: '',
-                                                            major: '',
-                                                            gpa: '',
-                                                            graduate_year: ''
-                                                        });
-                                                    },
-                                                    removeRow(idx) {
-                                                        if (this.educations.length > 1) this.educations.splice(idx, 1);
-                                                    }
-                                                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
+                    x-data="{
+                                                                                                                                                        educations: [{
+                                                                                                                                                            level: '',
+                                                                                                                                                            school: '',
+                                                                                                                                                            country: '',
+                                                                                                                                                            program: '',
+                                                                                                                                                            major: '',
+                                                                                                                                                            gpa: '',
+                                                                                                                                                            graduate_year: ''
+                                                                                                                                                        }],
+                                                                                                                                                        addRow() {
+                                                                                                                                                            this.educations.push({
+                                                                                                                                                                level: '',
+                                                                                                                                                                school: '',
+                                                                                                                                                                country: '',
+                                                                                                                                                                program: '',
+                                                                                                                                                                major: '',
+                                                                                                                                                                gpa: '',
+                                                                                                                                                                graduate_year: ''
+                                                                                                                                                            });
+                                                                                                                                                        },
+                                                                                                                                                        removeRow(idx) {
+                                                                                                                                                            if (this.educations.length > 1) this.educations.splice(idx, 1);
+                                                                                                                                                        }
+                                                                                                                                                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -637,7 +724,7 @@
                                     <div x-show="car" x-transition>
                                         <input type="text" name="car_license_number" id="car_license_number"
                                             placeholder="เลขที่ใบขับขี่รถยนต์"
-                                            class="w-full sm:w-60 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
+                                            class="w-full sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
                                     </div>
                                 </div>
                                 <!-- ใบขับขี่รถจักรยานยนต์ -->
@@ -650,7 +737,7 @@
                                     <div x-show="motorcycle" x-transition>
                                         <input type="text" name="motor_license_number" id="motor_license_number"
                                             placeholder="เลขที่ใบขับขี่รถจักรยานยนต์"
-                                            class="w-full sm:w-60 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
+                                            class="w-full sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
                                     </div>
                                 </div>
                             </div>
@@ -724,11 +811,12 @@
                         </div>
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="{
-                                                            langs: [
-                                                                { name: 'ภาษาไทย', level: '', file: null },
-                                                                { name: 'ภาษาอังกฤษ', level: '', file: null }
-                                                            ]
-                                                        }" class="bg-gray-50 p-4 rounded-lg">
+                                                                                                                                                                langs: [
+                                                                                                                                                                    { name: 'ภาษาไทย', level: '', file: null },
+                                                                                                                                                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
+                                                                                                                                                                ]
+                                                                                                                                                            }"
+                            class="bg-gray-50 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -787,17 +875,18 @@
                 </div>
 
                 <!-- Section Training Course -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                                    trainings: [
-                                                        { year: '', duration: '', topic: '', institution: '' }
-                                                    ],
-                                                    addRow() {
-                                                        this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
-                                                    },
-                                                    removeRow(idx) {
-                                                        if (this.trainings.length > 1) this.trainings.splice(idx, 1);
-                                                    }
-                                                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
+                    x-data="{
+                                                                                                                                                        trainings: [
+                                                                                                                                                            { year: '', duration: '', topic: '', institution: '' }
+                                                                                                                                                        ],
+                                                                                                                                                        addRow() {
+                                                                                                                                                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
+                                                                                                                                                        },
+                                                                                                                                                        removeRow(idx) {
+                                                                                                                                                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
+                                                                                                                                                        }
+                                                                                                                                                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -871,33 +960,34 @@
                 </div>
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                                    works: [{
-                                                        company: '',
-                                                        position: '',
-                                                        responsibility: '',
-                                                        duration: '',
-                                                        salary: '',
-                                                        otherIncome: '',
-                                                        totalIncome: '',
-                                                        reason: ''
-                                                    }],
-                                                    addRow() {
-                                                        this.works.push({
-                                                            company: '',
-                                                            position: '',
-                                                            responsibility: '',
-                                                            duration: '',
-                                                            salary: '',
-                                                            otherIncome: '',
-                                                            totalIncome: '',
-                                                            reason: ''
-                                                        });
-                                                    },
-                                                    removeRow(idx) {
-                                                        if (this.works.length > 1) this.works.splice(idx, 1);
-                                                    }
-                                                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
+                    x-data="{
+                                                                                                                                                        works: [{
+                                                                                                                                                            company: '',
+                                                                                                                                                            position: '',
+                                                                                                                                                            responsibility: '',
+                                                                                                                                                            duration: '',
+                                                                                                                                                            salary: '',
+                                                                                                                                                            otherIncome: '',
+                                                                                                                                                            totalIncome: '',
+                                                                                                                                                            reason: ''
+                                                                                                                                                        }],
+                                                                                                                                                        addRow() {
+                                                                                                                                                            this.works.push({
+                                                                                                                                                                company: '',
+                                                                                                                                                                position: '',
+                                                                                                                                                                responsibility: '',
+                                                                                                                                                                duration: '',
+                                                                                                                                                                salary: '',
+                                                                                                                                                                otherIncome: '',
+                                                                                                                                                                totalIncome: '',
+                                                                                                                                                                reason: ''
+                                                                                                                                                            });
+                                                                                                                                                        },
+                                                                                                                                                        removeRow(idx) {
+                                                                                                                                                            if (this.works.length > 1) this.works.splice(idx, 1);
+                                                                                                                                                        }
+                                                                                                                                                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
@@ -1183,8 +1273,32 @@
                         <div class="flex items-center grid md:grid-cols-2 gap-6 items-end mt-6">
                             <div>
                                 <label class="block text-gray-700 font-semibold">ท่านทราบข่าวการรับสมัครจาก</label>
-                                <input type="text" name="detail_1"
+                                <select name="application_source" id="application_source" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    <option value="" disabled selected>กรุณาเลือก</option>
+                                    <!-- เว็บไซต์หางาน -->
+                                    <option value="jobbkk">JobBKK</option>
+                                    <option value="jobthai">JobThai</option>
+                                    <option value="thaijob">ThaiJob</option>
+                                    <option value="jobtopgun">JobTopGun</option>
+                                    <option value="linejobs">LINE Jobs</option>
+
+                                    <!-- โซเชียลมีเดีย -->
+                                    <option value="facebook">Facebook</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="linkedin">LinkedIn</option>
+
+                                    <!-- เครือข่ายส่วนตัว -->
+                                    <option value="friend">เพื่อน/คนรู้จักแนะนำ</option>
+                                    <option value="company_website">เว็บไซต์บริษัทโดยตรง</option>
+                                    <option value="walkin">เดินเข้ามาสมัครด้วยตนเอง</option>
+
+                                    <!-- กิจกรรมเฉพาะ -->
+                                    <option value="university_event">งานมหาวิทยาลัย/บูธรับสมัคร</option>
+                                    <option value="jobfair">Job Fair</option>
+                                    <option value="other">อื่นๆ</option>
+                                </select>
                             </div>
 
                             <div x-data="{ today: '' }" x-init="today = new Date().toISOString().split('T')[0]">
