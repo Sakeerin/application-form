@@ -30,52 +30,51 @@
             <!-- Section: Profile & Basic Info -->
             <form autocomplete="off" action="{{ route('store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <!-- Section: แรก-->
+                <!-- Section: ใส่รูป ตำแหน่ง etc. -->
                 <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
                     <!-- Profile Image -->
-                    <div class="flex flex-col items-center justify-start col-span-1"
-                        x-data="{
-                                                                                                                                                            previewUrl: '',
-                                                                                                                                                            errorMsg: '',
-                                                                                                                                                            isDragOver: false,
-                                                                                                                                                            fileInput: null,
-                                                                                                                                                            handleFiles(files) {
-                                                                                                                                                                this.errorMsg = '';
-                                                                                                                                                                if (!files?.length) return;
-                                                                                                                                                                const file = files[0];
-                                                                                                                                                                // ตรวจสอบประเภทไฟล์ด
-                                                                                                                                                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                                                                                                                                                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
-                                                                                                                                                                    this.clear();
-                                                                                                                                                                    return;
-                                                                                                                                                                }
-                                                                                                                                                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
-                                                                                                                                                                if (file.size > 2 * 1024 * 1024) {
-                                                                                                                                                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
-                                                                                                                                                                    this.clear();
-                                                                                                                                                                    return;
-                                                                                                                                                                }
-                                                                                                                                                                // แสดงตัวอย่างรูป
-                                                                                                                                                                const reader = new FileReader();
-                                                                                                                                                                reader.onload = e => {
-                                                                                                                                                                    this.previewUrl = e.target.result;
-                                                                                                                                                                };
-                                                                                                                                                                reader.readAsDataURL(file);
-                                                                                                                                                            },
-                                                                                                                                                            onDrop(e) {
-                                                                                                                                                                e.preventDefault();
-                                                                                                                                                                const dt = e.dataTransfer;
-                                                                                                                                                                const files = dt.files;
-                                                                                                                                                                this.handleFiles(files);
-                                                                                                                                                            },
-                                                                                                                                                            triggerInput() {
-                                                                                                                                                                this.$refs.fileInput.click();
-                                                                                                                                                            },
-                                                                                                                                                            clear() {
-                                                                                                                                                                this.previewUrl = '';
-                                                                                                                                                                this.$refs.fileInput.value = '';
-                                                                                                                                                            }
-                                                                                                                                                        }">
+                    <div class="flex flex-col items-center justify-start col-span-1" x-data="{
+                                            previewUrl: '',
+                                            errorMsg: '',
+                                            isDragOver: false,
+                                            fileInput: null,
+                                            handleFiles(files) {
+                                                this.errorMsg = '';
+                                                if (!files?.length) return;
+                                                const file = files[0];
+                                                // ตรวจสอบประเภทไฟล์ด
+                                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+                                                    this.clear();
+                                                    return;
+                                                }
+                                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
+                                                if (file.size > 2 * 1024 * 1024) {
+                                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+                                                    this.clear();
+                                                    return;
+                                                }
+                                                // แสดงตัวอย่างรูป
+                                                const reader = new FileReader();
+                                                reader.onload = e => {
+                                                    this.previewUrl = e.target.result;
+                                                };
+                                                reader.readAsDataURL(file);
+                                            },
+                                            onDrop(e) {
+                                                e.preventDefault();
+                                                const dt = e.dataTransfer;
+                                                const files = dt.files;
+                                                this.handleFiles(files);
+                                            },
+                                            triggerInput() {
+                                                this.$refs.fileInput.click();
+                                            },
+                                            clear() {
+                                                this.previewUrl = '';
+                                                this.$refs.fileInput.value = '';
+                                            }
+                                        }">
                         <div id="image-container"
                             :class="isDragOver ? 'border-green-700 border-4' : 'border-green-500 border-4'"
                             class="relative w-[200px] h-[200px] rounded-full border-dashed flex items-center justify-center bg-gray-100 hover:bg-green-100 transition mb-4"
@@ -140,105 +139,108 @@
                 </div>
 
                 <!-- Section: Required Documents -->
-                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
+                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8" x-data="{}">
                     <h2 class="text-lg font-bold text-green-600">
                         เอกสารประกอบการสมัครงาน
                     </h2>
                     <div class="grid md:grid-cols-3 gap-4">
-                        <div>
-                            <input type="checkbox" id="house" name="documents_1" value="สำเนาทะเบียนบ้าน"
-                                class="accent-green-500 w-5 h-5">
-                            <label for="house" class="ml-2">สำเนาทะเบียนบ้าน</label>
+
+                        <!-- สำเนาทะเบียนบ้าน -->
+                        <div x-data="{ checked: false }">
+                            <label class="flex items-center">
+                                <input type="checkbox" x-model="checked" class="accent-green-600 w-4 h-4">
+                                <span class="ml-2">สำเนาทะเบียนบ้าน</span>
+                            </label>
+
+                            <template x-if="checked">
+                                <div class="mt-2">
+                                    <input type="file" name="file_house"
+                                        class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                                </div>
+                            </template>
                         </div>
-                        <div>
-                            <input type="checkbox" id="military" name="documents_2" value="สำเนาใบผ่านทหาร"
-                                class="accent-green-500 w-5 h-5">
-                            <label for="military" class="ml-2">สำเนาใบผ่านทหาร</label>
+
+                        <!-- สำเนาใบผ่านทหาร -->
+                        <div x-data="{ checked: false }">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="military" name="documents_2" value="สำเนาใบผ่านทหาร"
+                                    class="accent-green-600 w-4 h-4" x-model="checked">
+                                <span class="ml-2">สำเนาใบผ่านทหาร</span>
+                            </label>
+                            <div x-show="checked" class="mt-2" x-transition>
+                                <input type="file" name="file_military"
+                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                            </div>
                         </div>
-                        <div>
-                            <input type="checkbox" id="education" name="documents_3" value="สำเนาใบรับรองการศึกษา"
-                                class="accent-green-500 w-5 h-5">
-                            <label for="education" class="ml-2">สำเนาใบรับรองการศึกษา</label>
+
+                        <!-- สำเนาใบรับรองการศึกษา -->
+                        <div x-data="{ checked: false }">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="education" name="documents_3" value="สำเนาใบรับรองการศึกษา"
+                                    class="accent-green-600 w-4 h-4" x-model="checked">
+                                <span class="ml-2">สำเนาใบรับรองการศึกษา</span>
+                            </label>
+                            <div x-show="checked" class="mt-2" x-transition>
+                                <input type="file" name="file_education"
+                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                            </div>
                         </div>
-                        <div>
-                            <input type="checkbox" id="idcard" name="documents_4" value="สำเนาบัตรประชาชน"
-                                class="accent-green-500 w-5 h-5">
-                            <label for="idcard" class="ml-2">สำเนาบัตรประชาชน</label>
+
+                        <!-- สำเนาบัตรประชาชน -->
+                        <div x-data="{ checked: false }">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="idcard" name="documents_4" value="สำเนาบัตรประชาชน"
+                                    class="accent-green-600 w-4 h-4" x-model="checked">
+                                <span class="ml-2">สำเนาบัตรประชาชน</span>
+                            </label>
+                            <div x-show="checked" class="mt-2" x-transition>
+                                <input type="file" name="file_idcard"
+                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                            </div>
                         </div>
-                        <div>
-                            <input type="checkbox" id="work" name="documents_5" value="สำเนาใบผ่านงาน"
-                                class="accent-green-500 w-5 h-5">
-                            <label for="work" class="ml-2">สำเนาใบผ่านงาน</label>
+
+                        <!-- สำเนาใบผ่านงาน -->
+                        <div x-data="{ checked: false }">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="work" name="documents_5" value="สำเนาใบผ่านงาน"
+                                    class="accent-green-600 w-4 h-4" x-model="checked">
+                                <span class="ml-2">สำเนาใบผ่านงาน</span>
+                            </label>
+                            <div x-show="checked" class="mt-2" x-transition>
+                                <input type="file" name="file_work"
+                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
                 <!-- Section: Personal Info -->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ข้อมูลส่วนตัว</h2>
+                    <div class="grid md:justify-start">
+                        <label class="block text-gray-700 font-semibold mb-1">คำนำหน้าชื่อ <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex gap-4 grid grid-cols-3 items-center">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" id="prefix-mr" name="prefix" value="นาย" required
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                <label for="prefix-mr">นาย / Mr.</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="radio" id="prefix-ms" name="prefix" value="นาง" required
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                <label for="prefix-ms">นาง / Ms.</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="radio" id="prefix-mrs" name="prefix" value="นางสาว" required
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                <label for="prefix-mrs">นางสาว / Mrs.</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid md:grid-cols-2 gap-6">
-                        <div> <!-- Row 1 -->
-                            <label class="block text-gray-700 font-semibold mb-1">คำนำหน้าชื่อ <span
-                                    class="text-red-500">*</span></label>
-                            <div class="flex gap-4">
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" id="prefix-mr" name="prefix" value="นาย" required
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <label for="prefix-mr">นาย / Mr.</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" id="prefix-ms" name="prefix" value="นาง" required
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <label for="prefix-ms">นาง / Ms.</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" id="prefix-mrs" name="prefix" value="นางสาว" required
-                                        class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
-                                    <label for="prefix-mrs">นางสาว / Mrs.</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center grid grid-cols-2 gap-4 items-center"> <!-- Row 1 -->
-                            <div class="">
-                                <label for="birthdate" class="block text-gray-700 font-semibold mb-1">วัน/เดือน/ปีเกิด
-                                    <span class="text-red-500">*</span></label>
-                                <input type="date" name="birthdate" id="birthdate" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <div>
-                                <label for="birthtime" class="block text-gray-700 font-semibold mb-1">เวลาเกิด</label>
-                                <input type="time" name="birthtime" id="birthtime"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                        </div>
-
-                        <div> <!-- Row 2: เลขบัตรประชาชน -->
-                            <label for="thai_id" class="block text-gray-700 font-semibold mb-1">
-                                เลขที่บัตรประชาชน <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="thai_id" name="thai_id" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
-                                placeholder="X-XXXX-XXXXX-XX-X" maxlength="17" autocomplete="off"
-                                oninput="formatThaiID(this)">
-                        </div>
-
-                        <div class="flex items-center grid grid-cols-2 gap-4 items-center">
-                            <!-- Row 2: วันออกบัตร / วันหมดอายุ -->
-                            <div>
-                                <label for="card_issue_date"
-                                    class="block text-gray-700 font-semibold mb-1">วันที่ออกบัตร</label>
-                                <input type="date" id="card_issue_date" name="card_issue_date"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-
-                            <div>
-                                <label for="card_expiry_date"
-                                    class="block text-gray-700 font-semibold mb-1">บัตรหมดอายุ</label>
-                                <input type="date" id="card_expiry_date" name="card_expiry_date"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                        </div>
-
                         <div x-data="{ nameThai: '' }"> {{-- ชื่อภาษาไทย --}}
                             <label for="name_thai" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (ไทย) <span class="text-red-500">*</span>
@@ -252,14 +254,31 @@
                             <label for="name_eng" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (อังกฤษ) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng"
-                                @input="
-                                                                                                                    nameEng = nameEng
-                                                                                                                        .replace(/[^a-zA-Z\s]/g, '') 
-                                                                                                                        .replace(/\b\w/g, l => l.toUpperCase()) 
-                                                                                                                                "
+                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng" @input="
+                                                                    nameEng = nameEng
+                                                                    .replace(/[^a-zA-Z\s]/g, '') 
+                                                                    .replace(/\b\w/g, l => l.toUpperCase())"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาอังกฤษ" required>
+                        </div>
+
+                        <div class="flex items-center grid grid-cols-1 gap-4 items-center"> <!-- Row 1 -->
+                            <div class="">
+                                <label for="birthdate" class="block text-gray-700 font-semibold mb-1">วัน/เดือน/ปีเกิด
+                                    <span class="text-red-500">*</span></label>
+                                <input type="date" name="birthdate" id="birthdate" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                        </div>
+
+                        <div> <!-- Row 2: เลขบัตรประชาชน -->
+                            <label for="thai_id" class="block text-gray-700 font-semibold mb-1">
+                                เลขที่บัตรประชาชน <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="thai_id" name="thai_id" required
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                placeholder="X-XXXX-XXXXX-XX-X" maxlength="17" autocomplete="off"
+                                oninput="formatThaiID(this)">
                         </div>
                     </div>
                     <div class="flex items-end grid md:grid-cols-3 gap-4 items-end "> <!-- Row 4 -->
@@ -289,13 +308,15 @@
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-200 text-gray-700">
                         </div>
                         <div>
-                            <label for="nationality" class="block text-gray-700 font-semibold">สัญชาติ</label>
-                            <input type="text" name="nationality" id="nationality"
+                            <label for="nationality" class="block text-gray-700 font-semibold">สัญชาติ <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" name="nationality" id="nationality" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                         <div>
-                            <label for="ethnicity" class="block text-gray-700 font-semibold">เชื้อชาติ</label>
-                            <input type="text" name="ethnicity" id="ethnicity"
+                            <label for="ethnicity" class="block text-gray-700 font-semibold">เชื้อชาติ <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" name="ethnicity" id="ethnicity" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                         <div>
@@ -318,7 +339,7 @@
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                     </div>
-
+                    {{-- สถานภาพทางทหาร --}}
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางทหาร :</label>
                         <div class="flex gap-6 mb-2 md:justify-between">
@@ -352,10 +373,10 @@
                 <!-- Section: Personal Family Info and Status ประวัติครอบครัวและสถานะ -->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ข้อมูลครอบครัว</h2>
-                    <div class="flex items-center grid md:grid-cols-[20%_80%]">
+                    <div class="flex items-center gap-4 grid md:grid-cols-[20%_80%]">
                         <!-- Row 1 -->
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส :</label>
-                        <div class="flex gap-4 mb-2">
+                        <div class="flex gap-4">
                             <label class="flex items-center gap-2"><input type="radio" id="single" name="status"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 โสด</label>
@@ -371,27 +392,34 @@
                         </div>
                         <!-- Row 2 -->
                         <label class="block text-gray-700 font-semibold mb-1">ท่านมีบุตรหรือไม่ :</label>
-                        <div x-data="{ hasChildren: '' }">
-                            <div class="flex gap-4 mb-2">
+                        <div x-data="{ hasChildren: '' }" class="mb-2">
+                            <!-- ตัวเลือก -->
+                            <div class="flex gap-4">
                                 <label class="flex items-center gap-2">
                                     <input type="radio" name="hasChildren" value="yes" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     มี
-                                    <!-- แสดงเมื่อเลือก "มี" -->
-                                    {{-- <div x-show="hasChildren === 'yes'" class="mt-2" x-transition>
-                                        <input type="text" name="children_count" id="children_count" min="1"
-                                            placeholder="จำนวนบุตร"
-                                            class="w-40 md:w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
-                                    </div> --}}
                                 </label>
+
                                 <label class="flex items-center gap-2">
                                     <input type="radio" name="hasChildren" value="no" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     ไม่มี
                                 </label>
                             </div>
+
+                            <!-- ช่องใส่จำนวนบุตร แสดงเฉพาะเมื่อเลือก 'มี' -->
+                            <div x-show="hasChildren === 'yes'" x-transition class="mt-2">
+                                {{-- <label for="children_count"
+                                    class="block text-gray-700 font-medium mb-1">จำนวนบุตร</label> --}}
+                                <input type="number" name="children_count" id="children_count" min="1"
+                                    class="w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
+                                    placeholder="ระบุจำนวนบุตร">
+                            </div>
                         </div>
+
                     </div>
+
                     <div>
                         <div class="flex items-center grid md:grid-cols-[400px_3fr_2fr] gap-6 items-end">
                             <!-- ข้อมูลพ่อ-แม่ -->
@@ -453,10 +481,17 @@
                                 <input type="text" name="spounsename" id="spounsename"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
+                            {{-- อาชีพ --}}
+                            <div>
+                                <label for="spounse_career" class="block text-gray-700 font-semibold">อาชีพ
+                                    คู่สมรส</label>
+                                <input type="text" name="spounse_career" id="spounse_career"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
                             <!-- เบอร์โทรศัพท์ -->
                             <div>
                                 <label for="spounse_phone" class="block text-gray-700 font-semibold">เบอร์โทรศัพท์</label>
-                                <input type="text" name="spounse" id="spounse_phone"
+                                <input type="text" name="spounse_phone" id="spounse_phone"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                         </div>
@@ -466,139 +501,172 @@
                 <!-- Section: Address & Contact ที่อยู่และช่องทางการติดต่อ-->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ที่อยู่และการติดต่อ</h2>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ตามทะเบียนบ้าน <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="address" id="address" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
-                                placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
-                        </div>
-                        <div>
-                            <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="province" id="province" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="district" id="district" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="subdistrict" id="subdistrict" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="postcode" id="postcode" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">เบอร์โทรศัพท์ <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" id="phone_mobile" name="phone_mobile" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail <span
-                                    class="text-red-500">*</span></label>
-                            <input type="email" name="email" id="email" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
-                                required>
-                        </div>
-                        <div>
-                            <label for="facebook" class="block text-gray-700 font-semibold mb-1">Facebook</label>
-                            <input type="text" id="facebook" name="facebook"
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                        <div>
-                            <label for="line_id" class="block text-gray-700 font-semibold mb-1">Line ID</label>
-                            <input type="text" id="line_id" name="line_id"
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                        </div>
-                    </div>
-
-                    <!-- Section: Current Address -->
-                    <div x-data="{ sameAsRegistered: false }" class="space-y-6 mt-8">
-                        <h2 class="text-lg font-bold text-green-600">ที่อยู่ปัจจุบัน</h2>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" x-model="sameAsRegistered" class="accent-green-600 w-4 h-4">
-                            <span class="text-gray-700">ใช้ที่อยู่ตามทะเบียนบ้าน</span>
-                        </label>
-
-                        <div x-show="!sameAsRegistered" x-transition class="grid md:grid-cols-2 gap-6">
+                    <!-- ครอบทั้งหมดด้วย Alpine -->
+                    <div x-data="{
+                                        sameAsRegistered: false,
+                                        registered: {
+                                        address: '',
+                                        province: '',
+                                        district: '',
+                                        subdistrict: '',
+                                        postcode: ''
+                                        },
+                                        current: {
+                                        address: '',
+                                        province: '',
+                                        district: '',
+                                        subdistrict: '',
+                                        postcode: ''
+                                        }
+                                    }" x-effect="
+                                        if (sameAsRegistered) {
+                                        current.address = registered.address;
+                                        current.province = registered.province;
+                                        current.district = registered.district;
+                                        current.subdistrict = registered.subdistrict;
+                                        current.postcode = registered.postcode;
+                                        } else {
+                                        current.address = '';
+                                        current.province = '';
+                                        current.district = '';
+                                        current.subdistrict = '';
+                                        current.postcode = '';
+                                        }
+                                    ">
+                        <!-- Section: ที่อยู่ตามทะเบียนบ้าน -->
+                        <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <label for="curr_address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
+                                <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ตามทะเบียนบ้าน
                                     <span class="text-red-500">*</span></label>
-                                <input type="text" name="curr_address" id="curr_address" required
+                                <input type="text" id="address" x-model="registered.address"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                     placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                             </div>
-
                             <div>
-                                <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
-                                    <span class="text-red-500">*</span></label></label>
-                                <input type="text" name="curr_province" id="curr_province" required
+                                <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="province" x-model="registered.province"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-
                             <div>
-                                <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
-                                    <span class="text-red-500">*</span></label></label>
-                                <input type="text" name="curr_district" id="curr_district" required
+                                <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="district" x-model="registered.district"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-
                             <div>
-                                <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
-                                    <span class="text-red-500">*</span></label></label>
-                                <input type="text" name="curr_subdistrict" id="curr_subdistrict" required
+                                <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="subdistrict" x-model="registered.subdistrict"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-
                             <div>
-                                <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
-                                    <span class="text-red-500">*</span></label></label>
-                                <input type="text" name="curr_postcode" id="curr_postcode" required
+                                <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="postcode" x-model="registered.postcode"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <div>
+                                <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">เบอร์โทรศัพท์ <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="phone_mobile" name="phone_mobile" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail <span
+                                        class="text-red-500">*</span></label>
+                                <input type="email" name="email" id="email" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="facebook" class="block text-gray-700 font-semibold mb-1">Facebook</label>
+                                <input type="text" id="facebook" name="facebook"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                            <div>
+                                <label for="line_id" class="block text-gray-700 font-semibold mb-1">Line ID</label>
+                                <input type="text" id="line_id" name="line_id"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div>
+                        </div>
+
+                        <!-- Section: ที่อยู่ปัจจุบัน -->
+                        <div class="space-y-6 mt-8">
+                            <h2 class="text-lg font-bold text-green-600">ที่อยู่ปัจจุบัน</h2>
+
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" x-model="sameAsRegistered" class="accent-green-600 w-4 h-4">
+                                <span class="text-gray-700">ใช้ที่อยู่ตามทะเบียนบ้าน</span>
+                            </label>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="curr_address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_address" x-model="current.address"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                </div>
+                                <div>
+                                    <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_province" x-model="current.province"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                </div>
+                                <div>
+                                    <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_district" x-model="current.district"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                </div>
+                                <div>
+                                    <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                </div>
+                                <div>
+                                    <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_postcode" x-model="current.postcode"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Section: ประวัติการศึกษา -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
-                    x-data="{
-                                                                                                                                                        educations: [{
-                                                                                                                                                            level: '',
-                                                                                                                                                            school: '',
-                                                                                                                                                            country: '',
-                                                                                                                                                            program: '',
-                                                                                                                                                            major: '',
-                                                                                                                                                            gpa: '',
-                                                                                                                                                            graduate_year: ''
-                                                                                                                                                        }],
-                                                                                                                                                        addRow() {
-                                                                                                                                                            this.educations.push({
-                                                                                                                                                                level: '',
-                                                                                                                                                                school: '',
-                                                                                                                                                                country: '',
-                                                                                                                                                                program: '',
-                                                                                                                                                                major: '',
-                                                                                                                                                                gpa: '',
-                                                                                                                                                                graduate_year: ''
-                                                                                                                                                            });
-                                                                                                                                                        },
-                                                                                                                                                        removeRow(idx) {
-                                                                                                                                                            if (this.educations.length > 1) this.educations.splice(idx, 1);
-                                                                                                                                                        }
-                                                                                                                                                    }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
+                                        educations: [{
+                                            level: '',
+                                            school: '',
+                                            country: '',
+                                            program: '',
+                                            major: '',
+                                            gpa: '',
+                                            graduate_year: ''
+                                        }],
+                                        addRow() {
+                                            this.educations.push({
+                                                level: '',
+                                                school: '',
+                                                country: '',
+                                                program: '',
+                                                major: '',
+                                                gpa: '',
+                                                graduate_year: ''
+                                            });
+                                        },
+                                        removeRow(idx) {
+                                            if (this.educations.length > 1) this.educations.splice(idx, 1);
+                                        }
+                                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -724,7 +792,7 @@
                                     <div x-show="car" x-transition>
                                         <input type="text" name="car_license_number" id="car_license_number"
                                             placeholder="เลขที่ใบขับขี่รถยนต์"
-                                            class="w-full sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
+                                            class="w-52 sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
                                     </div>
                                 </div>
                                 <!-- ใบขับขี่รถจักรยานยนต์ -->
@@ -737,7 +805,7 @@
                                     <div x-show="motorcycle" x-transition>
                                         <input type="text" name="motor_license_number" id="motor_license_number"
                                             placeholder="เลขที่ใบขับขี่รถจักรยานยนต์"
-                                            class="w-full sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
+                                            class="w-52 sm:w-40 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded px-3 py-1 bg-gray-50 mb-4" />
                                     </div>
                                 </div>
                             </div>
@@ -748,7 +816,7 @@
                                     ท่านสะดวกที่จะเดินทางไปปฏิบัติงานต่างจังหวัดหรือไม่
                                 </label>
 
-                                <div>
+                                <div class="grid-cols-3 items-center flex gap-x-8">
                                     <label for="travel_yes" class="inline-flex items-center gap-2 md:mr-20">
                                         <input type="radio" name="travel" id="travel_yes" value="yes"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
@@ -764,7 +832,7 @@
                                     <label for="travel_sometimes" class="inline-flex items-center gap-2">
                                         <input type="radio" name="travel" id="travel_sometimes" value="sometimes"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
-                                        <span>บางครั้ง</span>
+                                        <span>เป็นบางกรณี</span>
                                     </label>
                                 </div>
                             </div>
@@ -809,14 +877,41 @@
                                 </div>
                             </template>
                         </div>
+
+                        {{-- ความสามารถในการพิมพ์ --}}
+                        <div x-data="{ typing: '' }" class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถในการพิมพ์</label>
+                            <div class="flex mb-2 md:justify-start">
+                                <label for="typing_exc" class="inline-flex items-center gap-2  md:mr-20">
+                                    <input type="radio" name="typing_speed" id="typing_exc" value="excellent"
+                                        class="accent-green-600 w-4 h-4" x-model="typing">
+                                    <span>ดีมาก</span>
+                                </label>
+                                <label for="typing_good" class="inline-flex items-center gap-2 ml-4  md:mr-20">
+                                    <input type="radio" name="typing_speed" id="typing_good" value="good"
+                                        class="accent-green-600 w-4 h-4" x-model="typing">
+                                    <span>ดี</span>
+                                </label>
+                                <label for="typing_fair" class="inline-flex items-center gap-2 ml-4  md:mr-20">
+                                    <input type="radio" name="typing_speed" id="typing_fair" value="fair"
+                                        class="accent-green-600 w-4 h-4" x-model="typing">
+                                    <span>ปานกลาง</span>
+                                </label>
+                                <label for="typing_no" class="inline-flex items-center gap-2 ml-4">
+                                    <input type="radio" name="typing_speed" id="typing_no" value="no"
+                                        class="accent-green-600 w-4 h-4" x-model="typing">
+                                    <span>ไม่ได้เลย</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="{
-                                                                                                                                                                langs: [
-                                                                                                                                                                    { name: 'ภาษาไทย', level: '', file: null },
-                                                                                                                                                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
-                                                                                                                                                                ]
-                                                                                                                                                            }"
-                            class="bg-gray-50 p-4 rounded-lg">
+                                                langs: [
+                                                    { name: 'ภาษาไทย', level: '', file: null },
+                                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
+                                                ]
+                                            }" class="bg-gray-50 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -875,18 +970,17 @@
                 </div>
 
                 <!-- Section Training Course -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
-                    x-data="{
-                                                                                                                                                        trainings: [
-                                                                                                                                                            { year: '', duration: '', topic: '', institution: '' }
-                                                                                                                                                        ],
-                                                                                                                                                        addRow() {
-                                                                                                                                                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
-                                                                                                                                                        },
-                                                                                                                                                        removeRow(idx) {
-                                                                                                                                                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
-                                                                                                                                                        }
-                                                                                                                                                    }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
+                                        trainings: [
+                                            { year: '', duration: '', topic: '', institution: '' }
+                                        ],
+                                        addRow() {
+                                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
+                                        },
+                                        removeRow(idx) {
+                                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
+                                        }
+                                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -960,34 +1054,33 @@
                 </div>
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8"
-                    x-data="{
-                                                                                                                                                        works: [{
-                                                                                                                                                            company: '',
-                                                                                                                                                            position: '',
-                                                                                                                                                            responsibility: '',
-                                                                                                                                                            duration: '',
-                                                                                                                                                            salary: '',
-                                                                                                                                                            otherIncome: '',
-                                                                                                                                                            totalIncome: '',
-                                                                                                                                                            reason: ''
-                                                                                                                                                        }],
-                                                                                                                                                        addRow() {
-                                                                                                                                                            this.works.push({
-                                                                                                                                                                company: '',
-                                                                                                                                                                position: '',
-                                                                                                                                                                responsibility: '',
-                                                                                                                                                                duration: '',
-                                                                                                                                                                salary: '',
-                                                                                                                                                                otherIncome: '',
-                                                                                                                                                                totalIncome: '',
-                                                                                                                                                                reason: ''
-                                                                                                                                                            });
-                                                                                                                                                        },
-                                                                                                                                                        removeRow(idx) {
-                                                                                                                                                            if (this.works.length > 1) this.works.splice(idx, 1);
-                                                                                                                                                        }
-                                                                                                                                                    }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
+                                        works: [{
+                                                company: '',
+                                                position: '',
+                                                responsibility: '',
+                                                duration: '',
+                                                salary: '',
+                                                otherIncome: '',
+                                                totalIncome: '',
+                                                reason: ''
+                                            ],
+                                            addRow() {
+                                                this.works.push({
+                                                    company: '',
+                                                    position: '',
+                                                    responsibility: '',
+                                                    duration: '',
+                                                    salary: '',
+                                                    otherIncome: '',
+                                                    totalIncome: '',
+                                                    reason: ''
+                                                });
+                                            },
+                                            removeRow(idx) {
+                                                if (this.works.length > 1) this.works.splice(idx, 1);
+                                            }
+                                        }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
@@ -1289,12 +1382,12 @@
                                     <option value="instagram">Instagram</option>
                                     <option value="linkedin">LinkedIn</option>
 
-                                    <!-- เครือข่ายส่วนตัว -->
+                                    <!-- เพื่อน -->
                                     <option value="friend">เพื่อน/คนรู้จักแนะนำ</option>
                                     <option value="company_website">เว็บไซต์บริษัทโดยตรง</option>
                                     <option value="walkin">เดินเข้ามาสมัครด้วยตนเอง</option>
 
-                                    <!-- กิจกรรมเฉพาะ -->
+                                    <!-- งานกิจกรรม -->
                                     <option value="university_event">งานมหาวิทยาลัย/บูธรับสมัคร</option>
                                     <option value="jobfair">Job Fair</option>
                                     <option value="other">อื่นๆ</option>
@@ -1306,6 +1399,32 @@
                                 <input type="date" name="detail_2" :min="today"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
+                <div class="p-8 bg-white rounded-xl shadow-md mt-8">
+                    <h2 class="text-lg font-bold text-green-600 mb-4 text-center">เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล
+                    </h2>
+                    <div class="grid justify-center">
+                        <!-- Checkbox: เงื่อนไขการให้บริการ -->
+                        <div class="flex items-center justify-start mb-3 flex-wrap text-sm text-gray-700">
+                            <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ" required
+                                class="accent-green-600 w-4 h-4">
+                            <label for="tos" class="ml-2">ยอมรับ</label>
+                            <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                เงื่อนไขการให้บริการ
+                            </a>
+                        </div>
+                        <!-- Checkbox: นโยบายความเป็นส่วนตัว -->
+                        <div class="flex items-center justify-start mb-2 flex-wrap text-sm text-gray-700">
+                            <input type="checkbox" id="privacy_1" name="privacy_1" value="นโยบายความเป็นส่วนตัว" required
+                                class="accent-green-600 w-4 h-4">
+                            <label for="privacy_1" class="ml-2">ยอมรับ</label>
+                            <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                นโยบายความเป็นส่วนตัว
+                            </a>
                         </div>
                     </div>
                 </div>
