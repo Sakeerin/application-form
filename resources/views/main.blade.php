@@ -148,16 +148,14 @@
                         <!-- สำเนาทะเบียนบ้าน -->
                         <div x-data="{ checked: false }">
                             <label class="flex items-center">
-                                <input type="checkbox" x-model="checked" class="accent-green-600 w-4 h-4">
+                                <input type="checkbox" id="house" name="documents_1" value="สำเนาทะเบียนบ้าน"
+                                    class="accent-green-600 w-4 h-4" x-model="checked">
                                 <span class="ml-2">สำเนาทะเบียนบ้าน</span>
                             </label>
-
-                            <template x-if="checked">
-                                <div class="mt-2">
-                                    <input type="file" name="file_house"
-                                        class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                                </div>
-                            </template>
+                            <div x-show="checked" class="mt-12" x-transition>
+                                <input type="file" name="file_house"
+                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
+                            </div>
                         </div>
 
                         <!-- สำเนาใบผ่านทหาร -->
@@ -167,10 +165,6 @@
                                     class="accent-green-600 w-4 h-4" x-model="checked">
                                 <span class="ml-2">สำเนาใบผ่านทหาร</span>
                             </label>
-                            <div x-show="checked" class="mt-2" x-transition>
-                                <input type="file" name="file_military"
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                            </div>
                         </div>
 
                         <!-- สำเนาใบรับรองการศึกษา -->
@@ -180,10 +174,6 @@
                                     class="accent-green-600 w-4 h-4" x-model="checked">
                                 <span class="ml-2">สำเนาใบรับรองการศึกษา</span>
                             </label>
-                            <div x-show="checked" class="mt-2" x-transition>
-                                <input type="file" name="file_education"
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                            </div>
                         </div>
 
                         <!-- สำเนาบัตรประชาชน -->
@@ -193,10 +183,6 @@
                                     class="accent-green-600 w-4 h-4" x-model="checked">
                                 <span class="ml-2">สำเนาบัตรประชาชน</span>
                             </label>
-                            <div x-show="checked" class="mt-2" x-transition>
-                                <input type="file" name="file_idcard"
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                            </div>
                         </div>
 
                         <!-- สำเนาใบผ่านงาน -->
@@ -206,12 +192,7 @@
                                     class="accent-green-600 w-4 h-4" x-model="checked">
                                 <span class="ml-2">สำเนาใบผ่านงาน</span>
                             </label>
-                            <div x-show="checked" class="mt-2" x-transition>
-                                <input type="file" name="file_work"
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                            </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -606,7 +587,8 @@
                                         <span class="text-red-500">*</span></label>
                                     <input type="text" id="curr_address" x-model="current.address"
                                         :readonly="sameAsRegistered"
-                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                        placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                                 </div>
                                 <div>
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
@@ -1401,10 +1383,34 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
+                    <div class="p-8">
+                        <div class="grid justify-center gap-2 items-center">
+                            <!-- Checkbox: เงื่อนไขการให้บริการ -->
+                            <div class="flex items-center justify-start mb-3 flex-wrap text-sm text-gray-700">
+                                <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ" required
+                                    class="accent-green-600 w-4 h-4">
+                                <label for="tos" class="ml-2">ยอมรับ</label>
+                                <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                    เงื่อนไขการให้บริการ
+                                </a>
+                            </div>
+                            <!-- Checkbox: นโยบายความเป็นส่วนตัว -->
+                            <div class="flex items-center justify-start mb-2 flex-wrap text-sm text-gray-700">
+                                <input type="checkbox" id="privacy_1" name="privacy_1" value="นโยบายความเป็นส่วนตัว"
+                                    required class="accent-green-600 w-4 h-4">
+                                <label for="privacy_1" class="ml-2">ยอมรับ</label>
+                                <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                    นโยบายความเป็นส่วนตัว
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
-                <div class="p-8 bg-white rounded-xl shadow-md mt-8">
+                {{-- <div class="p-8 mt-8">
                     <h2 class="text-lg font-bold text-green-600 mb-4 text-center">เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล
                     </h2>
                     <div class="grid justify-center">
@@ -1427,7 +1433,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Section: Submit Button -->
                 <div class="flex justify-center md:justify-end my-8">
