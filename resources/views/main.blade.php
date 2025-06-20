@@ -34,47 +34,47 @@
                 <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
                     <!-- Profile Image -->
                     <div class="flex flex-col items-center justify-start col-span-1" x-data="{
-                                            previewUrl: '',
-                                            errorMsg: '',
-                                            isDragOver: false,
-                                            fileInput: null,
-                                            handleFiles(files) {
-                                                this.errorMsg = '';
-                                                if (!files?.length) return;
-                                                const file = files[0];
-                                                // ตรวจสอบประเภทไฟล์ด
-                                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
-                                                    this.clear();
-                                                    return;
-                                                }
-                                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
-                                                if (file.size > 2 * 1024 * 1024) {
-                                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
-                                                    this.clear();
-                                                    return;
-                                                }
-                                                // แสดงตัวอย่างรูป
-                                                const reader = new FileReader();
-                                                reader.onload = e => {
-                                                    this.previewUrl = e.target.result;
-                                                };
-                                                reader.readAsDataURL(file);
-                                            },
-                                            onDrop(e) {
-                                                e.preventDefault();
-                                                const dt = e.dataTransfer;
-                                                const files = dt.files;
-                                                this.handleFiles(files);
-                                            },
-                                            triggerInput() {
-                                                this.$refs.fileInput.click();
-                                            },
-                                            clear() {
-                                                this.previewUrl = '';
-                                                this.$refs.fileInput.value = '';
-                                            }
-                                        }">
+                            previewUrl: '',
+                            errorMsg: '',
+                            isDragOver: false,
+                            fileInput: null,
+                            handleFiles(files) {
+                                this.errorMsg = '';
+                                if (!files?.length) return;
+                                const file = files[0];
+                                // ตรวจสอบประเภทไฟล์ด
+                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+                                    this.clear();
+                                    return;
+                                }
+                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
+                                if (file.size > 2 * 1024 * 1024) {
+                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+                                    this.clear();
+                                    return;
+                                }
+                                // แสดงตัวอย่างรูป
+                                const reader = new FileReader();
+                                reader.onload = e => {
+                                    this.previewUrl = e.target.result;
+                                };
+                                reader.readAsDataURL(file);
+                            },
+                            onDrop(e) {
+                                e.preventDefault();
+                                const dt = e.dataTransfer;
+                                const files = dt.files;
+                                this.handleFiles(files);
+                            },
+                            triggerInput() {
+                                this.$refs.fileInput.click();
+                            },
+                            clear() {
+                                this.previewUrl = '';
+                                this.$refs.fileInput.value = '';
+                            }
+                        }">
                         <div id="image-container"
                             :class="isDragOver ? 'border-green-700 border-4' : 'border-green-500 border-4'"
                             class="relative w-[200px] h-[200px] rounded-full border-dashed flex items-center justify-center bg-gray-100 hover:bg-green-100 transition mb-4"
@@ -101,7 +101,7 @@
                     </div>
 
                     <!-- Basic Info -->
-                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2 grid grid-cols-1 gap-4 md:m-8">
                         <div>
                             <label for="position" class="block text-gray-700 font-semibold mb-1">ตำแหน่งที่สมัคร <span
                                     class="text-red-500">*</span></label>
@@ -117,80 +117,84 @@
                                 <option value="sustainable">Sustainable Development </option>
                             </select>
                         </div>
-                        <div>
-                            <label for="highest_edu" class="block text-gray-700 font-semibold mb-1">วุฒิการศึกษาสูงสุด <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="Highest_edu" id="highest_edu" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50" />
-                        </div>
-                        <div>
-                            <label for="major_edu" class="block text-gray-700 font-semibold mb-1">สาขา <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="major_edu" id="major_edu" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50" />
-                        </div>
-                        <div>
-                            <label for="salary" class="block text-gray-700 font-semibold mb-1">เงินเดือนที่ต้องการ <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="salary" id="salary" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50" />
+                        <div x-data="{
+                                salary: '',
+                                formatNumber(value) {
+                                    const numeric = value.replace(/[^\d]/g, '');
+                                    return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                                }
+                            }">
+                            <label for="salary" class="block text-gray-700 font-semibold mb-1">
+                                เงินเดือนที่คาดหวัง <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="salary" name="salary" required inputmode="numeric"
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                x-model="salary" @input="salary = formatNumber($event.target.value)">
                         </div>
                     </div>
                 </div>
-
-                <!-- Section: Required Documents -->
-                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8" x-data="{}">
+                <!-- Section: Required Documents (input file แบบ custom ปุ่ม upload) -->
+                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">
                         เอกสารประกอบการสมัครงาน
                     </h2>
-                    <div class="grid md:grid-cols-3 gap-4">
+                    <div class="grid md:grid-cols-3 grid-cols-2 gap-2 flex justify-between">
 
                         <!-- สำเนาทะเบียนบ้าน -->
-                        <div x-data="{ checked: false }">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="house" name="documents_1" value="สำเนาทะเบียนบ้าน"
-                                    class="accent-green-600 w-4 h-4" x-model="checked">
-                                <span class="ml-2">สำเนาทะเบียนบ้าน</span>
+                        <div x-data="{ file: null }" class="flex flex-col items-center">
+                            <label
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                title="อัปโหลดสำเนาทะเบียนบ้าน">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]" name="file_house">
+                                <span>สำเนาทะเบียนบ้าน</span>
                             </label>
-                            <div x-show="checked" class="mt-12" x-transition>
-                                <input type="file" name="file_house"
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-400">
-                            </div>
-                        </div>
 
-                        <!-- สำเนาใบผ่านทหาร -->
-                        <div x-data="{ checked: false }">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="military" name="documents_2" value="สำเนาใบผ่านทหาร"
-                                    class="accent-green-600 w-4 h-4" x-model="checked">
-                                <span class="ml-2">สำเนาใบผ่านทหาร</span>
-                            </label>
-                        </div>
-
-                        <!-- สำเนาใบรับรองการศึกษา -->
-                        <div x-data="{ checked: false }">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="education" name="documents_3" value="สำเนาใบรับรองการศึกษา"
-                                    class="accent-green-600 w-4 h-4" x-model="checked">
-                                <span class="ml-2">สำเนาใบรับรองการศึกษา</span>
-                            </label>
+                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
+                            <template x-if="file">
+                                <span class="text-xs text-blue-600 mt-1">
+                                    : <strong x-text="file.name"></strong>
+                                </span>
+                            </template>
                         </div>
 
                         <!-- สำเนาบัตรประชาชน -->
-                        <div x-data="{ checked: false }">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="idcard" name="documents_4" value="สำเนาบัตรประชาชน"
-                                    class="accent-green-600 w-4 h-4" x-model="checked">
-                                <span class="ml-2">สำเนาบัตรประชาชน</span>
+                        <div x-data="{ file: null }" class="flex justify-center">
+                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                                title="อัปโหลดสำเนาบัตรประชาชน">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
+                                    name="file_id">สำเนาบัตรประชาชน
+                            </label>
+                        </div>
+
+                        <!-- สำเนาวุฒิการศึกษา -->
+                        <div x-data="{ file: null }" class="flex justify-center">
+                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                                title="อัปโหลดสำเนาวุฒิการศึกษา">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
+                                    name="file_edu">สำเนาวุฒิการศึกษา
                             </label>
                         </div>
 
                         <!-- สำเนาใบผ่านงาน -->
-                        <div x-data="{ checked: false }">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="work" name="documents_5" value="สำเนาใบผ่านงาน"
-                                    class="accent-green-600 w-4 h-4" x-model="checked">
-                                <span class="ml-2">สำเนาใบผ่านงาน</span>
+                        <div x-data="{ file: null }" class="flex justify-center">
+                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                                title="อัปโหลดสำเนาใบผ่านงาน">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
+                                    name="file_work">สำเนาใบผ่านงาน
+                            </label>
+                        </div>
+
+                        <!-- สำเนาใบผ่านทหาร -->
+                        <div x-data="{ file: null }" class="flex justify-center">
+                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                                title="อัปโหลดสำเนาใบผ่านทหาร">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
+                                    name="file_military">สำเนาใบผ่านทหาร
                             </label>
                         </div>
                     </div>
@@ -236,9 +240,9 @@
                                 ชื่อ-นามสกุล (อังกฤษ) <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="name_eng" id="name_eng" required x-model="nameEng" @input="
-                                                                    nameEng = nameEng
-                                                                    .replace(/[^a-zA-Z\s]/g, '') 
-                                                                    .replace(/\b\w/g, l => l.toUpperCase())"
+                                            nameEng = nameEng
+                                            .replace(/[^a-zA-Z\s]/g, '') 
+                                            .replace(/\b\w/g, l => l.toUpperCase())"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาอังกฤษ" required>
                         </div>
@@ -271,12 +275,12 @@
                         </div>
                         <div>
                             <label for="height" class="block text-gray-700 font-semibold mb-1">ส่วนสูง (ซม.) </label>
-                            <input type="number" name="height" id="height"
+                            <input type="number" name="height" id="height" min="10" max="300" step="1"
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                         <div>
                             <label for="weight" class="block text-gray-700 font-semibold mb-1">น้ำหนัก (กก.) </label>
-                            <input type="number" name="weight" id="weight"
+                            <input type="number" name="weight" id="weight" min="10" max="300" step="1"
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                     </div>
@@ -398,7 +402,6 @@
                                     placeholder="ระบุจำนวนบุตร">
                             </div>
                         </div>
-
                     </div>
 
                     <div>
@@ -469,12 +472,6 @@
                                 <input type="text" name="spounse_career" id="spounse_career"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-                            <!-- เบอร์โทรศัพท์ -->
-                            <div>
-                                <label for="spounse_phone" class="block text-gray-700 font-semibold">เบอร์โทรศัพท์</label>
-                                <input type="text" name="spounse_phone" id="spounse_phone"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -484,35 +481,35 @@
                     <h2 class="text-lg font-bold text-green-600">ที่อยู่และการติดต่อ</h2>
                     <!-- ครอบทั้งหมดด้วย Alpine -->
                     <div x-data="{
-                                        sameAsRegistered: false,
-                                        registered: {
-                                        address: '',
-                                        province: '',
-                                        district: '',
-                                        subdistrict: '',
-                                        postcode: ''
-                                        },
-                                        current: {
-                                        address: '',
-                                        province: '',
-                                        district: '',
-                                        subdistrict: '',
-                                        postcode: ''
-                                        }
-                                    }" x-effect="
-                                        if (sameAsRegistered) {
-                                        current.address = registered.address;
-                                        current.province = registered.province;
-                                        current.district = registered.district;
-                                        current.subdistrict = registered.subdistrict;
-                                        current.postcode = registered.postcode;
-                                        } else {
-                                        current.address = '';
-                                        current.province = '';
-                                        current.district = '';
-                                        current.subdistrict = '';
-                                        current.postcode = '';
-                                        }
+                            sameAsRegistered: false,
+                            registered: {
+                                address: '',
+                                province: '',
+                                district: '',
+                                subdistrict: '',
+                                postcode: ''
+                            },
+                            current: {
+                                address: '',
+                                province: '',
+                                district: '',
+                                subdistrict: '',
+                                postcode: ''
+                            }
+                        }" x-effect="
+                                    if (sameAsRegistered) {
+                                    current.address = registered.address;
+                                    current.province = registered.province;
+                                    current.district = registered.district;
+                                    current.subdistrict = registered.subdistrict;
+                                    current.postcode = registered.postcode;
+                                    } else {
+                                    current.address = '';
+                                    current.province = '';
+                                    current.district = '';
+                                    current.subdistrict = '';
+                                    current.postcode = '';
+                                    }
                                     ">
                         <!-- Section: ที่อยู่ตามทะเบียนบ้าน -->
                         <div class="grid md:grid-cols-2 gap-6">
@@ -547,29 +544,6 @@
                                 <input type="text" id="postcode" x-model="registered.postcode"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-                            <div>
-                                <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">เบอร์โทรศัพท์ <span
-                                        class="text-red-500">*</span></label>
-                                <input type="text" id="phone_mobile" name="phone_mobile" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail <span
-                                        class="text-red-500">*</span></label>
-                                <input type="email" name="email" id="email" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
-                                    required>
-                            </div>
-                            <div>
-                                <label for="facebook" class="block text-gray-700 font-semibold mb-1">Facebook</label>
-                                <input type="text" id="facebook" name="facebook"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
-                            <div>
-                                <label for="line_id" class="block text-gray-700 font-semibold mb-1">Line ID</label>
-                                <input type="text" id="line_id" name="line_id"
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div>
                         </div>
 
                         <!-- Section: ที่อยู่ปัจจุบัน -->
@@ -591,8 +565,8 @@
                                         placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                                 </div>
                                 <div>
-                                    <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
-                                            class="text-red-500">*</span></label>
+                                    <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
+                                        <span class="text-red-500">*</span></label>
                                     <input type="text" id="curr_province" x-model="current.province"
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
@@ -619,36 +593,67 @@
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                             </div>
+
+                            <div class="space-y-6 mt-8">
+                                <h2 class="text-lg font-bold text-green-600">ช่องทางการติดต่อ</h2>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="phone_mobile"
+                                            class="block text-gray-700 font-semibold mb-1">เบอร์โทรศัพท์
+                                            <span class="text-red-500">*</span></label>
+                                        <input type="text" id="phone_mobile" name="phone_mobile" required
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail <span
+                                                class="text-red-500">*</span></label>
+                                        <input type="email" name="email" id="email" required
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    </div>
+                                    <div>
+                                        <label for="facebook"
+                                            class="block text-gray-700 font-semibold mb-1">Facebook</label>
+                                        <input type="text" id="facebook" name="facebook"
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    </div>
+                                    <div>
+                                        <label for="line_id" class="block text-gray-700 font-semibold mb-1">Line
+                                            ID</label>
+                                        <input type="text" id="line_id" name="line_id"
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Section: ประวัติการศึกษา -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                        educations: [{
-                                            level: '',
-                                            school: '',
-                                            country: '',
-                                            program: '',
-                                            major: '',
-                                            gpa: '',
-                                            graduate_year: ''
-                                        }],
-                                        addRow() {
-                                            this.educations.push({
-                                                level: '',
-                                                school: '',
-                                                country: '',
-                                                program: '',
-                                                major: '',
-                                                gpa: '',
-                                                graduate_year: ''
-                                            });
-                                        },
-                                        removeRow(idx) {
-                                            if (this.educations.length > 1) this.educations.splice(idx, 1);
-                                        }
-                                    }">
+                        educations: [{
+                            level: '',
+                            school: '',
+                            country: '',
+                            program: '',
+                            major: '',
+                            gpa: '',
+                            graduate_year: ''
+                        }],
+                        addRow() {
+                            this.educations.push({
+                                level: '',
+                                school: '',
+                                country: '',
+                                program: '',
+                                major: '',
+                                gpa: '',
+                                graduate_year: ''
+                            });
+                        },
+                        removeRow(idx) {
+                            if (this.educations.length > 1) this.educations.splice(idx, 1);
+                        }
+                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -722,18 +727,28 @@
                                 </div>
 
                                 <!-- เกรดเฉลี่ย -->
-                                <div>
+                                <div x-data="{
+                                        edu: { gpa: '' },
+                                        formatGPA(value) {
+                                            let num = parseFloat(value.replace(/[^0-9.]/g, ''));
+                                            if (isNaN(num)) return '';
+                                            if (num > 4) num = 4.00;
+                                            return num.toFixed(2);
+                                        }
+                                    }">
                                     <label for="edu_gpx"
                                         class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label>
                                     <input type="text" name="edu_gpx" id="edu_gpx"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.gpa">
+                                        x-model="edu.gpa" @blur="edu.gpa = formatGPA(edu.gpa)" inputmode="decimal"
+                                        maxlength="4">
                                 </div>
+
 
                                 <!-- ปีที่จบ -->
                                 <div>
                                     <label for="edu_gradyear"
-                                        class="block text-sm font-medium text-gray-700 mb-1">ปีที่จบ</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">ปีที่สำเร็จการศึกษา</label>
                                     <input type="text" name="edu_gradyear" id="edu_gradyear"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
                                         x-model="edu.graduate_year">
@@ -885,15 +900,31 @@
                                     <span>ไม่ได้เลย</span>
                                 </label>
                             </div>
+                            {{-- Alpine แสดง Input ให้ใส่จำนวนคำต่อนาที --}}
+                            <div x-show="typing === 'excellent'" x-transition class="mt-2">
+                                <input type="number" name="wpm" id="wpm"
+                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
+                                    placeholder="WPM (คำ/นาที)">
+                            </div>
+                            <div x-show="typing === 'good'" x-transition class="mt-2">
+                                <input type="number" name="wpm" id="wpm"
+                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
+                                    placeholder="WPM (คำ/นาที)">
+                            </div>
+                            <div x-show="typing === 'fair'" x-transition class="mt-2">
+                                <input type="number" name="wpm" id="wpm"
+                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
+                                    placeholder="WPM (คำ/นาที)">
+                            </div>
                         </div>
 
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="{
-                                                langs: [
-                                                    { name: 'ภาษาไทย', level: '', file: null },
-                                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
-                                                ]
-                                            }" class="bg-gray-50 p-4 rounded-lg">
+                                langs: [
+                                    { name: 'ภาษาไทย', level: '', file: null },
+                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
+                                ]
+                            }" class="bg-gray-50 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -953,16 +984,16 @@
 
                 <!-- Section Training Course -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                        trainings: [
-                                            { year: '', duration: '', topic: '', institution: '' }
-                                        ],
-                                        addRow() {
-                                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
-                                        },
-                                        removeRow(idx) {
-                                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
-                                        }
-                                    }">
+                        trainings: [
+                            { year: '', duration: '', topic: '', institution: '' }
+                        ],
+                        addRow() {
+                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
+                        },
+                        removeRow(idx) {
+                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
+                        }
+                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -1037,32 +1068,32 @@
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                                        works: [{
-                                                company: '',
-                                                position: '',
-                                                responsibility: '',
-                                                duration: '',
-                                                salary: '',
-                                                otherIncome: '',
-                                                totalIncome: '',
-                                                reason: ''
-                                            ],
-                                            addRow() {
-                                                this.works.push({
-                                                    company: '',
-                                                    position: '',
-                                                    responsibility: '',
-                                                    duration: '',
-                                                    salary: '',
-                                                    otherIncome: '',
-                                                    totalIncome: '',
-                                                    reason: ''
-                                                });
-                                            },
-                                            removeRow(idx) {
-                                                if (this.works.length > 1) this.works.splice(idx, 1);
-                                            }
-                                        }">
+                        works: [{
+                            company: '',
+                            position: '',
+                            responsibility: '',
+                            duration: '',
+                            salary: '',
+                            otherIncome: '',
+                            totalIncome: '',
+                            reason: ''
+                        }],
+                        addRow() {
+                            this.works.push({
+                                company: '',
+                                position: '',
+                                responsibility: '',
+                                duration: '',
+                                salary: '',
+                                otherIncome: '',
+                                totalIncome: '',
+                                reason: ''
+                            });
+                        },
+                        removeRow(idx) {
+                            if (this.works.length > 1) this.works.splice(idx, 1);
+                        }
+                    }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
@@ -1356,7 +1387,6 @@
                                     <option value="jobthai">JobThai</option>
                                     <option value="thaijob">ThaiJob</option>
                                     <option value="jobtopgun">JobTopGun</option>
-                                    <option value="linejobs">LINE Jobs</option>
 
                                     <!-- โซเชียลมีเดีย -->
                                     <option value="facebook">Facebook</option>
@@ -1364,13 +1394,10 @@
                                     <option value="instagram">Instagram</option>
                                     <option value="linkedin">LinkedIn</option>
 
-                                    <!-- เพื่อน -->
                                     <option value="friend">เพื่อน/คนรู้จักแนะนำ</option>
                                     <option value="company_website">เว็บไซต์บริษัทโดยตรง</option>
-                                    <option value="walkin">เดินเข้ามาสมัครด้วยตนเอง</option>
 
                                     <!-- งานกิจกรรม -->
-                                    <option value="university_event">งานมหาวิทยาลัย/บูธรับสมัคร</option>
                                     <option value="jobfair">Job Fair</option>
                                     <option value="other">อื่นๆ</option>
                                 </select>
@@ -1392,7 +1419,7 @@
                                 <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ" required
                                     class="accent-green-600 w-4 h-4">
                                 <label for="tos" class="ml-2">ยอมรับ</label>
-                                <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                <a target="_blank" class="ml-1 text-blue-600 hover:underline">
                                     เงื่อนไขการให้บริการ
                                 </a>
                             </div>
@@ -1401,39 +1428,13 @@
                                 <input type="checkbox" id="privacy_1" name="privacy_1" value="นโยบายความเป็นส่วนตัว"
                                     required class="accent-green-600 w-4 h-4">
                                 <label for="privacy_1" class="ml-2">ยอมรับ</label>
-                                <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
+                                <a target="_blank" class="ml-1 text-blue-600 hover:underline">
                                     นโยบายความเป็นส่วนตัว
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
-                {{-- <div class="p-8 mt-8">
-                    <h2 class="text-lg font-bold text-green-600 mb-4 text-center">เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล
-                    </h2>
-                    <div class="grid justify-center">
-                        <!-- Checkbox: เงื่อนไขการให้บริการ -->
-                        <div class="flex items-center justify-start mb-3 flex-wrap text-sm text-gray-700">
-                            <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ" required
-                                class="accent-green-600 w-4 h-4">
-                            <label for="tos" class="ml-2">ยอมรับ</label>
-                            <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
-                                เงื่อนไขการให้บริการ
-                            </a>
-                        </div>
-                        <!-- Checkbox: นโยบายความเป็นส่วนตัว -->
-                        <div class="flex items-center justify-start mb-2 flex-wrap text-sm text-gray-700">
-                            <input type="checkbox" id="privacy_1" name="privacy_1" value="นโยบายความเป็นส่วนตัว" required
-                                class="accent-green-600 w-4 h-4">
-                            <label for="privacy_1" class="ml-2">ยอมรับ</label>
-                            <a href="#" target="_blank" class="ml-1 text-blue-600 hover:underline">
-                                นโยบายความเป็นส่วนตัว
-                            </a>
-                        </div>
-                    </div>
-                </div> --}}
 
                 <!-- Section: Submit Button -->
                 <div class="flex justify-center md:justify-end my-8">
@@ -1446,7 +1447,7 @@
         </div>
 
         <script>
-            // Modern Image Preview
+            // JS เน่าๆ
             const input = document.getElementById('image1');
             const preview = document.getElementById('preview');
             const placeholder = document.getElementById('image-placeholder');
