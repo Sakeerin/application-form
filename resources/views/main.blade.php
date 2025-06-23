@@ -117,13 +117,7 @@
                                 <option value="sustainable">Sustainable Development </option>
                             </select>
                         </div>
-                        <div x-data="{
-                            salary: '',
-                            formatNumber(value) {
-                                const numeric = value.replace(/[^\d]/g, '');
-                                return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                            }
-                        }">
+                        <div x-data="fnSalary()">
                             <label for="salary" class="block text-gray-700 font-semibold mb-1">
                                 เงินเดือนที่คาดหวัง <span class="text-red-500">*</span>
                             </label>
@@ -141,90 +135,63 @@
                     <div class="grid md:grid-cols-3 grid-cols-2 gap-2 flex justify-between">
 
                         <!-- สำเนาทะเบียนบ้าน -->
-                        <div x-data="{ file: null }" class="flex flex-col items-center">
-                            <label
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_house"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาทะเบียนบ้าน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
-                                    name="file_house">
+                                <input type="file" class="hidden" id="file_house" name="file_house">
                                 <span>สำเนาทะเบียนบ้าน</span>
                             </label>
-
-                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
-                            <template x-if="file">
-                                <span class="text-xs text-blue-600 mt-1">
-                                    : <strong x-text="file.name"></strong>
-                                </span>
-                            </template>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
 
                         <!-- สำเนาบัตรประชาชน -->
-                        <div x-data="{ file: null }" class="flex flex-col items-center">
-                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_id"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาบัตรประชาชน">
-                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]" name="file_id">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_id" name="file_id">
                                 <span>สำเนาบัตรประชาชน</span>
                             </label>
-
-                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
-                            <template x-if="file">
-                                <span class="text-xs text-blue-600 mt-1">
-                                    : <strong x-text="file.name"></strong>
-                                </span>
-                            </template>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
 
                         <!-- สำเนาวุฒิการศึกษา -->
-                        <div x-data="{ file: null }" class="flex flex-col items-center">
-                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_edu"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาวุฒิการศึกษา">
-                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
-                                    name="file_edu">สำเนาวุฒิการศึกษา
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_edu" name="file_edu">
+                                <span>สำเนาวุฒิการศึกษา</span>
                             </label>
-
-                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
-                            <template x-if="file">
-                                <span class="text-xs text-blue-600 mt-1">
-                                    : <strong x-text="file.name"></strong>
-                                </span>
-                            </template>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
 
                         <!-- สำเนาใบผ่านงาน -->
-                        <div x-data="{ file: null }" class="flex flex-col items-center">
-                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_work"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาใบผ่านงาน">
-                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
-                                    name="file_work">สำเนาใบผ่านงาน
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_work" name="file_work">
+                                <span>สำเนาใบผ่านงาน</span>
                             </label>
-
-                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
-                            <template x-if="file">
-                                <span class="text-xs text-blue-600 mt-1">
-                                    : <strong x-text="file.name"></strong>
-                                </span>
-                            </template>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
 
                         <!-- สำเนาใบผ่านทหาร -->
-                        <div x-data="{ file: null }" class="flex flex-col items-center">
-                            <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_military"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาใบผ่านทหาร">
-                                <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
-                                    name="file_military">สำเนาใบผ่านทหาร
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_military" name="file_military">
+                                <span>สำเนาใบผ่านทหาร</span>
                             </label>
-
-                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
-                            <template x-if="file">
-                                <span class="text-xs text-blue-600 mt-1">
-                                    : <strong x-text="file.name"></strong>
-                                </span>
-                            </template>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
                     </div>
                 </div>
@@ -255,30 +222,29 @@
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-6">
-                        <div x-data="{ nameThai: '' }"> {{-- ชื่อภาษาไทย --}}
+                        <!-- ชื่อภาษาไทย -->
+                        <div x-data="{ value: '' }" x-init="fnNameInput($el)">
                             <label for="name_thai" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (ไทย) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="name_thai" name="name_thai" x-model="nameThai"
-                                @input="nameThai = nameThai.replace(/[^ก-๙\s]/g, '')"
+                            <input type="text" id="name_thai" name="name_thai" data-lang="thai" x-model="value"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาไทย" required>
                         </div>
-                        <div x-data="{ nameEng: '' }"> {{-- ชื่อภาษาอังกฤษ --}}
+
+                        <!-- ชื่อภาษาอังกฤษ -->
+                        <div x-data="{ value: '' }" x-init="fnNameInput($el)">
                             <label for="name_eng" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (อังกฤษ) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng"
-                                @input="
-                                            nameEng = nameEng
-                                            .replace(/[^a-zA-Z\s]/g, '') 
-                                            .replace(/\b\w/g, l => l.toUpperCase())"
+                            <input type="text" id="name_eng" name="name_eng" data-lang="english" x-model="value"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาอังกฤษ" required>
                         </div>
 
-                        <div class="flex items-center grid grid-cols-1 gap-4 items-center"> <!-- Row 1 -->
-                            <div class="">
+                        <!-- วันเดือนปีเกิด -->
+                        <div class="flex items-center grid grid-cols-1 gap-4 items-center">
+                            <div>
                                 <label for="birthdate" class="block text-gray-700 font-semibold mb-1">วัน/เดือน/ปีเกิด
                                     <span class="text-red-500">*</span></label>
                                 <input type="date" name="birthdate" id="birthdate" required
@@ -286,7 +252,8 @@
                             </div>
                         </div>
 
-                        <div> <!-- Row 2: เลขบัตรประชาชน -->
+                        <!-- เลขบัตรประชาชน -->
+                        <div>
                             <label for="thai_id" class="block text-gray-700 font-semibold mb-1">
                                 เลขที่บัตรประชาชน <span class="text-red-500">*</span>
                             </label>
@@ -349,7 +316,8 @@
                         </div>
                     </div>
 
-                    <div class="flex items-end grid md:grid-cols-2 gap-6 items-end"> <!--Row 6 -->
+                    <!-- สถานที่เกิดจ้า-->
+                    <div class="flex items-end grid md:grid-cols-2 gap-6 items-end">
                         <div>
                             <label for="birthplace" class="block text-gray-700 font-semibold">สถานที่เกิด</label>
                             <input type="text" name="birthplace" id="birthplace"
@@ -407,17 +375,16 @@
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 หย่าร้าง</label>
                         </div>
-                        <!-- Row 2 -->
+                        <!-- Section: ท่านมีบุตรหรือไม่ -->
                         <label class="block text-gray-700 font-semibold mb-1">ท่านมีบุตรหรือไม่ :</label>
-                        <div x-data="{ hasChildren: '' }" class="mb-2">
-                            <!-- ตัวเลือก -->
+                        <div x-data="fnHasChildren()" class="mb-2">
+
                             <div class="flex gap-4">
                                 <label class="flex items-center gap-2">
                                     <input type="radio" name="hasChildren" value="yes" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     มี
                                 </label>
-
                                 <label class="flex items-center gap-2">
                                     <input type="radio" name="hasChildren" value="no" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
@@ -425,15 +392,14 @@
                                 </label>
                             </div>
 
-                            <!-- ช่องใส่จำนวนบุตร แสดงเฉพาะเมื่อเลือก 'มี' -->
+                            <!-- ช่องใส่จำนวนบุตร -->
                             <div x-show="hasChildren === 'yes'" x-transition class="mt-2">
-                                {{-- <label for="children_count"
-                                    class="block text-gray-700 font-medium mb-1">จำนวนบุตร</label> --}}
                                 <input type="number" name="children_count" id="children_count" min="1"
                                     class="w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
                                     placeholder="ระบุจำนวนบุตร">
                             </div>
                         </div>
+
                     </div>
 
                     <div>
@@ -512,38 +478,7 @@
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ที่อยู่ตามทะเบียนบ้าน</h2>
                     <!-- ครอบทั้งหมดด้วย Alpine -->
-                    <div x-data="{
-                        sameAsRegistered: false,
-                        registered: {
-                            address: '',
-                            province: '',
-                            district: '',
-                            subdistrict: '',
-                            postcode: ''
-                        },
-                        current: {
-                            address: '',
-                            province: '',
-                            district: '',
-                            subdistrict: '',
-                            postcode: ''
-                        }
-                    }"
-                        x-effect="
-                                    if (sameAsRegistered) {
-                                    current.address = registered.address;
-                                    current.province = registered.province;
-                                    current.district = registered.district;
-                                    current.subdistrict = registered.subdistrict;
-                                    current.postcode = registered.postcode;
-                                    } else {
-                                    current.address = '';
-                                    current.province = '';
-                                    current.district = '';
-                                    current.subdistrict = '';
-                                    current.postcode = '';
-                                    }
-                                    ">
+                    <div x-data="addressHandler()" x-init="init()">
                         <!-- Section: ที่อยู่ตามทะเบียนบ้าน -->
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
@@ -631,21 +566,7 @@
                             <div class="space-y-6 mt-8">
                                 <h2 class="text-lg font-bold text-green-600">ช่องทางการติดต่อ</h2>
                                 <div class="grid md:grid-cols-2 gap-6">
-                                    <div x-data="{
-                                        phone: '',
-                                        formatPhone(value) {
-                                            value = value.replace(/\D/g, '');
-                                            if (value.length > 10) value = value.slice(0, 10);
-
-                                            if (value.length > 6) {
-                                                return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
-                                            } else if (value.length > 3) {
-                                                return value.slice(0, 3) + '-' + value.slice(3);
-                                            } else {
-                                                return value;
-                                            }
-                                        }
-                                    }" class="w-full">
+                                    <div x-data="phoneFormat" class="w-full">
                                         <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">
                                             เบอร์โทรศัพท์ <span class="text-red-500">*</span>
                                         </label>
@@ -681,31 +602,7 @@
                 </div>
 
                 <!-- Section: ประวัติการศึกษา -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                    educations: [{
-                        level: '',
-                        school: '',
-                        country: '',
-                        program: '',
-                        major: '',
-                        gpa: '',
-                        graduate_year: ''
-                    }],
-                    addRow() {
-                        this.educations.push({
-                            level: '',
-                            school: '',
-                            country: '',
-                            program: '',
-                            major: '',
-                            gpa: '',
-                            graduate_year: ''
-                        });
-                    },
-                    removeRow(idx) {
-                        if (this.educations.length > 1) this.educations.splice(idx, 1);
-                    }
-                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="educationHandler()">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -743,13 +640,34 @@
                                 </div>
 
                                 <!-- ชื่อสถานศึกษา -->
-                                <div class="col-span-1 sm:col-span-2 lg:col-span-2">
+                                {{-- <div x-data="universityAutocomplete()" class="col-span-1 sm:col-span-2 lg:col-span-2">
                                     <label for="edu_name"
                                         class="block text-sm font-medium text-gray-700 mb-1">ชื่อสถานศึกษา</label>
                                     <input type="text" name="edu_name" id="edu_name"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
                                         x-model="edu.school">
+                                </div> --}}
+
+                                <div class="col-span-1 sm:col-span-2 lg:col-span-2 relative" x-data="universityAutocomplete()"
+                                    x-init="loadUniversities()">
+                                    <label for="edu_name"
+                                        class="block text-sm font-medium text-gray-700 mb-1">ชื่อสถานศึกษา</label>
+
+                                    <input type="text" name="edu_name" id="edu_name"
+                                        class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
+                                        x-model="query" @input="filterUniversities" @focus="show = true"
+                                        @click.away="show = false" autocomplete="off">
+
+                                    <!-- กล่องแสดงคำแนะนำ -->
+                                    <ul x-show="show && filtered.length > 0"
+                                        class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-y-auto shadow">
+                                        <template x-for="name in filtered" :key="name">
+                                            <li class="px-3 py-2 hover:bg-green-100 cursor-pointer text-sm"
+                                                @click="selectUniversity(name)" x-text="name"></li>
+                                        </template>
+                                    </ul>
                                 </div>
+
 
                                 <!-- ประเทศ -->
                                 <div>
@@ -779,15 +697,7 @@
                                 </div>
 
                                 <!-- เกรดเฉลี่ย -->
-                                <div x-data="{
-                                    edu: { gpa: '' },
-                                    formatGPA(value) {
-                                        let num = parseFloat(value.replace(/[^0-9.]/g, ''));
-                                        if (isNaN(num)) return '';
-                                        if (num > 4) num = 4.00;
-                                        return num.toFixed(2);
-                                    }
-                                }">
+                                <div x-data="formatGPA()">
                                     <label for="edu_gpx"
                                         class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label>
                                     <input type="text" name="edu_gpx" id="edu_gpx"
@@ -1154,13 +1064,15 @@
                                 <!-- สถานที่ทำงาน + ตำแหน่ง -->
                                 <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span class="text-red-500">*</span></label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span
+                                                class="text-red-500">*</span></label>
                                         <input type="text" name="work_company" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="บริษัท เอบีซี จำกัด" x-model="work.company">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span class="text-red-500">*</span></label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span
+                                                class="text-red-500">*</span></label>
                                         <input type="text" name="work_position" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="ตำแหน่งงานที่ทำ" x-model="work.position">
@@ -1169,7 +1081,8 @@
 
                                 <!-- งานที่รับผิดชอบ -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span class="text-red-500">*</span></label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span
+                                            class="text-red-500">*</span></label>
                                     <input type="text" name="work_respon" required
                                         class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                         placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ"
@@ -1179,27 +1092,20 @@
                                 <!-- ระยะเวลา + เงินเดือน + รายได้อื่นๆ -->
                                 <div class="grid grid-cols-3 gap-4 items-end">
                                     <div>
-                                        <label
-                                            class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span class="text-red-500">*</span></label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span
+                                                class="text-red-500">*</span></label>
                                         <input type="text" name="work_duration" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="เช่น 1 ปี 10 เดือน" x-model="work.duration">
                                     </div>
-                                    <div x-data="{
-                                        currentsalary: '',
-                                        formatNumber(value) {
-                                            const numeric = value.replace(/[^\d]/g, '');
-                                            return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                                        }
-                                    }">
+                                    <div x-data="fnSalary()">
                                         <label for="currentsalary" class="block text-sm font-medium text-gray-700 mb-1">
                                             เงินเดือนล่าสุด <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" id="currentsalary" name="currentsalary" required
-                                            inputmode="numeric" 
+                                            inputmode="numeric"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            x-model="currentsalary"
-                                            placeholder="เช่น 30,000"
+                                            x-model="currentsalary" placeholder="เช่น 30,000"
                                             @input="currentsalary = formatNumber($event.target.value)">
                                     </div>
 
@@ -1216,8 +1122,8 @@
                                     <!-- ช่องสาเหตุที่ออก + ปุ่มลบ (มือถือ) -->
                                     <div class="flex items-end">
                                         <div class="flex-1">
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span class="text-red-500">*</span></label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span
+                                                    class="text-red-500">*</span></label>
                                             <input type="text" name="work_reason" required
                                                 class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                                 placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน" x-model="work.reason">
@@ -1436,29 +1342,12 @@
                                 <input type="text" name="reference_relation" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-                            <div x-data="{
-                                phone: '',
-                                formatPhone(value) {
-                                    // ลบทุกอย่างที่ไม่ใช่ตัวเลข
-                                    value = value.replace(/\D/g, '');
-                                    if (value.length > 10) value = value.slice(0, 10);
-                            
-                                    // จัดรูปแบบ xxx-xxx-xxxx
-                                    if (value.length > 6) {
-                                        return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
-                                    } else if (value.length > 3) {
-                                        return value.slice(0, 3) + '-' + value.slice(3);
-                                    } else {
-                                        return value;
-                                    }
-                                }
-                            }" class="w-full">
-                                <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">
+                            <div x-data="phoneFormat" class="w-full">
+                                <label class="block text-gray-700 font-semibold">
                                     เบอร์โทรศัพท์ <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
-                                    @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric"
-                                    pattern="\d{3}-\d{3}-\d{4}" required
+                                <input type="text" id="phone_2" name="phone_2" x-model="phone"
+                                    @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
                             </div>
                         </div>
@@ -1544,7 +1433,7 @@
         </div>
 
         <script>
-            // JS เน่าๆ
+            // Image Preview Handler
             const input = document.getElementById('image1');
             const preview = document.getElementById('preview');
             const placeholder = document.getElementById('image-placeholder');
@@ -1609,7 +1498,8 @@
                 addEduRow();
             }; // เพิ่มในฟังก์ชัน addEduRow และหลังจากลบแถวเสร็จ
 
-            function formatThaiID(input) { //Thai ID Card Format
+            //Thai ID Card Format
+            function formatThaiID(input) {
                 // ลบทุกตัวที่ไม่ใช่ตัวเลข
                 let value = input.value.replace(/\D/g, '');
 
@@ -1625,6 +1515,207 @@
                 if (value.length > 12) formatted += '-' + value.substr(12, 1);
 
                 input.value = formatted;
+            }
+
+            // Salary input formatter
+            // ใช้สำหรับเงินเดือนและรายได้อื่น ๆ
+            function fnSalary() {
+                return {
+                    salary: '',
+                    currentsalary: '',
+                    formatNumber(value) {
+                        const numeric = value.replace(/[^\d]/g, '');
+                        return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    }
+                };
+            }
+
+            //Input file handler
+            function fnDocuments(root) {
+                const fileInput = root.querySelector('input[type="file"]');
+                const filenameDisplay = root.querySelector('.filename');
+
+                fileInput.addEventListener('change', () => {
+                    const file = fileInput.files[0];
+                    if (file) {
+                        filenameDisplay.textContent = `: ${file.name}`;
+                        filenameDisplay.classList.remove('hidden');
+                    } else {
+                        filenameDisplay.textContent = '';
+                        filenameDisplay.classList.add('hidden');
+                    }
+                });
+            }
+
+            //name input formatter
+            function fnNameInput(root) {
+                const input = root.querySelector('input');
+                const lang = input.dataset.lang;
+
+                input.addEventListener('input', () => {
+                    let val = input.value;
+
+                    if (lang === 'thai') {
+                        // อนุญาตเฉพาะอักษรไทยและเว้นวรรค
+                        val = val.replace(/[^ก-๙\s]/g, '');
+                    } else if (lang === 'english') {
+                        // อนุญาตเฉพาะ a-z และเว้นวรรค และแปลงตัวแรกของคำเป็นพิมพ์ใหญ่
+                        val = val.replace(/[^a-zA-Z\s]/g, '');
+                        val = val.replace(/\b\w/g, l => l.toUpperCase());
+                    }
+
+                    input.value = val;
+                });
+            }
+
+            // Function to handle the hasChildren checkbox
+            function fnHasChildren() {
+                return {
+                    hasChildren: ''
+                };
+            }
+
+            // Address handler
+            function addressHandler() {
+                return {
+                    sameAsRegistered: false,
+                    registered: {
+                        address: '',
+                        province: '',
+                        district: '',
+                        subdistrict: '',
+                        postcode: ''
+                    },
+                    current: {
+                        address: '',
+                        province: '',
+                        district: '',
+                        subdistrict: '',
+                        postcode: ''
+                    },
+                    init() {
+                        // Sync เริ่มต้นเมื่อกด checkbox
+                        this.$watch('sameAsRegistered', (value) => {
+                            if (value) {
+                                this.copyAddress();
+                            } else {
+                                this.clearCurrent();
+                            }
+                        });
+
+                        // เฝ้าดูทุก key ของ registered แล้ว sync แบบ realtime ถ้า sameAsRegistered ถูกเลือก
+                        this.$watch('registered', (value) => {
+                            if (this.sameAsRegistered) {
+                                this.copyAddress();
+                            }
+                        }, {
+                            deep: true
+                        });
+                    },
+                    copyAddress() {
+                        this.current = {
+                            ...this.registered
+                        };
+                    },
+                    clearCurrent() {
+                        this.current = {
+                            address: '',
+                            province: '',
+                            district: '',
+                            subdistrict: '',
+                            postcode: ''
+                        };
+                    }
+                };
+            }
+
+            function phoneFormat() {
+                return {
+                    phone: '',
+                    formatPhone(value) {
+                        value = value.replace(/\D/g, '');
+                        if (value.length > 10) value = value.slice(0, 10);
+
+                        // จัดรูปแบบ xxx-xxx-xxxx
+                        if (value.length > 6) {
+                            return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
+                        } else if (value.length > 3) {
+                            return value.slice(0, 3) + '-' + value.slice(3);
+                        } else {
+                            return value;
+                        }
+                    }
+                };
+            }
+
+            // Education handler
+            function educationHandler() {
+                return {
+                    educations: [{
+                        level: '',
+                        school: '',
+                        country: '',
+                        program: '',
+                        major: '',
+                        gpa: '',
+                        graduate_year: ''
+                    }],
+                    addRow() {
+                        this.educations.push({
+                            level: '',
+                            school: '',
+                            country: '',
+                            program: '',
+                            major: '',
+                            gpa: '',
+                            graduate_year: ''
+                        });
+                    },
+                    removeRow(idx) {
+                        if (this.educations.length > 1) {
+                            this.educations.splice(idx, 1);
+                        }
+                    },
+                    formatGPA(value) {
+                        let num = parseFloat(value.replace(/[^0-9.]/g, ''));
+                        if (isNaN(num)) return '';
+                        if (num > 4) num = 4.00;
+                        return num.toFixed(2);
+                    }
+                };
+            }
+
+            // University Name Autocomplete
+            function universityAutocomplete() {
+                return {
+                    query: '',
+                    universities: [],
+                    filtered: [],
+                    show: false,
+
+                    async loadUniversities() {
+                        try {
+                            const res = await fetch('http://202.44.139.145/api/public/opendata/univ_uni_11_03_2563');
+                            const data = await res.json();
+                            this.universities = [...new Set(data.map(u => u.UNIV_NAME))]; // ลบชื่อซ้ำ
+                        } catch (error) {
+                            console.error('โหลดรายชื่อมหาวิทยาลัยไม่สำเร็จ:', error);
+                        }
+                    },
+
+                    filterUniversities() {
+                        const term = this.query.toLowerCase();
+                        this.filtered = this.universities
+                            .filter(name => name.toLowerCase().includes(term))
+                            .slice(0, 10);
+                        this.show = true;
+                    },
+
+                    selectUniversity(name) {
+                        this.query = name;
+                        this.show = false;
+                    }
+                }
             }
         </script>
         <script src="//unpkg.com/alpinejs" defer></script>
