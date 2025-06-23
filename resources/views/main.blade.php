@@ -34,47 +34,47 @@
                 <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
                     <!-- Profile Image -->
                     <div class="flex flex-col items-center justify-start col-span-1" x-data="{
-                            previewUrl: '',
-                            errorMsg: '',
-                            isDragOver: false,
-                            fileInput: null,
-                            handleFiles(files) {
-                                this.errorMsg = '';
-                                if (!files?.length) return;
-                                const file = files[0];
-                                // ตรวจสอบประเภทไฟล์ด
-                                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                                    this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
-                                    this.clear();
-                                    return;
-                                }
-                                // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
-                                if (file.size > 2 * 1024 * 1024) {
-                                    this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
-                                    this.clear();
-                                    return;
-                                }
-                                // แสดงตัวอย่างรูป
-                                const reader = new FileReader();
-                                reader.onload = e => {
-                                    this.previewUrl = e.target.result;
-                                };
-                                reader.readAsDataURL(file);
-                            },
-                            onDrop(e) {
-                                e.preventDefault();
-                                const dt = e.dataTransfer;
-                                const files = dt.files;
-                                this.handleFiles(files);
-                            },
-                            triggerInput() {
-                                this.$refs.fileInput.click();
-                            },
-                            clear() {
-                                this.previewUrl = '';
-                                this.$refs.fileInput.value = '';
+                        previewUrl: '',
+                        errorMsg: '',
+                        isDragOver: false,
+                        fileInput: null,
+                        handleFiles(files) {
+                            this.errorMsg = '';
+                            if (!files?.length) return;
+                            const file = files[0];
+                            // ตรวจสอบประเภทไฟล์ด
+                            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                                this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+                                this.clear();
+                                return;
                             }
-                        }">
+                            // ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024)
+                            if (file.size > 2 * 1024 * 1024) {
+                                this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+                                this.clear();
+                                return;
+                            }
+                            // แสดงตัวอย่างรูป
+                            const reader = new FileReader();
+                            reader.onload = e => {
+                                this.previewUrl = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        },
+                        onDrop(e) {
+                            e.preventDefault();
+                            const dt = e.dataTransfer;
+                            const files = dt.files;
+                            this.handleFiles(files);
+                        },
+                        triggerInput() {
+                            this.$refs.fileInput.click();
+                        },
+                        clear() {
+                            this.previewUrl = '';
+                            this.$refs.fileInput.value = '';
+                        }
+                    }">
                         <div id="image-container"
                             :class="isDragOver ? 'border-green-700 border-4' : 'border-green-500 border-4'"
                             class="relative w-[200px] h-[200px] rounded-full border-dashed flex items-center justify-center bg-gray-100 hover:bg-green-100 transition mb-4"
@@ -118,12 +118,12 @@
                             </select>
                         </div>
                         <div x-data="{
-                                salary: '',
-                                formatNumber(value) {
-                                    const numeric = value.replace(/[^\d]/g, '');
-                                    return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                                }
-                            }">
+                            salary: '',
+                            formatNumber(value) {
+                                const numeric = value.replace(/[^\d]/g, '');
+                                return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                        }">
                             <label for="salary" class="block text-gray-700 font-semibold mb-1">
                                 เงินเดือนที่คาดหวัง <span class="text-red-500">*</span>
                             </label>
@@ -146,7 +146,8 @@
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาทะเบียนบ้าน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]" name="file_house">
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
+                                    name="file_house">
                                 <span>สำเนาทะเบียนบ้าน</span>
                             </label>
 
@@ -159,43 +160,71 @@
                         </div>
 
                         <!-- สำเนาบัตรประชาชน -->
-                        <div x-data="{ file: null }" class="flex justify-center">
+                        <div x-data="{ file: null }" class="flex flex-col items-center">
                             <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
                                 title="อัปโหลดสำเนาบัตรประชาชน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
-                                <input type="file" class="hidden" @change="file = $event.target.files[0]"
-                                    name="file_id">สำเนาบัตรประชาชน
+                                <input type="file" class="hidden" @change="file = $event.target.files[0]" name="file_id">
+                                <span>สำเนาบัตรประชาชน</span>
                             </label>
+
+                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
+                            <template x-if="file">
+                                <span class="text-xs text-blue-600 mt-1">
+                                    : <strong x-text="file.name"></strong>
+                                </span>
+                            </template>
                         </div>
 
                         <!-- สำเนาวุฒิการศึกษา -->
-                        <div x-data="{ file: null }" class="flex justify-center">
+                        <div x-data="{ file: null }" class="flex flex-col items-center">
                             <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
                                 title="อัปโหลดสำเนาวุฒิการศึกษา">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
                                 <input type="file" class="hidden" @change="file = $event.target.files[0]"
                                     name="file_edu">สำเนาวุฒิการศึกษา
                             </label>
+
+                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
+                            <template x-if="file">
+                                <span class="text-xs text-blue-600 mt-1">
+                                    : <strong x-text="file.name"></strong>
+                                </span>
+                            </template>
                         </div>
 
                         <!-- สำเนาใบผ่านงาน -->
-                        <div x-data="{ file: null }" class="flex justify-center">
+                        <div x-data="{ file: null }" class="flex flex-col items-center">
                             <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
                                 title="อัปโหลดสำเนาใบผ่านงาน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
                                 <input type="file" class="hidden" @change="file = $event.target.files[0]"
                                     name="file_work">สำเนาใบผ่านงาน
                             </label>
+
+                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
+                            <template x-if="file">
+                                <span class="text-xs text-blue-600 mt-1">
+                                    : <strong x-text="file.name"></strong>
+                                </span>
+                            </template>
                         </div>
 
                         <!-- สำเนาใบผ่านทหาร -->
-                        <div x-data="{ file: null }" class="flex justify-center">
+                        <div x-data="{ file: null }" class="flex flex-col items-center">
                             <label class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded"
                                 title="อัปโหลดสำเนาใบผ่านทหาร">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i> &nbsp;
                                 <input type="file" class="hidden" @change="file = $event.target.files[0]"
                                     name="file_military">สำเนาใบผ่านทหาร
                             </label>
+
+                            <!-- แสดงชื่อไฟล์หรือข้อความเมื่อเลือกไฟล์ -->
+                            <template x-if="file">
+                                <span class="text-xs text-blue-600 mt-1">
+                                    : <strong x-text="file.name"></strong>
+                                </span>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -239,7 +268,8 @@
                             <label for="name_eng" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (อังกฤษ) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng" @input="
+                            <input type="text" name="name_eng" id="name_eng" required x-model="nameEng"
+                                @input="
                                             nameEng = nameEng
                                             .replace(/[^a-zA-Z\s]/g, '') 
                                             .replace(/\b\w/g, l => l.toUpperCase())"
@@ -275,12 +305,14 @@
                         </div>
                         <div>
                             <label for="height" class="block text-gray-700 font-semibold mb-1">ส่วนสูง (ซม.) </label>
-                            <input type="number" name="height" id="height" min="10" max="300" step="1"
+                            <input type="number" name="height" id="height" min="10" max="300"
+                                step="1"
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                         <div>
                             <label for="weight" class="block text-gray-700 font-semibold mb-1">น้ำหนัก (กก.) </label>
-                            <input type="number" name="weight" id="weight" min="10" max="300" step="1"
+                            <input type="number" name="weight" id="weight" min="10" max="300"
+                                step="1"
                                 class=" w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                     </div>
@@ -478,25 +510,26 @@
 
                 <!-- Section: Address & Contact ที่อยู่และช่องทางการติดต่อ-->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
-                    <h2 class="text-lg font-bold text-green-600">ที่อยู่และการติดต่อ</h2>
+                    <h2 class="text-lg font-bold text-green-600">ที่อยู่ตามทะเบียนบ้าน</h2>
                     <!-- ครอบทั้งหมดด้วย Alpine -->
                     <div x-data="{
-                            sameAsRegistered: false,
-                            registered: {
-                                address: '',
-                                province: '',
-                                district: '',
-                                subdistrict: '',
-                                postcode: ''
-                            },
-                            current: {
-                                address: '',
-                                province: '',
-                                district: '',
-                                subdistrict: '',
-                                postcode: ''
-                            }
-                        }" x-effect="
+                        sameAsRegistered: false,
+                        registered: {
+                            address: '',
+                            province: '',
+                            district: '',
+                            subdistrict: '',
+                            postcode: ''
+                        },
+                        current: {
+                            address: '',
+                            province: '',
+                            district: '',
+                            subdistrict: '',
+                            postcode: ''
+                        }
+                    }"
+                        x-effect="
                                     if (sameAsRegistered) {
                                     current.address = registered.address;
                                     current.province = registered.province;
@@ -516,32 +549,32 @@
                             <div>
                                 <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ตามทะเบียนบ้าน
                                     <span class="text-red-500">*</span></label>
-                                <input type="text" id="address" x-model="registered.address"
+                                <input type="text" id="address" x-model="registered.address" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                     placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                             </div>
                             <div>
                                 <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="province" x-model="registered.province"
+                                <input type="text" id="province" x-model="registered.province" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="district" x-model="registered.district"
+                                <input type="text" id="district" x-model="registered.district" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="subdistrict" x-model="registered.subdistrict"
+                                <input type="text" id="subdistrict" x-model="registered.subdistrict" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="postcode" x-model="registered.postcode"
+                                <input type="text" id="postcode" x-model="registered.postcode" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                         </div>
@@ -557,9 +590,10 @@
 
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div>
-                                    <label for="curr_address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
+                                    <label for="curr_address"
+                                        class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_address" x-model="current.address"
+                                    <input type="text" id="curr_address" x-model="current.address" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                         placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
@@ -567,28 +601,28 @@
                                 <div>
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_province" x-model="current.province"
+                                    <input type="text" id="curr_province" x-model="current.province" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_district" x-model="current.district"
+                                    <input type="text" id="curr_district" x-model="current.district" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict"
+                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_postcode" x-model="current.postcode"
+                                    <input type="text" id="curr_postcode" x-model="current.postcode" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
@@ -597,17 +631,35 @@
                             <div class="space-y-6 mt-8">
                                 <h2 class="text-lg font-bold text-green-600">ช่องทางการติดต่อ</h2>
                                 <div class="grid md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label for="phone_mobile"
-                                            class="block text-gray-700 font-semibold mb-1">เบอร์โทรศัพท์
-                                            <span class="text-red-500">*</span></label>
-                                        <input type="text" id="phone_mobile" name="phone_mobile" required
-                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    <div x-data="{
+                                        phone: '',
+                                        formatPhone(value) {
+                                            value = value.replace(/\D/g, '');
+                                            if (value.length > 10) value = value.slice(0, 10);
+
+                                            if (value.length > 6) {
+                                                return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
+                                            } else if (value.length > 3) {
+                                                return value.slice(0, 3) + '-' + value.slice(3);
+                                            } else {
+                                                return value;
+                                            }
+                                        }
+                                    }" class="w-full">
+                                        <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">
+                                            เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
+                                            @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric"
+                                            pattern="\d{3}-\d{3}-\d{4}" required
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
                                     </div>
+
                                     <div>
                                         <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail <span
                                                 class="text-red-500">*</span></label>
                                         <input type="email" name="email" id="email" required
+                                            placeholder="someone@example.com"
                                             class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                     </div>
                                     <div>
@@ -630,7 +682,17 @@
 
                 <!-- Section: ประวัติการศึกษา -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                        educations: [{
+                    educations: [{
+                        level: '',
+                        school: '',
+                        country: '',
+                        program: '',
+                        major: '',
+                        gpa: '',
+                        graduate_year: ''
+                    }],
+                    addRow() {
+                        this.educations.push({
                             level: '',
                             school: '',
                             country: '',
@@ -638,22 +700,12 @@
                             major: '',
                             gpa: '',
                             graduate_year: ''
-                        }],
-                        addRow() {
-                            this.educations.push({
-                                level: '',
-                                school: '',
-                                country: '',
-                                program: '',
-                                major: '',
-                                gpa: '',
-                                graduate_year: ''
-                            });
-                        },
-                        removeRow(idx) {
-                            if (this.educations.length > 1) this.educations.splice(idx, 1);
-                        }
-                    }">
+                        });
+                    },
+                    removeRow(idx) {
+                        if (this.educations.length > 1) this.educations.splice(idx, 1);
+                    }
+                }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -728,14 +780,14 @@
 
                                 <!-- เกรดเฉลี่ย -->
                                 <div x-data="{
-                                        edu: { gpa: '' },
-                                        formatGPA(value) {
-                                            let num = parseFloat(value.replace(/[^0-9.]/g, ''));
-                                            if (isNaN(num)) return '';
-                                            if (num > 4) num = 4.00;
-                                            return num.toFixed(2);
-                                        }
-                                    }">
+                                    edu: { gpa: '' },
+                                    formatGPA(value) {
+                                        let num = parseFloat(value.replace(/[^0-9.]/g, ''));
+                                        if (isNaN(num)) return '';
+                                        if (num > 4) num = 4.00;
+                                        return num.toFixed(2);
+                                    }
+                                }">
                                     <label for="edu_gpx"
                                         class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label>
                                     <input type="text" name="edu_gpx" id="edu_gpx"
@@ -756,8 +808,8 @@
 
                                 <!-- ปุ่มลบ -->
                                 <div class="flex sm:items-end sm:justify-end pt-6">
-                                    <button type="button" class="text-red-500 font-bold py-2 px-2" @click="removeRow(idx)"
-                                        :disabled="educations.length === 1"
+                                    <button type="button" class="text-red-500 font-bold py-2 px-2"
+                                        @click="removeRow(idx)" :disabled="educations.length === 1"
                                         :class="educations.length === 1 ? 'opacity-40 cursor-not-allowed' : ''"
                                         title="ลบรายการนี้">
                                         <i class="fa-solid fa-trash"></i>
@@ -775,7 +827,7 @@
 
                         <!-- Row 1 ความสามารถในการขับขี่ -->
                         <div x-data="{ car: false, motorcycle: false }" class="bg-gray-50 p-4 rounded-lg mb-4">
-                            <label class="block text-gray-700 font-semibold mb-4">ความสามารถในการใช้รถ</label>
+                            <label class="block text-gray-700 font-semibold mb-4">ความสามารถในการขับขี่ยานยานพาหนะ</label>
 
                             <div class="flex flex-col sm:flex-row sm:gap-x-4 md:gap-x-6">
                                 <!-- ใบขับขี่รถยนต์ -->
@@ -829,7 +881,7 @@
                                     <label for="travel_sometimes" class="inline-flex items-center gap-2">
                                         <input type="radio" name="travel" id="travel_sometimes" value="sometimes"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
-                                        <span>เป็นบางกรณี</span>
+                                        <span>บางครั้ง</span>
                                     </label>
                                 </div>
                             </div>
@@ -838,7 +890,8 @@
                         <!-- Row 2 ความสามารถด้านคอมพิวเตอร์-->
                         <div x-data="{ programs: [{ name: '', level: '' }] }" class="bg-gray-50 p-4 rounded-lg mb-4">
                             <div class="flex items-center justify-between mb-2">
-                                <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านคอมพิวเตอร์</label>
+                                <label
+                                    class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านคอมพิวเตอร์</label>
                                 <button type="button"
                                     class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-full flex items-center gap-1 text-sm mt-2"
                                     @click="programs.push({ name: '', level: '' })">
@@ -900,31 +953,15 @@
                                     <span>ไม่ได้เลย</span>
                                 </label>
                             </div>
-                            {{-- Alpine แสดง Input ให้ใส่จำนวนคำต่อนาที --}}
-                            <div x-show="typing === 'excellent'" x-transition class="mt-2">
-                                <input type="number" name="wpm" id="wpm"
-                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
-                                    placeholder="WPM (คำ/นาที)">
-                            </div>
-                            <div x-show="typing === 'good'" x-transition class="mt-2">
-                                <input type="number" name="wpm" id="wpm"
-                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
-                                    placeholder="WPM (คำ/นาที)">
-                            </div>
-                            <div x-show="typing === 'fair'" x-transition class="mt-2">
-                                <input type="number" name="wpm" id="wpm"
-                                    class="w-52 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
-                                    placeholder="WPM (คำ/นาที)">
-                            </div>
                         </div>
 
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="{
-                                langs: [
-                                    { name: 'ภาษาไทย', level: '', file: null },
-                                    { name: 'ภาษาอังกฤษ', level: '', file: null }
-                                ]
-                            }" class="bg-gray-50 p-4 rounded-lg">
+                            langs: [
+                                { name: 'ภาษาไทย', level: '', file: null },
+                                { name: 'ภาษาอังกฤษ', level: '', file: null }
+                            ]
+                        }" class="bg-gray-50 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -937,7 +974,8 @@
                                 <div class="space-y-2 md:grid md:grid-cols-[1.5fr_1fr_auto_auto] gap-6 mb-2 items-center ">
 
                                     <!-- ภาษาอื่น ๆ -->
-                                    <input type="text" name="lang_name" x-model="lang.name" :readonly="[0, 1].includes(idx)"
+                                    <input type="text" name="lang_name" x-model="lang.name"
+                                        :readonly="[0, 1].includes(idx)"
                                         :class="{ 'bg-gray-200 text-gray-700': [0, 1].includes(idx) }"
                                         class="h-10 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-3 bg-gray-50 w-full"
                                         placeholder="ภาษาอื่น ๆ">
@@ -959,7 +997,8 @@
                                             class="cursor-pointer flex items-center justify-center h-10 w-10 rounded bg-green-500 hover:bg-green-700 text-white border border-gray-300 md:col-start-3"
                                             :title="'อัปโหลดใบคะแนน (' + lang.name + ')'">
                                             <i class="fa-solid fa-file-arrow-up"></i>
-                                            <input type="file" class="hidden" @change="lang.file = $event.target.files[0]">
+                                            <input type="file" class="hidden"
+                                                @change="lang.file = $event.target.files[0]">
                                         </label>
 
                                         <!-- ปุ่มลบ -->
@@ -984,16 +1023,16 @@
 
                 <!-- Section Training Course -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                        trainings: [
-                            { year: '', duration: '', topic: '', institution: '' }
-                        ],
-                        addRow() {
-                            this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
-                        },
-                        removeRow(idx) {
-                            if (this.trainings.length > 1) this.trainings.splice(idx, 1);
-                        }
-                    }">
+                    trainings: [
+                        { year: '', duration: '', topic: '', institution: '' }
+                    ],
+                    addRow() {
+                        this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
+                    },
+                    removeRow(idx) {
+                        if (this.trainings.length > 1) this.trainings.splice(idx, 1);
+                    }
+                }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -1068,7 +1107,18 @@
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                        works: [{
+                    works: [{
+                        company: '',
+                        position: '',
+                        responsibility: '',
+                        duration: '',
+                        salary: '',
+                        otherIncome: '',
+                        totalIncome: '',
+                        reason: ''
+                    }],
+                    addRow() {
+                        this.works.push({
                             company: '',
                             position: '',
                             responsibility: '',
@@ -1077,23 +1127,12 @@
                             otherIncome: '',
                             totalIncome: '',
                             reason: ''
-                        }],
-                        addRow() {
-                            this.works.push({
-                                company: '',
-                                position: '',
-                                responsibility: '',
-                                duration: '',
-                                salary: '',
-                                otherIncome: '',
-                                totalIncome: '',
-                                reason: ''
-                            });
-                        },
-                        removeRow(idx) {
-                            if (this.works.length > 1) this.works.splice(idx, 1);
-                        }
-                    }">
+                        });
+                    },
+                    removeRow(idx) {
+                        if (this.works.length > 1) this.works.splice(idx, 1);
+                    }
+                }">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
@@ -1115,14 +1154,14 @@
                                 <!-- สถานที่ทำงาน + ตำแหน่ง -->
                                 <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน</label>
-                                        <input type="text" name="work_company"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span class="text-red-500">*</span></label>
+                                        <input type="text" name="work_company" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="บริษัท เอบีซี จำกัด" x-model="work.company">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง</label>
-                                        <input type="text" name="work_position"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span class="text-red-500">*</span></label>
+                                        <input type="text" name="work_position" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="ตำแหน่งงานที่ทำ" x-model="work.position">
                                     </div>
@@ -1130,8 +1169,8 @@
 
                                 <!-- งานที่รับผิดชอบ -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ</label>
-                                    <input type="text" name="work_respon"
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span class="text-red-500">*</span></label>
+                                    <input type="text" name="work_respon" required
                                         class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                         placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ"
                                         x-model="work.responsibility">
@@ -1140,22 +1179,35 @@
                                 <!-- ระยะเวลา + เงินเดือน + รายได้อื่นๆ -->
                                 <div class="grid grid-cols-3 gap-4 items-end">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน</label>
-                                        <input type="text" name="work_duration"
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span class="text-red-500">*</span></label>
+                                        <input type="text" name="work_duration" required
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="เช่น 1 ปี 10 เดือน" x-model="work.duration">
                                     </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด</label>
-                                        <input type="text" name="work_salary"
+                                    <div x-data="{
+                                        currentsalary: '',
+                                        formatNumber(value) {
+                                            const numeric = value.replace(/[^\d]/g, '');
+                                            return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                                        }
+                                    }">
+                                        <label for="currentsalary" class="block text-sm font-medium text-gray-700 mb-1">
+                                            เงินเดือนล่าสุด <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="currentsalary" name="currentsalary" required
+                                            inputmode="numeric" 
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="เช่น 30,000" x-model="work.salary">
+                                            x-model="currentsalary"
+                                            placeholder="เช่น 30,000"
+                                            @input="currentsalary = formatNumber($event.target.value)">
                                     </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">รายได้อื่น ๆ</label>
                                         <input type="text" name="work_income"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="เช่น ค่าคอม, เบี้ยขยัน ฯลฯ" x-model="work.otherIncome">
+                                            placeholder="ระบุเป็นตัวเลข" x-model="work.otherIncome">
                                     </div>
                                 </div>
 
@@ -1164,21 +1216,24 @@
                                     <!-- ช่องสาเหตุที่ออก + ปุ่มลบ (มือถือ) -->
                                     <div class="flex items-end">
                                         <div class="flex-1">
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก</label>
-                                            <input type="text" name="work_reason"
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span class="text-red-500">*</span></label>
+                                            <input type="text" name="work_reason" required
                                                 class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                                 placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน" x-model="work.reason">
                                         </div>
                                         <!-- ปุ่มลบ: แสดงเฉพาะมือถือ -->
-                                        <button type="button" class="ml-2 mb-1 text-red-500 font-bold py-2 px-2 md:hidden"
-                                            title="ลบแถว" @click="removeRow(idx)" :disabled="works.length === 1"
+                                        <button type="button"
+                                            class="ml-2 mb-1 text-red-500 font-bold py-2 px-2 md:hidden" title="ลบแถว"
+                                            @click="removeRow(idx)" :disabled="works.length === 1"
                                             :class="works.length === 1 ? 'opacity-40 cursor-not-allowed' : ''">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
                                     <!-- ปุ่มลบ: แสดงเฉพาะจอใหญ่ -->
-                                    <button type="button" class="text-red-500 font-bold px-2 py-2 hidden md:block self-end"
-                                        title="ลบแถว" @click="removeRow(idx)" :disabled="works.length === 1"
+                                    <button type="button"
+                                        class="text-red-500 font-bold px-2 py-2 hidden md:block self-end" title="ลบแถว"
+                                        @click="removeRow(idx)" :disabled="works.length === 1"
                                         :class="works.length === 1 ? 'opacity-40 cursor-not-allowed' : ''">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -1206,8 +1261,10 @@
                                 <p class="font-medium text-gray-800">1.
                                     ท่านเคยเป็นหนี้อยู่ในระหว่างการติดสัญญากับสถาบันการเงินหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q1_yes"><input type="radio" id="q1_yes" name="q1" value="เคย"> เคย</label>
-                                    <label for="q1_no"><input type="radio" id="q1_no" name="q1" value="ไม่เคย">
+                                    <label for="q1_yes"><input type="radio" id="q1_yes" name="q1"
+                                            value="เคย"> เคย</label>
+                                    <label for="q1_no"><input type="radio" id="q1_no" name="q1"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1223,8 +1280,10 @@
                                 <p class="font-medium text-gray-800">3. ท่านเคยเล่นหรือเคยเกี่ยวข้องกับการพนันใด ๆ หรือไม่
                                 </p>
                                 <div class="flex gap-4">
-                                    <label for="q3_yes"><input type="radio" id="q3_yes" name="q3" value="เคย"> เคย</label>
-                                    <label for="q3_no"><input type="radio" id="q3_no" name="q3" value="ไม่เคย">
+                                    <label for="q3_yes"><input type="radio" id="q3_yes" name="q3"
+                                            value="เคย"> เคย</label>
+                                    <label for="q3_no"><input type="radio" id="q3_no" name="q3"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1232,8 +1291,10 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">4. ท่านเคยต้องโทษหรือต้องคดีอาญาหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q4_yes"><input type="radio" id="q4_yes" name="q4" value="เคย"> เคย</label>
-                                    <label for="q4_no"><input type="radio" id="q4_no" name="q4" value="ไม่เคย">
+                                    <label for="q4_yes"><input type="radio" id="q4_yes" name="q4"
+                                            value="เคย"> เคย</label>
+                                    <label for="q4_no"><input type="radio" id="q4_no" name="q4"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1241,8 +1302,10 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">5. ท่านเคยเสพสิ่งเสพติดหรือของมึนเมาหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q5_yes"><input type="radio" id="q5_yes" name="q5" value="เคย"> เคย</label>
-                                    <label for="q5_no"><input type="radio" id="q5_no" name="q5" value="ไม่เคย">
+                                    <label for="q5_yes"><input type="radio" id="q5_yes" name="q5"
+                                            value="เคย"> เคย</label>
+                                    <label for="q5_no"><input type="radio" id="q5_no" name="q5"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1250,8 +1313,10 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">6. ท่านไม่ใช่บุคคลตั้งครรภ์ใช่หรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q6_yes"><input type="radio" id="q6_yes" name="q6" value="ใช่"> ใช่</label>
-                                    <label for="q6_no"><input type="radio" id="q6_no" name="q6" value="ไม่ใช่">
+                                    <label for="q6_yes"><input type="radio" id="q6_yes" name="q6"
+                                            value="ใช่"> ใช่</label>
+                                    <label for="q6_no"><input type="radio" id="q6_no" name="q6"
+                                            value="ไม่ใช่">
                                         ไม่ใช่</label>
                                 </div>
                             </div>
@@ -1260,8 +1325,10 @@
                                 <p class="font-medium text-gray-800">7. ท่านเคยมีประวัติการรักษาหรือโรคประจำตัว
                                     หรือรักษาทางจิตหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q7_yes"><input type="radio" id="q7_yes" name="q7" value="เคย"> เคย</label>
-                                    <label for="q7_no"><input type="radio" id="q7_no" name="q7" value="ไม่เคย">
+                                    <label for="q7_yes"><input type="radio" id="q7_yes" name="q7"
+                                            value="เคย"> เคย</label>
+                                    <label for="q7_no"><input type="radio" id="q7_no" name="q7"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1273,8 +1340,10 @@
                                 <p class="font-medium text-gray-800">8.
                                     ท่านเคยขึ้นทะเบียนเป็นผู้ประกันตนกับสำนักงานประกันสังคมหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q8_yes"><input type="radio" id="q8_yes" name="q8" value="เคย"> เคย</label>
-                                    <label for="q8_no"><input type="radio" id="q8_no" name="q8" value="ไม่เคย">
+                                    <label for="q8_yes"><input type="radio" id="q8_yes" name="q8"
+                                            value="เคย"> เคย</label>
+                                    <label for="q8_no"><input type="radio" id="q8_no" name="q8"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1282,9 +1351,11 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">9. ท่านยอมรับการทดลองงาน 119 วันหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q9_yes"><input type="radio" id="q9_yes" name="q9" value="ยอมรับ">
+                                    <label for="q9_yes"><input type="radio" id="q9_yes" name="q9"
+                                            value="ยอมรับ">
                                         ยอมรับ</label>
-                                    <label for="q9_no"><input type="radio" id="q9_no" name="q9" value="ไม่ยอมรับ">
+                                    <label for="q9_no"><input type="radio" id="q9_no" name="q9"
+                                            value="ไม่ยอมรับ">
                                         ไม่ยอมรับ</label>
                                 </div>
                             </div>
@@ -1293,9 +1364,11 @@
                                 <p class="font-medium text-gray-800">10.
                                     ท่านเคยเข้าร่วมกิจกรรมของคณะกรรมการลูกจ้าง/สหภาพแรงงานหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q10_yes"><input type="radio" id="q10_yes" name="q10" value="เคย">
+                                    <label for="q10_yes"><input type="radio" id="q10_yes" name="q10"
+                                            value="เคย">
                                         เคย</label>
-                                    <label for="q10_no"><input type="radio" id="q10_no" name="q10" value="ไม่เคย">
+                                    <label for="q10_no"><input type="radio" id="q10_no" name="q10"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1303,8 +1376,10 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">11. ท่านมีภาระค่าใช้จ่ายในครอบครัวหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q11_yes"><input type="radio" id="q11_yes" name="q11" value="มี"> มี</label>
-                                    <label for="q11_no"><input type="radio" id="q11_no" name="q11" value="ไม่มี">
+                                    <label for="q11_yes"><input type="radio" id="q11_yes" name="q11"
+                                            value="มี"> มี</label>
+                                    <label for="q11_no"><input type="radio" id="q11_no" name="q11"
+                                            value="ไม่มี">
                                         ไม่มี</label>
                                 </div>
                             </div>
@@ -1312,9 +1387,11 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">12. ท่านเคยได้รับการรักษาโรคร้ายแรงหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q12_yes"><input type="radio" id="q12_yes" name="q12" value="เคย">
+                                    <label for="q12_yes"><input type="radio" id="q12_yes" name="q12"
+                                            value="เคย">
                                         เคย</label>
-                                    <label for="q12_no"><input type="radio" id="q12_no" name="q12" value="ไม่เคย">
+                                    <label for="q12_no"><input type="radio" id="q12_no" name="q12"
+                                            value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1322,8 +1399,10 @@
                             <div class="space-y-4">
                                 <p class="font-medium text-gray-800">13. ในครอบครัวท่านเคยมีโรคติดต่อร้ายแรงหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q13_yes"><input type="radio" id="q13_yes" name="q13" value="มี"> มี</label>
-                                    <label for="q13_no"><input type="radio" id="q13_no" name="q13" value="ไม่มี">
+                                    <label for="q13_yes"><input type="radio" id="q13_yes" name="q13"
+                                            value="มี"> มี</label>
+                                    <label for="q13_no"><input type="radio" id="q13_no" name="q13"
+                                            value="ไม่มี">
                                         ไม่มี</label>
                                 </div>
                             </div>
@@ -1357,12 +1436,30 @@
                                 <input type="text" name="reference_relation" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
-
-                            <div>
-                                <label class="block text-gray-700 font-semibold">เบอร์โทรศัพท์<span class="text-red-500">
-                                        *</span></label>
-                                <input type="text" name="reference_phone" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            <div x-data="{
+                                phone: '',
+                                formatPhone(value) {
+                                    // ลบทุกอย่างที่ไม่ใช่ตัวเลข
+                                    value = value.replace(/\D/g, '');
+                                    if (value.length > 10) value = value.slice(0, 10);
+                            
+                                    // จัดรูปแบบ xxx-xxx-xxxx
+                                    if (value.length > 6) {
+                                        return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
+                                    } else if (value.length > 3) {
+                                        return value.slice(0, 3) + '-' + value.slice(3);
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                            }" class="w-full">
+                                <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">
+                                    เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
+                                    @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric"
+                                    pattern="\d{3}-\d{3}-\d{4}" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
                             </div>
                         </div>
                     </div>
@@ -1416,8 +1513,8 @@
                         <div class="grid justify-center gap-2 items-center">
                             <!-- Checkbox: เงื่อนไขการให้บริการ -->
                             <div class="flex items-center justify-start mb-3 flex-wrap text-sm text-gray-700">
-                                <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ" required
-                                    class="accent-green-600 w-4 h-4">
+                                <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ"
+                                    required class="accent-green-600 w-4 h-4">
                                 <label for="tos" class="ml-2">ยอมรับ</label>
                                 <a target="_blank" class="ml-1 text-blue-600 hover:underline">
                                     เงื่อนไขการให้บริการ
@@ -1452,7 +1549,7 @@
             const preview = document.getElementById('preview');
             const placeholder = document.getElementById('image-placeholder');
 
-            input.addEventListener('change', function () {
+            input.addEventListener('change', function() {
                 if (this.files && this.files[0]) {
                     preview.src = URL.createObjectURL(this.files[0]);
                     preview.classList.remove('hidden');
@@ -1463,7 +1560,7 @@
             const birthInput = document.getElementById("birthdate");
             const ageInput = document.getElementById("age");
 
-            birthInput.addEventListener("change", function () {
+            birthInput.addEventListener("change", function() {
                 const birthDate = new Date(this.value);
                 const today = new Date();
 
@@ -1481,7 +1578,7 @@
             // Dynamic Education Table
             function addEduRow() {
                 const template = document.getElementById('edu-row-template').content.cloneNode(true);
-                template.querySelector('.remove-row-btn').onclick = function (e) {
+                template.querySelector('.remove-row-btn').onclick = function(e) {
                     const tbody = document.getElementById('edu-table-body');
                     // เช็คจำนวนแถว
                     if (tbody.querySelectorAll('tr').length > 1) {
