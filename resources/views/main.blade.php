@@ -1474,8 +1474,7 @@
                 input.value = formatted;
             }
 
-            // Salary input formatter
-            // ใช้สำหรับเงินเดือนและรายได้อื่น ๆ
+            // Salary
             function fnSalary() {
                 return {
                     salary: '',
@@ -1785,16 +1784,6 @@
                     },
                     removeRow(idx) {
                         if (this.works.length > 1) this.works.splice(idx, 1);
-                    }
-                };
-            }
-
-            function fnSalary() {
-                return {
-                    currentsalary: '',
-                    formatNumber(value) {
-                        value = value.replace(/[^\d]/g, '');
-                        return new Intl.NumberFormat().format(value);
                     }
                 };
             }
