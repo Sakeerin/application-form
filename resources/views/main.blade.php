@@ -797,14 +797,15 @@
                             </div>
                         </div>
 
-                        <!-- Row 2 ความสามารถด้านคอมพิวเตอร์-->
-                        <div x-data="{ programs: [{ name: '', level: '' }] }" class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <!-- Row 2 ความสามารถด้านคอมพิวเตอร์ -->
+                        <div x-data="fnComputerSkills()" class="bg-gray-50 p-4 rounded-lg mb-4">
                             <div class="flex items-center justify-between mb-2">
-                                <label
-                                    class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านคอมพิวเตอร์</label>
+                                <label class="block text-gray-700 font-semibold mb-2 mt-6">
+                                    ความสามารถด้านคอมพิวเตอร์
+                                </label>
                                 <button type="button"
                                     class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-full flex items-center gap-1 text-sm mt-2"
-                                    @click="programs.push({ name: '', level: '' })">
+                                    @click="addProgram()">
                                     <i class="fa-solid fa-plus"></i> เพิ่มข้อมูล
                                 </button>
                             </div>
@@ -827,8 +828,7 @@
                                         </select>
 
                                         <button type="button" class="text-red-500 font-bold px-2"
-                                            @click="programs.length > 1 ? programs.splice(idx, 1) : null"
-                                            x-show="programs.length >= 0" :disabled="programs.length === 1"
+                                            @click="removeProgram(idx)" :disabled="programs.length === 1"
                                             :class="programs.length === 1 ? 'opacity-40 cursor-not-allowed' : ''"
                                             title="ลบโปรแกรมนี้">
                                             <i class="fa-solid fa-trash"></i>
@@ -866,12 +866,7 @@
                         </div>
 
                         <!-- Row 3 ความสามารถด้านภาษา -->
-                        <div x-data="{
-                            langs: [
-                                { name: 'ภาษาไทย', level: '', file: null },
-                                { name: 'ภาษาอังกฤษ', level: '', file: null }
-                            ]
-                        }" class="bg-gray-50 p-4 rounded-lg">
+                        <div x-data="fnLanguageSkills()" class="bg-gray-50 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -891,7 +886,7 @@
                                         placeholder="ภาษาอื่น ๆ">
 
                                     <!-- selector + ปุ่มอัปโหลด + ปุ่มลบ (Respone มือถือ) -->
-                                    <div class="flex flex-wrap gap-2 md:contents">
+                                    <div class="flex flex-wrap items-center gap-2 md:contents">
                                         <!-- Selector -->
                                         <select x-model="lang.level" name="lang_level"
                                             class="h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 md:col-start-2">
@@ -903,13 +898,20 @@
                                         </select>
 
                                         <!-- ปุ่มอัปโหลด -->
-                                        <label
-                                            class="cursor-pointer flex items-center justify-center h-10 w-10 rounded bg-green-500 hover:bg-green-700 text-white border border-gray-300 md:col-start-3"
-                                            :title="'อัปโหลดใบคะแนน (' + lang.name + ')'">
-                                            <i class="fa-solid fa-file-arrow-up"></i>
-                                            <input type="file" class="hidden"
-                                                @change="lang.file = $event.target.files[0]">
-                                        </label>
+                                        <div class="flex md:flex-col items-center">
+                                            <label
+                                                class="cursor-pointer flex items-center justify-center h-10 w-10 rounded bg-green-500 hover:bg-green-700 text-white border border-gray-300 md:col-start-3"
+                                                :title="'อัปโหลดใบคะแนน (' + lang.name + ')'">
+                                                <i class="fa-solid fa-file-arrow-up"></i>
+                                                <input type="file" class="hidden" @change="uploadFile($event, idx)">
+                                            </label>
+                                            <!-- แสดงชื่อไฟล์ที่อัปโหลด -->
+                                            <template x-if="lang.file">
+                                                <span
+                                                    class="px-2 py-2 text-xs text-blue-600 font-bold max-w-[140px] truncate"
+                                                    x-text="lang.file.name" :title="lang.file.name"></span>
+                                            </template>
+                                        </div>
 
                                         <!-- ปุ่มลบ -->
                                         <button type="button" class="text-red-500 font-bold px-2 md:col-start-4"
@@ -932,17 +934,7 @@
                 </div>
 
                 <!-- Section Training Course -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                    trainings: [
-                        { year: '', duration: '', topic: '', institution: '' }
-                    ],
-                    addRow() {
-                        this.trainings.push({ year: '', duration: '', topic: '', institution: '' });
-                    },
-                    removeRow(idx) {
-                        if (this.trainings.length > 1) this.trainings.splice(idx, 1);
-                    }
-                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnTraining()">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -1016,33 +1008,7 @@
                 </div>
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="{
-                    works: [{
-                        company: '',
-                        position: '',
-                        responsibility: '',
-                        duration: '',
-                        salary: '',
-                        otherIncome: '',
-                        totalIncome: '',
-                        reason: ''
-                    }],
-                    addRow() {
-                        this.works.push({
-                            company: '',
-                            position: '',
-                            responsibility: '',
-                            duration: '',
-                            salary: '',
-                            otherIncome: '',
-                            totalIncome: '',
-                            reason: ''
-                        });
-                    },
-                    removeRow(idx) {
-                        if (this.works.length > 1) this.works.splice(idx, 1);
-                    }
-                }">
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnWorkExperience()">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
@@ -1061,74 +1027,66 @@
                         <template x-for="(work, idx) in works" :key="idx">
                             <!-- แถวข้อมูลแต่ละรายการ -->
                             <div class="grid gap-4" :class="idx !== 0 ? 'border-t border-gray-500 pt-8 mt-4' : ''">
-                                <!-- สถานที่ทำงาน + ตำแหน่ง -->
                                 <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span
                                                 class="text-red-500">*</span></label>
-                                        <input type="text" name="work_company" required
+                                        <input type="text" name="work_company" required x-model="work.company"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="บริษัท เอบีซี จำกัด" x-model="work.company">
+                                            placeholder="บริษัท เอบีซี จำกัด">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span
                                                 class="text-red-500">*</span></label>
-                                        <input type="text" name="work_position" required
+                                        <input type="text" name="work_position" required x-model="work.position"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="ตำแหน่งงานที่ทำ" x-model="work.position">
+                                            placeholder="ตำแหน่งงานที่ทำ">
                                     </div>
                                 </div>
 
-                                <!-- งานที่รับผิดชอบ -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span
                                             class="text-red-500">*</span></label>
-                                    <input type="text" name="work_respon" required
+                                    <input type="text" name="work_respon" required x-model="work.responsibility"
                                         class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                        placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ"
-                                        x-model="work.responsibility">
+                                        placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ">
                                 </div>
 
-                                <!-- ระยะเวลา + เงินเดือน + รายได้อื่นๆ -->
                                 <div class="grid grid-cols-3 gap-4 items-end">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span
                                                 class="text-red-500">*</span></label>
-                                        <input type="text" name="work_duration" required
+                                        <input type="text" name="work_duration" required x-model="work.duration"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="เช่น 1 ปี 10 เดือน" x-model="work.duration">
+                                            placeholder="เช่น 1 ปี 10 เดือน">
                                     </div>
                                     <div x-data="fnSalary()">
-                                        <label for="currentsalary" class="block text-sm font-medium text-gray-700 mb-1">
-                                            เงินเดือนล่าสุด <span class="text-red-500">*</span>
-                                        </label>
+                                        <label for="currentsalary"
+                                            class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด <span
+                                                class="text-red-500">*</span></label>
                                         <input type="text" id="currentsalary" name="currentsalary" required
-                                            inputmode="numeric"
+                                            x-model="currentsalary"
+                                            @input="currentsalary = formatNumber($event.target.value)" inputmode="numeric"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            x-model="currentsalary" placeholder="เช่น 30,000"
-                                            @input="currentsalary = formatNumber($event.target.value)">
+                                            placeholder="เช่น 30,000">
                                     </div>
-
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">รายได้อื่น ๆ</label>
-                                        <input type="text" name="work_income"
+                                        <input type="text" name="work_income" x-model="work.otherIncome"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                            placeholder="ระบุเป็นตัวเลข" x-model="work.otherIncome">
+                                            placeholder="ระบุเป็นตัวเลข">
                                     </div>
                                 </div>
 
-                                <!-- รายได้สุทธิ + สาเหตุที่ออก + ปุ่มลบ -->
                                 <div class="grid md:grid-cols-[83%_15%] gap-4 items-end">
-                                    <!-- ช่องสาเหตุที่ออก + ปุ่มลบ (มือถือ) -->
                                     <div class="flex items-end">
                                         <div class="flex-1">
                                             <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span
                                                     class="text-red-500">*</span></label>
-                                            <input type="text" name="work_reason" required
+                                            <input type="text" name="work_reason" required x-model="work.reason"
                                                 class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
-                                                placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน" x-model="work.reason">
+                                                placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน">
                                         </div>
-                                        <!-- ปุ่มลบ: แสดงเฉพาะมือถือ -->
                                         <button type="button"
                                             class="ml-2 mb-1 text-red-500 font-bold py-2 px-2 md:hidden" title="ลบแถว"
                                             @click="removeRow(idx)" :disabled="works.length === 1"
@@ -1136,7 +1094,6 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
-                                    <!-- ปุ่มลบ: แสดงเฉพาะจอใหญ่ -->
                                     <button type="button"
                                         class="text-red-500 font-bold px-2 py-2 hidden md:block self-end" title="ลบแถว"
                                         @click="removeRow(idx)" :disabled="works.length === 1"
@@ -1390,8 +1347,8 @@
                             </div>
 
                             <div x-data="{ today: '' }" x-init="today = new Date().toISOString().split('T')[0]">
-                                <label class="block text-gray-700 font-semibold mb-1">วันที่พร้อมเริ่มปฏิบัติงาน</label>
-                                <input type="date" name="detail_2" :min="today"
+                                <label class="block text-gray-700 font-semibold mb-1">วันที่พร้อมเริ่มปฏิบัติงาน <span class="text-red-500">*</span></label>
+                                <input type="date" name="detail_2" :min="today" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                         </div>
@@ -1629,6 +1586,7 @@
                 };
             }
 
+            // Phone number formatter
             function phoneFormat() {
                 return {
                     phone: '',
@@ -1648,7 +1606,7 @@
                 };
             }
 
-            // Education handler
+            // Education 
             function educationHandler() {
                 return {
                     educations: [{
@@ -1685,7 +1643,7 @@
                 };
             }
 
-            // University Name Autocomplete
+            // University Name Autocomplete ยังใช้ไม่ได้
             function universityAutocomplete() {
                 return {
                     query: '',
@@ -1716,6 +1674,129 @@
                         this.show = false;
                     }
                 }
+            }
+
+            // Computer Skills Handler
+            function fnComputerSkills() {
+                return {
+                    programs: [{
+                        name: '',
+                        level: ''
+                    }],
+                    addProgram() {
+                        this.programs.push({
+                            name: '',
+                            level: ''
+                        });
+                    },
+                    removeProgram(idx) {
+                        if (this.programs.length > 1) {
+                            this.programs.splice(idx, 1);
+                        }
+                    }
+                };
+            }
+
+            // Language Skills Handler
+            function fnLanguageSkills() {
+                return {
+                    langs: [{
+                            name: 'ภาษาไทย',
+                            level: '',
+                            file: null
+                        },
+                        {
+                            name: 'ภาษาอังกฤษ',
+                            level: '',
+                            file: null
+                        }
+                    ],
+                    isDefaultLanguage(idx) {
+                        return idx === 0 || idx === 1;
+                    },
+                    addLang() {
+                        this.langs.push({
+                            name: '',
+                            level: '',
+                            file: null
+                        });
+                    },
+                    removeLang(idx) {
+                        if (this.langs.length > 2) {
+                            this.langs.splice(idx, 1);
+                        }
+                    },
+                    uploadFile(event, idx) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.langs[idx].file = file;
+                        }
+                    }
+                };
+            }
+
+            // fnTraining
+            function fnTraining() {
+                return {
+                    trainings: [{
+                        year: '',
+                        duration: '',
+                        topic: '',
+                        institution: ''
+                    }],
+                    addRow() {
+                        this.trainings.push({
+                            year: '',
+                            duration: '',
+                            topic: '',
+                            institution: ''
+                        });
+                    },
+                    removeRow(idx) {
+                        if (this.trainings.length > 1) this.trainings.splice(idx, 1);
+                    }
+                }
+            }
+
+            // Work Experience Handler
+            function fnWorkExperience() {
+                return {
+                    works: [{
+                        company: '',
+                        position: '',
+                        responsibility: '',
+                        duration: '',
+                        salary: '',
+                        otherIncome: '',
+                        totalIncome: '',
+                        reason: ''
+                    }],
+                    addRow() {
+                        this.works.push({
+                            company: '',
+                            position: '',
+                            responsibility: '',
+                            duration: '',
+                            salary: '',
+                            otherIncome: '',
+                            totalIncome: '',
+                            reason: ''
+                        });
+                    },
+                    removeRow(idx) {
+                        if (this.works.length > 1) this.works.splice(idx, 1);
+                    }
+                };
+            }
+
+            function fnSalary() {
+                return {
+                    currentsalary: '',
+                    formatNumber(value) {
+                        value = value.replace(/[^\d]/g, '');
+                        return new Intl.NumberFormat().format(value);
+                    }
+                };
             }
         </script>
         <script src="//unpkg.com/alpinejs" defer></script>
