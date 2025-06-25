@@ -90,7 +90,7 @@
                                         <span class="text-xs text-gray-500">ลากหรือคลิก</span>
                                     </div>
                                 </template>
-                                <img x-show="previewUrl" :src="previewUrl" id="preview"
+                                <img x-show="previewUrl" :src="previewUrl" id="preview" name="imgUser"
                                     class="w-full h-full object-cover rounded-full" />
                             </label>
                         </div>
@@ -418,18 +418,21 @@
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <!-- Radio Group (แนวตั้ง) -->
-                            <div class="flex flex-col gap-y-2 md:mt-0">
+                            <fieldset class="flex flex-col gap-y-2 mt-2 md:mt-0">
+                                <legend class="text-sm font-semibold text-gray-900 mb-1">สถานะของบิดา</legend>
+                                
                                 <label for="dad_alive" class="flex items-center gap-2">
                                     <input type="radio" id="dad_alive" name="dadalive" value="yes"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
                                 </label>
+                                
                                 <label for="dad_deceased" class="flex items-center gap-2">
                                     <input type="radio" id="dad_deceased" name="dadalive" value="no"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
                                 </label>
-                            </div>
+                            </fieldset>
 
                             <!-- ชื่อ-นามสกุล มารดา -->
                             <div>
@@ -444,18 +447,22 @@
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <!-- Radio Group (แนวตั้ง) -->
-                            <div class="flex flex-col gap-y-2 md:mt-0">
+                            <fieldset class="flex flex-col gap-y-2 mt-2 md:mt-0">
+                                <legend class="text-sm font-semibold text-gray-900 mb-1">สถานะของมารดา</legend>
+
                                 <label for="mom_alive" class="flex items-center gap-2">
                                     <input type="radio" id="mom_alive" name="momalive" value="yes"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
                                 </label>
+
                                 <label for="mom_deceased" class="flex items-center gap-2">
                                     <input type="radio" id="mom_deceased" name="momalive" value="no"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
                                 </label>
-                            </div>
+                            </fieldset>
+
                             <!-- ชื่อ-นามสกุล คู่สมรส -->
                             <div>
                                 <label for="spounsename" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล
@@ -484,32 +491,32 @@
                             <div>
                                 <label for="address" class="block text-gray-700 font-semibold mb-1">ที่อยู่ตามทะเบียนบ้าน
                                     <span class="text-red-500">*</span></label>
-                                <input type="text" id="address" x-model="registered.address" required
+                                <input type="text" id="address" x-model="registered.address" name="address" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                     placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                             </div>
                             <div>
                                 <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="province" x-model="registered.province" required
+                                <input type="text" id="province" x-model="registered.province" name="province" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="district" x-model="registered.district" required
+                                <input type="text" id="district" x-model="registered.district" name="district" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="subdistrict" x-model="registered.subdistrict" required
+                                <input type="text" id="subdistrict" x-model="registered.subdistrict" name="subdistrict" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <div>
                                 <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="postcode" x-model="registered.postcode" required
+                                <input type="text" id="postcode" x-model="registered.postcode" name="postcode" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                         </div>
@@ -528,7 +535,7 @@
                                     <label for="curr_address"
                                         class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_address" x-model="current.address" required
+                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                         placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
@@ -536,28 +543,28 @@
                                 <div>
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_province" x-model="current.province" required
+                                    <input type="text" id="curr_province" x-model="current.province" name="curr_province" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_district" x-model="current.district" required
+                                    <input type="text" id="curr_district" x-model="current.district" name="curr_district" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict" required
+                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict" name="curr_subdistrict" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div>
                                     <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_postcode" x-model="current.postcode" required
+                                    <input type="text" id="curr_postcode" x-model="current.postcode" name="curr_postcode" required
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
@@ -603,6 +610,7 @@
 
                 <!-- Section: ประวัติการศึกษา -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="educationHandler()">
+                    <input type="hidden" name="educations" :value="JSON.stringify(educations)">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการศึกษา</h2>
@@ -799,6 +807,7 @@
 
                         <!-- Row 2 ความสามารถด้านคอมพิวเตอร์ -->
                         <div x-data="fnComputerSkills()" class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <input type="hidden" name="programs" :value="JSON.stringify(programs)">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">
                                     ความสามารถด้านคอมพิวเตอร์
@@ -867,6 +876,7 @@
 
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="fnLanguageSkills()" class="bg-gray-50 p-4 rounded-lg">
+                            <input type="hidden" name="langs" :value="JSON.stringify(langs)">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -879,7 +889,7 @@
                                 <div class="space-y-2 md:grid md:grid-cols-[1.5fr_1fr_auto_auto] gap-6 mb-2 items-center ">
 
                                     <!-- ภาษาอื่น ๆ -->
-                                    <input type="text" name="lang_name" x-model="lang.name"
+                                    <input type="text" :name="'lang_name_' + idx" x-model="lang.name"
                                         :readonly="[0, 1].includes(idx)"
                                         :class="{ 'bg-gray-200 text-gray-700': [0, 1].includes(idx) }"
                                         class="h-10 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-3 bg-gray-50 w-full"
@@ -888,7 +898,7 @@
                                     <!-- selector + ปุ่มอัปโหลด + ปุ่มลบ (Respone มือถือ) -->
                                     <div class="flex flex-wrap items-center gap-2 md:contents">
                                         <!-- Selector -->
-                                        <select x-model="lang.level" name="lang_level"
+                                        <select x-model="lang.level" :name="'lang_level_' + idx"
                                             class="h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 md:col-start-2">
                                             <option value="" disabled selected>เลือกความชำนาญ</option>
                                             <option>พื้นฐาน</option>
@@ -935,6 +945,7 @@
 
                 <!-- Section Training Course -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnTraining()">
+                    <input type="hidden" name="trainings" :value="JSON.stringify(trainings)">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">การอบรม การดูงาน การฝึกงาน</h2>
@@ -1009,6 +1020,7 @@
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnWorkExperience()">
+                    <input type="hidden" name="works" :value="JSON.stringify(works)">
                     <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
