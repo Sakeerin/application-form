@@ -6,6 +6,12 @@
 
     <body class="bg-gray-50 min-h-screen overflow-auto md:py-10">
         <div class="max-w-4xl mx-auto space-y-10">
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">สำเร็จ! </strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
 
             <!-- Header -->
             <div
@@ -108,13 +114,22 @@
                             <select name="position" id="position" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 <option value="">-- กรุณาเลือก --</option>
-                                <option value="sale">Sale</option>
-                                <option value="admin">Admin</option>
-                                <option value="it">IT Support</option>
-                                <option value="programmer">Programmer</option>
-                                <option value="advertising">Advertising Manager</option>
-                                <option value="bd">Business Development</option>
-                                <option value="sustainable">Sustainable Development </option>
+                                <option value="Chief Executive Officer">Chief Executive Officer</option>
+                                <option value="Executive Assistant to the CEO">Executive Assistant to the CEO</option>
+                                <option value="Assistant to the CEO">Assistant to the CEO</option>
+                                <option value="Driver">Driver</option>
+                                <option value="Agent Wealth International Manager">Agent Wealth International Manager</option>
+                                <option value="Senior Secretary Manager">Senior Secretary Manager</option>
+                                <option value="Secretary to the CEO Manager  Level 2">Secretary to the CEO Manager  Level 2</option>
+                                <option value="Assistant Secretary to the CEO">Assistant Secretary to the CEO</option>
+                                <option value="Internal Audit Manager">Internal Audit Manager</option>
+                                <option value="Internal Audit Supervisor">Internal Audit Supervisor</option>
+                                <option value="Internal Audit Officer">Internal Audit Officer</option>
+                                <option value="Chief Operating Officer">Chief Operating Officer</option>
+                                <option value="Senior Human Resource and Admin Manager">Senior Human Resource and Admin Manager</option>
+                                <option value="Assistant Human Resource and Admin Manager ">Assistant Human Resource and Admin Manager </option>
+                                <option value="Human Resource and Admin Supervisor">Human Resource and Admin Supervisor</option>
+                                <option value="Recruitment Supervisor">Recruitment Supervisor</option>
                             </select>
                         </div>
                         <div x-data="fnSalary()">
@@ -288,7 +303,7 @@
                         <div>
                             <label for="age" class="block text-gray-700 font-semibold">อายุ (ปี) <span
                                     class="text-red-500">*</span></label>
-                            <input type="number" name="age" id="age" readonly disabled placeholder="--"
+                            <input type="number" name="age" id="age" readonly placeholder="--"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-200 text-gray-700">
                         </div>
                         <div>
@@ -329,25 +344,25 @@
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางทหาร :</label>
                         <div class="flex gap-6 mb-2 md:justify-between">
                             <label class="flex items-center gap-2" for="military_pending">
-                                <input type="radio" id="military_pending" name="militaryStatus"
+                                <input type="radio" id="military_pending" name="militaryStatus" value="ยังไม่ได้รับการเกณฑ์ทหาร"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 ยังไม่ได้รับการเกณฑ์ทหาร
                             </label>
 
                             <label class="flex items-center gap-2" for="military_done">
-                                <input type="radio" id="military_done" name="militaryStatus"
+                                <input type="radio" id="military_done" name="militaryStatus" value="ผ่านการเกณฑ์ทหารแล้ว"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 ผ่านการเกณฑ์ทหารแล้ว
                             </label>
 
                             <label class="flex items-center gap-2" for="military_serving">
-                                <input type="radio" id="military_serving" name="militaryStatus"
+                                <input type="radio" id="military_serving" name="militaryStatus" value="รับราชการทหารแล้ว"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 รับราชการทหารแล้ว
                             </label>
 
                             <label class="flex items-center gap-2" for="military_exempted">
-                                <input type="radio" id="military_exempted" name="militaryStatus"
+                                <input type="radio" id="military_exempted" name="militaryStatus" value="ได้รับการยกเว้น"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 ได้รับการยกเว้น
                             </label>
@@ -362,16 +377,16 @@
                         <!-- Row 1 -->
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส :</label>
                         <div class="flex gap-4">
-                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status"
+                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status" value="โสด"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 โสด</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="married" name="status"
+                            <label class="flex items-center gap-2"><input type="radio" id="married" name="status" value="สมรส"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 สมรส</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="widowed" name="status"
+                            <label class="flex items-center gap-2"><input type="radio" id="widowed" name="status" value="หม้าย"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 หม้าย</label>
-                            <label class="flex items-center gap-2"><input type="radio" id="divorced" name="status"
+                            <label class="flex items-center gap-2"><input type="radio" id="divorced" name="status" value="หย่าร้าง"
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 หย่าร้าง</label>
                         </div>
@@ -381,19 +396,19 @@
 
                             <div class="flex gap-4">
                                 <label class="flex items-center gap-2">
-                                    <input type="radio" name="hasChildren" value="yes" x-model="hasChildren"
+                                    <input type="radio" name="hasChildren" value="มี" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     มี
                                 </label>
                                 <label class="flex items-center gap-2">
-                                    <input type="radio" name="hasChildren" value="no" x-model="hasChildren"
+                                    <input type="radio" name="hasChildren" value="ไม่มี" x-model="hasChildren"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     ไม่มี
                                 </label>
                             </div>
 
                             <!-- ช่องใส่จำนวนบุตร -->
-                            <div x-show="hasChildren === 'yes'" x-transition class="mt-2">
+                            <div x-show="hasChildren === 'มี'" x-transition class="mt-2">
                                 <input type="number" name="children_count" id="children_count" min="1"
                                     class="w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
                                     placeholder="ระบุจำนวนบุตร">
@@ -422,13 +437,13 @@
                                 <legend class="text-sm font-semibold text-gray-900 mb-1">สถานะของบิดา</legend>
                                 
                                 <label for="dad_alive" class="flex items-center gap-2">
-                                    <input type="radio" id="dad_alive" name="dadalive" value="yes"
+                                    <input type="radio" id="dad_alive" name="dadalive" value="มีชีวิตอยู่"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
                                 </label>
                                 
                                 <label for="dad_deceased" class="flex items-center gap-2">
-                                    <input type="radio" id="dad_deceased" name="dadalive" value="no"
+                                    <input type="radio" id="dad_deceased" name="dadalive" value="ถึงแก่กรรม"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
                                 </label>
@@ -451,13 +466,13 @@
                                 <legend class="text-sm font-semibold text-gray-900 mb-1">สถานะของมารดา</legend>
 
                                 <label for="mom_alive" class="flex items-center gap-2">
-                                    <input type="radio" id="mom_alive" name="momalive" value="yes"
+                                    <input type="radio" id="mom_alive" name="momalive" value="มีชีวิตอยู่"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">มีชีวิตอยู่</span>
                                 </label>
 
                                 <label for="mom_deceased" class="flex items-center gap-2">
-                                    <input type="radio" id="mom_deceased" name="momalive" value="no"
+                                    <input type="radio" id="mom_deceased" name="momalive" value="ถึงแก่กรรม"
                                         class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                     <span class="text-gray-700 font-medium">ถึงแก่กรรม</span>
                                 </label>
@@ -485,7 +500,7 @@
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ที่อยู่ตามทะเบียนบ้าน</h2>
                     <!-- ครอบทั้งหมดด้วย Alpine -->
-                    <div x-data="addressHandler()" x-init="init()">
+                    <div x-data="addressUser()" x-init="init()">
                         <!-- Section: ที่อยู่ตามทะเบียนบ้าน -->
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
@@ -498,26 +513,38 @@
                             <div>
                                 <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="province" x-model="registered.province" name="province" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                               <select x-model="selectedProvince" @change="loadAmphoes" name="province" class="w-full border rounded-lg px-3 h-10">
+                                    <option value="">กรุณาเลือกจังหวัด</option>
+                                    <template x-for="p in provinces" :key="p.province_id">
+                                        <option :value="p.province" x-text="p.province"></option>
+                                    </template>
+                                </select>
                             </div>
                             <div>
                                 <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="district" x-model="registered.district" name="district" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                <select x-model="selectedAmphoe" @change="loadTambons" name="district" class="w-full border rounded-lg px-3 h-10">
+                                    <option value="">กรุณาเลือกอำเภอ</option>
+                                    <template x-for="a in amphoes" :key="a.amphoe_id">
+                                        <option :value="a.amphoe" x-text="a.amphoe"></option>
+                                    </template>
+                                </select>
                             </div>
                             <div>
                                 <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="subdistrict" x-model="registered.subdistrict" name="subdistrict" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                <select x-model="selectedTambon" @change="loadZipcode" name="subdistrict" class="w-full border rounded-lg px-3 h-10">
+                                    <option value="">กรุณาเลือกตำบล</option>
+                                    <template x-for="t in tambons" :key="t.tambon_id">
+                                        <option :value="t.tambon" x-text="t.tambon"></option>
+                                    </template>
+                                </select>
                             </div>
                             <div>
                                 <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" id="postcode" x-model="registered.postcode" name="postcode" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                <input type="text" x-model="registered.postcode" name="postcode" readonly class="w-full border rounded-lg px-3 h-10 bg-gray-100"
+                                    placeholder="รหัสไปรษณีย์" />
                             </div>
                         </div>
 
@@ -531,42 +558,93 @@
                             </label>
 
                             <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="curr_address"
-                                        class="block text-gray-700 font-semibold mb-1">ที่อยู่ปัจจุบัน
-                                        <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address" required
+                                <!-- Show when sameAsRegistered is true -->
+                                <div x-show="sameAsRegistered">
+                                    <label for="curr_address" class="block text-gray-700 font-semibold mb-1">
+                                        ที่อยู่ปัจจุบัน <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address"
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                         placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                                 </div>
-                                <div>
+
+                                <!-- Show when sameAsRegistered is false -->
+                                <div x-show="!sameAsRegistered">
+                                    <label for="curr_address" class="block text-gray-700 font-semibold mb-1">
+                                        ที่อยู่ปัจจุบัน <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                        placeholder="เลขที่/หมู่บ้าน/ซอย">
+                                </div>
+                                <div x-show="sameAsRegistered">
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_province" x-model="current.province" name="curr_province" required
+                                    <input type="text" id="curr_province" x-model="current.province" name="curr_province" 
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
-                                <div>
+                                <div x-show="!sameAsRegistered">
+                                    <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="hidden" name="select_province" x-model="current.province">
+                                    <select x-model="selectedSecondProvince" @change="loadAmphoesCurr" name="curr_province" class="w-full border rounded-lg px-3 h-10">
+                                    <option value="">กรุณาเลือกจังหวัด</option>
+                                        <template x-for="p in provinces_curr" :key="p.province_id">
+                                            <option :value="p.province" x-text="p.province"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div x-show="sameAsRegistered">
                                     <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_district" x-model="current.district" name="curr_district" required
+                                    <input type="text" id="curr_district" x-model="current.district" name="curr_district"
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
-                                <div>
+                                <div x-show="!sameAsRegistered">
+                                    <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="hidden" name="select_district" x-model="current.district">
+                                    <select x-model="selectedSecondAmphoe" @change="loadTambonsCurr" name="curr_district" class="w-full border rounded-lg px-3 h-10">
+                                        <option value="">กรุณาเลือกอำเภอ</option>
+                                        <template x-for="a in amphoes_curr" :key="a.amphoe_id">
+                                            <option :value="a.amphoe" x-text="a.amphoe"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div x-show="sameAsRegistered">
                                     <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict" name="curr_subdistrict" required
+                                    <input type="text" id="curr_subdistrict" x-model="current.subdistrict" name="curr_subdistrict"
+                                        :readonly="sameAsRegistered"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50">
+                                </div>
+                                <div x-show="!sameAsRegistered">
+                                    <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="hidden" name="select_subdistrict" x-model="current.subdistrict">
+                                    <select x-model="selectedSecondTambon" @change="loadZipcodeCurr" name="curr_subdistrict" class="w-full border rounded-lg px-3 h-10">
+                                        <option value="">กรุณาเลือกตำบล</option>
+                                        <template x-for="t in tambons_curr" :key="t.tambon_id">
+                                            <option :value="t.tambon" x-text="t.tambon"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div x-show="sameAsRegistered">
+                                    <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" id="curr_postcode" x-model="current.postcode" name="curr_postcode"
                                         :readonly="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
-                                <div>
+                                <div x-show="!sameAsRegistered">
                                     <label for="curr_postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์
                                         <span class="text-red-500">*</span></label>
-                                    <input type="text" id="curr_postcode" x-model="current.postcode" name="curr_postcode" required
-                                        :readonly="sameAsRegistered"
-                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                    <input type="text" x-model="current.postcode" name="curr_postcode" readonly class="w-full border rounded-lg px-3 h-10 bg-gray-100"
+                                    placeholder="รหัสไปรษณีย์" />
                                 </div>
                             </div>
 
@@ -632,31 +710,35 @@
                                 <!-- ระดับการศึกษา -->
                                 <div>
                                     <label for="edu_level"
-                                        class="block text-sm font-medium text-gray-700 mb-1">ระดับการศึกษา</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">ระดับการศึกษา
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <select name="edu_level" id="edu_level"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1 h-10 bg-gray-50"
-                                        x-model="edu.level">
+                                        x-model="edu.level" required>
                                         <option value="" disabled selected>เลือกระดับ</option>
-                                        <option value="doctorate">ปริญญาเอก</option>
-                                        <option value="master">ปริญญาโท</option>
-                                        <option value="bachelor">ปริญญาตรี</option>
-                                        <option value="associate">อนุปริญญา</option>
-                                        <option value="vocational_diploma">ปวส.</option>
-                                        <option value="vocational_certificate">ปวช.</option>
-                                        <option value="high_school">มัธยมศึกษา</option>
+                                        <option value="ปริญญาเอก">ปริญญาเอก</option>
+                                        <option value="ปริญญาโท">ปริญญาโท</option>
+                                        <option value="ปริญญาตรี">ปริญญาตรี</option>
+                                        <option value="อนุปริญญา">อนุปริญญา</option>
+                                        <option value="ปวส.">ปวส.</option>
+                                        <option value="ปวช.">ปวช.</option>
+                                        <option value="มัธยมศึกษา">มัธยมศึกษา</option>
                                     </select>
                                 </div>
 
                                 <!-- ชื่อสถานศึกษา -->
-                                {{-- <div x-data="universityAutocomplete()" class="col-span-1 sm:col-span-2 lg:col-span-2">
+                                <div class="col-span-1 sm:col-span-2 lg:col-span-2">
                                     <label for="edu_name"
-                                        class="block text-sm font-medium text-gray-700 mb-1">ชื่อสถานศึกษา</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">ชื่อสถานศึกษา
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="edu_name" id="edu_name"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.school">
-                                </div> --}}
+                                        x-model="edu.school" required>
+                                </div>
 
-                                <div class="col-span-1 sm:col-span-2 lg:col-span-2 relative" x-data="universityAutocomplete()"
+                                {{-- <div class="col-span-1 sm:col-span-2 lg:col-span-2 relative" x-data="universityAutocomplete()"
                                     x-init="loadUniversities()">
                                     <label for="edu_name"
                                         class="block text-sm font-medium text-gray-700 mb-1">ชื่อสถานศึกษา</label>
@@ -674,54 +756,72 @@
                                                 @click="selectUniversity(name)" x-text="name"></li>
                                         </template>
                                     </ul>
-                                </div>
+                                </div> --}}
 
 
                                 <!-- ประเทศ -->
                                 <div>
                                     <label for="edu_country"
-                                        class="block text-sm font-medium text-gray-700 mb-1">ประเทศ</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">ประเทศ
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="edu_country" id="edu_country"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.country">
+                                        x-model="edu.country" required>
                                 </div>
 
                                 <!-- หลักสูตร -->
                                 <div>
                                     <label for="edu_program"
-                                        class="block text-sm font-medium text-gray-700 mb-1">หลักสูตร/ชื่อปริญญา</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">หลักสูตร/ชื่อปริญญา
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="edu_program" id="edu_program"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.program">
+                                        x-model="edu.program" required>
                                 </div>
 
                                 <!-- สาขาวิชา -->
                                 <div>
                                     <label for="edu_major"
-                                        class="block text-sm font-medium text-gray-700 mb-1">สาขาวิชา</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">สาขาวิชา
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="edu_major" id="edu_major"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.major">
+                                        x-model="edu.major" required>
                                 </div>
 
                                 <!-- เกรดเฉลี่ย -->
                                 <div x-data="formatGPA()">
                                     <label for="edu_gpx"
-                                        class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label>
+                                        class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย
+                                        <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="edu_gpx" id="edu_gpx"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
                                         x-model="edu.gpa" @blur="edu.gpa = formatGPA(edu.gpa)" inputmode="decimal"
-                                        maxlength="4">
+                                        maxlength="4" required>
                                 </div>
 
 
                                 <!-- ปีที่จบ -->
                                 <div>
                                     <label for="edu_gradyear"
-                                        class="block text-sm font-medium text-gray-700 mb-1">ปีที่สำเร็จการศึกษา</label>
-                                    <input type="text" name="edu_gradyear" id="edu_gradyear"
+                                        class="block text-sm font-medium text-gray-700 mb-1">ปีที่สำเร็จการศึกษา
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                         <input type="number"
+                                            name="edu_gradyear"
+                                            id="edu_gradyear"
+                                            class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
+                                            x-model="edu.graduate_year"
+                                            inputmode="numeric"
+                                            @input="edu.graduate_year = edu.graduate_year.toString().slice(0, 4)"
+                                            required>
+                                    {{-- <input type="number" name="edu_gradyear" id="edu_gradyear"
                                         class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.graduate_year">
+                                        x-model="edu.graduate_year" inputmode="number" maxlength="4" required> --}}
                                 </div>
 
                                 <!-- ปุ่มลบ -->
@@ -785,19 +885,19 @@
 
                                 <div class="grid-cols-3 items-center flex gap-x-8">
                                     <label for="travel_yes" class="inline-flex items-center gap-2 md:mr-20">
-                                        <input type="radio" name="travel" id="travel_yes" value="yes"
+                                        <input type="radio" name="travel" id="travel_yes" value="สะดวก"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
                                         <span>สะดวก</span>
                                     </label>
 
                                     <label for="travel_no" class="inline-flex items-center gap-2 md:mr-20">
-                                        <input type="radio" name="travel" id="travel_no" value="no"
+                                        <input type="radio" name="travel" id="travel_no" value="ไม่สะดวก"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
                                         <span>ไม่สะดวก</span>
                                     </label>
 
                                     <label for="travel_sometimes" class="inline-flex items-center gap-2">
-                                        <input type="radio" name="travel" id="travel_sometimes" value="sometimes"
+                                        <input type="radio" name="travel" id="travel_sometimes" value="บางครั้ง"
                                             class="accent-green-600 w-4 h-4" x-model="travel">
                                         <span>บางครั้ง</span>
                                     </label>
@@ -852,22 +952,22 @@
                             <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถในการพิมพ์</label>
                             <div class="flex mb-2 md:justify-start">
                                 <label for="typing_exc" class="inline-flex items-center gap-2  md:mr-20">
-                                    <input type="radio" name="typing_speed" id="typing_exc" value="excellent"
+                                    <input type="radio" name="typing_speed" id="typing_exc" value="ดีมาก"
                                         class="accent-green-600 w-4 h-4" x-model="typing">
                                     <span>ดีมาก</span>
                                 </label>
                                 <label for="typing_good" class="inline-flex items-center gap-2 ml-4  md:mr-20">
-                                    <input type="radio" name="typing_speed" id="typing_good" value="good"
+                                    <input type="radio" name="typing_speed" id="typing_good" value="ดี"
                                         class="accent-green-600 w-4 h-4" x-model="typing">
                                     <span>ดี</span>
                                 </label>
                                 <label for="typing_fair" class="inline-flex items-center gap-2 ml-4  md:mr-20">
-                                    <input type="radio" name="typing_speed" id="typing_fair" value="fair"
+                                    <input type="radio" name="typing_speed" id="typing_fair" value="ปานกลาง"
                                         class="accent-green-600 w-4 h-4" x-model="typing">
                                     <span>ปานกลาง</span>
                                 </label>
                                 <label for="typing_no" class="inline-flex items-center gap-2 ml-4">
-                                    <input type="radio" name="typing_speed" id="typing_no" value="no"
+                                    <input type="radio" name="typing_speed" id="typing_no" value="ไม่ได้เลย"
                                         class="accent-green-600 w-4 h-4" x-model="typing">
                                     <span>ไม่ได้เลย</span>
                                 </label>
@@ -876,7 +976,7 @@
 
                         <!-- Row 3 ความสามารถด้านภาษา -->
                         <div x-data="fnLanguageSkills()" class="bg-gray-50 p-4 rounded-lg">
-                            <input type="hidden" name="langs" :value="JSON.stringify(langs)">
+                            <input type="hidden" name="langs" :value="JSON.stringify(langs.map(({ file, ...rest }) => rest))">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-gray-700 font-semibold mb-2 mt-6">ความสามารถด้านภาษา</label>
                                 <button type="button"
@@ -889,7 +989,7 @@
                                 <div class="space-y-2 md:grid md:grid-cols-[1.5fr_1fr_auto_auto] gap-6 mb-2 items-center ">
 
                                     <!-- ภาษาอื่น ๆ -->
-                                    <input type="text" :name="'lang_name_' + idx" x-model="lang.name"
+                                    <input type="text" name="lang_name" x-model="lang.name"
                                         :readonly="[0, 1].includes(idx)"
                                         :class="{ 'bg-gray-200 text-gray-700': [0, 1].includes(idx) }"
                                         class="h-10 border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-3 bg-gray-50 w-full"
@@ -898,7 +998,7 @@
                                     <!-- selector + ปุ่มอัปโหลด + ปุ่มลบ (Respone มือถือ) -->
                                     <div class="flex flex-wrap items-center gap-2 md:contents">
                                         <!-- Selector -->
-                                        <select x-model="lang.level" :name="'lang_level_' + idx"
+                                        <select x-model="lang.level" name="lang_level"
                                             class="h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 md:col-start-2">
                                             <option value="" disabled selected>เลือกความชำนาญ</option>
                                             <option>พื้นฐาน</option>
@@ -913,7 +1013,7 @@
                                                 class="cursor-pointer flex items-center justify-center h-10 w-10 rounded bg-green-500 hover:bg-green-700 text-white border border-gray-300 md:col-start-3"
                                                 :title="'อัปโหลดใบคะแนน (' + lang.name + ')'">
                                                 <i class="fa-solid fa-file-arrow-up"></i>
-                                                <input type="file" class="hidden" @change="uploadFile($event, idx)">
+                                                <input type="file" :name="`langs_file_${idx}`" class="hidden" @change="uploadFile($event, idx)">
                                             </label>
                                             <!-- แสดงชื่อไฟล์ที่อัปโหลด -->
                                             <template x-if="lang.file">
@@ -1041,50 +1141,56 @@
                             <div class="grid gap-4" :class="idx !== 0 ? 'border-t border-gray-500 pt-8 mt-4' : ''">
                                 <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span
-                                                class="text-red-500">*</span></label>
-                                        <input type="text" name="work_company" required x-model="work.company"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน 
+                                            {{-- <span class="text-red-500">*</span> --}}
+                                        </label>
+                                        <input type="text" name="work_company" x-model="work.company"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="บริษัท เอบีซี จำกัด">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span
-                                                class="text-red-500">*</span></label>
-                                        <input type="text" name="work_position" required x-model="work.position"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง 
+                                            {{-- <span class="text-red-500">*</span> --}}
+                                        </label>
+                                        <input type="text" name="work_position" x-model="work.position"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="ตำแหน่งงานที่ทำ">
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span
-                                            class="text-red-500">*</span></label>
-                                    <input type="text" name="work_respon" required x-model="work.responsibility"
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ 
+                                        {{-- <span class="text-red-500">*</span> --}}
+                                    </label>
+                                    <input type="text" name="work_respon" x-model="work.responsibility"
                                         class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                         placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ">
                                 </div>
 
                                 <div class="grid grid-cols-3 gap-4 items-end">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span
-                                                class="text-red-500">*</span></label>
-                                        <input type="text" name="work_duration" required x-model="work.duration"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน 
+                                            {{-- <span class="text-red-500">*</span> --}}
+                                        </label>
+                                        <input type="text" name="work_duration" x-model="work.duration"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="เช่น 1 ปี 10 เดือน">
                                     </div>
                                     <div x-data="fnSalary()">
                                         <label for="currentsalary"
-                                            class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด <span
-                                                class="text-red-500">*</span></label>
-                                        <input type="text" id="currentsalary" name="currentsalary" required
-                                            x-model="currentsalary"
-                                            @input="currentsalary = formatNumber($event.target.value)" inputmode="numeric"
+                                            class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด 
+                                            {{-- <span class="text-red-500">*</span> --}}
+                                        </label>
+                                        <input type="text" id="currentsalary" name="currentsalary"
+                                            x-model="work.currentsalary"
+                                            @input="work.currentsalary = formatNumber($event.target.value)" inputmode="numeric"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="เช่น 30,000">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">รายได้อื่น ๆ</label>
                                         <input type="text" name="work_income" x-model="work.otherIncome"
+                                            @input="work.otherIncome = formatNumber($event.target.value)" inputmode="numeric"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                             placeholder="ระบุเป็นตัวเลข">
                                     </div>
@@ -1093,9 +1199,10 @@
                                 <div class="grid md:grid-cols-[83%_15%] gap-4 items-end">
                                     <div class="flex items-end">
                                         <div class="flex-1">
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span
-                                                    class="text-red-500">*</span></label>
-                                            <input type="text" name="work_reason" required x-model="work.reason"
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก 
+                                                {{-- <span class="text-red-500">*</span> --}}
+                                                </label>
+                                            <input type="text" name="work_reason" x-model="work.reason"
                                                 class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
                                                 placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน">
                                         </div>
@@ -1139,7 +1246,7 @@
                                     <label for="q1_yes"><input type="radio" id="q1_yes" name="q1"
                                             value="เคย"> เคย</label>
                                     <label for="q1_no"><input type="radio" id="q1_no" name="q1"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1158,7 +1265,7 @@
                                     <label for="q3_yes"><input type="radio" id="q3_yes" name="q3"
                                             value="เคย"> เคย</label>
                                     <label for="q3_no"><input type="radio" id="q3_no" name="q3"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1169,7 +1276,7 @@
                                     <label for="q4_yes"><input type="radio" id="q4_yes" name="q4"
                                             value="เคย"> เคย</label>
                                     <label for="q4_no"><input type="radio" id="q4_no" name="q4"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1180,7 +1287,7 @@
                                     <label for="q5_yes"><input type="radio" id="q5_yes" name="q5"
                                             value="เคย"> เคย</label>
                                     <label for="q5_no"><input type="radio" id="q5_no" name="q5"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1191,7 +1298,7 @@
                                     <label for="q6_yes"><input type="radio" id="q6_yes" name="q6"
                                             value="ใช่"> ใช่</label>
                                     <label for="q6_no"><input type="radio" id="q6_no" name="q6"
-                                            value="ไม่ใช่">
+                                            value="ไม่ใช่" required>
                                         ไม่ใช่</label>
                                 </div>
                             </div>
@@ -1203,7 +1310,7 @@
                                     <label for="q7_yes"><input type="radio" id="q7_yes" name="q7"
                                             value="เคย"> เคย</label>
                                     <label for="q7_no"><input type="radio" id="q7_no" name="q7"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1216,7 +1323,7 @@
                                     ท่านเคยขึ้นทะเบียนเป็นผู้ประกันตนกับสำนักงานประกันสังคมหรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q8_yes"><input type="radio" id="q8_yes" name="q8"
-                                            value="เคย"> เคย</label>
+                                            value="เคย" required> เคย</label>
                                     <label for="q8_no"><input type="radio" id="q8_no" name="q8"
                                             value="ไม่เคย">
                                         ไม่เคย</label>
@@ -1227,7 +1334,7 @@
                                 <p class="font-medium text-gray-800">9. ท่านยอมรับการทดลองงาน 119 วันหรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q9_yes"><input type="radio" id="q9_yes" name="q9"
-                                            value="ยอมรับ">
+                                            value="ยอมรับ" required>
                                         ยอมรับ</label>
                                     <label for="q9_no"><input type="radio" id="q9_no" name="q9"
                                             value="ไม่ยอมรับ">
@@ -1243,7 +1350,7 @@
                                             value="เคย">
                                         เคย</label>
                                     <label for="q10_no"><input type="radio" id="q10_no" name="q10"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1252,7 +1359,7 @@
                                 <p class="font-medium text-gray-800">11. ท่านมีภาระค่าใช้จ่ายในครอบครัวหรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q11_yes"><input type="radio" id="q11_yes" name="q11"
-                                            value="มี"> มี</label>
+                                            value="มี" required> มี</label>
                                     <label for="q11_no"><input type="radio" id="q11_no" name="q11"
                                             value="ไม่มี">
                                         ไม่มี</label>
@@ -1266,7 +1373,7 @@
                                             value="เคย">
                                         เคย</label>
                                     <label for="q12_no"><input type="radio" id="q12_no" name="q12"
-                                            value="ไม่เคย">
+                                            value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
@@ -1277,7 +1384,7 @@
                                     <label for="q13_yes"><input type="radio" id="q13_yes" name="q13"
                                             value="มี"> มี</label>
                                     <label for="q13_no"><input type="radio" id="q13_no" name="q13"
-                                            value="ไม่มี">
+                                            value="ไม่มี" required>
                                         ไม่มี</label>
                                 </div>
                             </div>
@@ -1315,7 +1422,7 @@
                                 <label class="block text-gray-700 font-semibold">
                                     เบอร์โทรศัพท์ <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="phone_2" name="phone_2" x-model="phone"
+                                <input type="text" id="reference_phone" name="reference_phone" x-model="phone"
                                     @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
                             </div>
@@ -1360,36 +1467,247 @@
 
                             <div x-data="{ today: '' }" x-init="today = new Date().toISOString().split('T')[0]">
                                 <label class="block text-gray-700 font-semibold mb-1">วันที่พร้อมเริ่มปฏิบัติงาน <span class="text-red-500">*</span></label>
-                                <input type="date" name="detail_2" :min="today" required
+                                <input type="date" name="start_work" :min="today" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                         </div>
                     </div>
 
                     <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
-                    <div class="p-8">
-                        <div class="grid justify-center gap-2 items-center">
-                            <!-- Checkbox: เงื่อนไขการให้บริการ -->
-                            <div class="flex items-center justify-start mb-3 flex-wrap text-sm text-gray-700">
-                                <input type="checkbox" id="tos" name="tos" value="เงื่อนไขการให้บริการ"
-                                    required class="accent-green-600 w-4 h-4">
-                                <label for="tos" class="ml-2">ยอมรับ</label>
-                                <a target="_blank" class="ml-1 text-blue-600 hover:underline">
+
+                    <div x-data="modalAgreement()" class="p-4 sm:p-8">
+                        <div class="grid justify-center gap-4">
+
+                            <!-- Checkbox: Terms of Service -->
+                            {{-- <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
+                                <input type="checkbox" id="tos" name="tos" value="1" required class="accent-green-600 w-4 h-4">
+                                <label for="tos" class="font-medium">ยอมรับ</label>
+                                <a href="#" @click.prevent="openModal('tos')" class="text-blue-600 hover:underline">
                                     เงื่อนไขการให้บริการ
                                 </a>
-                            </div>
-                            <!-- Checkbox: นโยบายความเป็นส่วนตัว -->
-                            <div class="flex items-center justify-start mb-2 flex-wrap text-sm text-gray-700">
-                                <input type="checkbox" id="privacy_1" name="privacy_1" value="นโยบายความเป็นส่วนตัว"
-                                    required class="accent-green-600 w-4 h-4">
-                                <label for="privacy_1" class="ml-2">ยอมรับ</label>
-                                <a target="_blank" class="ml-1 text-blue-600 hover:underline">
+                            </div> --}}
+
+                            <!-- Checkbox: Privacy Policy -->
+                            <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
+                                <input type="checkbox" id="privacy" name="privacy" value="1" required class="accent-green-600 w-4 h-4">
+                                <label for="privacy" class="font-medium">ยอมรับ</label>
+                                <a href="#" @click.prevent="openModal('privacy')" class="text-blue-600 hover:underline">
                                     นโยบายความเป็นส่วนตัว
                                 </a>
                             </div>
                         </div>
+
+                        <!-- Modal -->
+                        <div
+                            x-show="show"
+                            x-transition
+                            x-cloak
+                            @keydown.escape.window="closeModal()"
+                            @click.self="closeModal()"
+                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                            role="dialog"
+                            aria-modal="true"
+                        >
+                            <div class="bg-white rounded-lg shadow-xl w-[55vw] max-w-5xl h-[90vh] p-4 sm:p-6 flex flex-col">
+                                <h2 class="text-lg font-semibold mb-4" x-text="modalTitle"></h2>
+                                <div class="flex-1 overflow-y-auto max-h-full text-sm text-gray-700 mb-6" x-html="modalContent"></div>
+                                <div class="flex justify-end gap-2">
+                                    <button
+                                        @click="closeModal()"
+                                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm"
+                                    >
+                                        ปิด
+                                    </button>
+                                    <button
+                                        @click="accept()"
+                                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                                    >
+                                        ยอมรับ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div id="pdpaContent" style="display: none">
+                    <h1 class="font-bold">หนังสือให้ความยินยอม</h1>
+                    <h2 class="font-bold">การเก็บรวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคล สำหรับผู้สมัครงาน</h2>
+                    <h2 class="font-bold">สําหรับผู้สมัครงาน</h2>
+                    <p>
+                        บริษัท วี บียอนด์ ดีเวลอปเม้นท์ จำกัด (มหาชน) (ต่อไปนี้จะเรียกว่า “บริษัท”) ให้ความสำคัญและมุ่งมั่นในการคุ้มครองข้อมูลส่วนบุคคลของเจ้าของข้อมูล (ต่อไปนี้จะเรียกว่า “ผู้สมัครงาน”) ที่ได้ติดต่อเข้ามาสมัครงานกับบริษัท ดังนั้นบริษัทจึงได้กำหนดมาตรการที่เหมาะสมสำหรับการรักษาความมั่นคงปลอดภัยของข้อมูลส่วนบุคคลโดยเฉพาะการเก็บรวบรวม ประมวลผล ใช้ และ/หรือเปิดเผย ข้อมูลส่วนบุคคลของผู้สมัครงาน รวมถึงแนวทางในการปฏิบัติตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ.2562 และกฎหมายที่เกี่ยวข้องกับข้อมูลส่วนบุคคล ทั้งนี้เพื่อให้ผู้สมัครงานได้รับทราบ และเข้าใจถึงการคุ้มครองข้อมูลส่วนบุคคลของผู้สมัครงานดังต่อไปนี้
+                    </p>
+                    <br>
+                    <h2 class="font-bold">ข้อมูลส่วนบุคคลที่ บริษัทเก็บรวบรวม</h2>
+                    <p>
+                        บริษัทได้รับข้อมูลส่วนบุคคลของผู้สมัครงาน และได้เก็บรวบรวมและประมวลผลตามหนังสือให้ความยินยอมการเก็บ รวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลฉบับนี้โดยบริษัทได้จัดเก็บรวบรวม และประมวลผลข้อมูลส่วนบุคคลเท่าที่จำเป็นตามวัตถุประสงค์ในการเก็บรวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลของบริษัท ทั้งนี้ได้จำแนกประเภทของข้อมูลส่วนบุคคลดังนี้
+                    </p>
+                    <br>
+                    <table border="1" style="width:100%; border: 1px solid #ddd;">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%">ประเภทของข้อมูลส่วนบุคคล</th>
+                                <th style="width: 70%">รายละเอียด</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ml-3">ข้อมูลส่วนบุคคลพื้นฐาน</td>
+                                <td>ได้แก่ คำนำหน้าชื่อ นามสกุล ชื่อเล่น รูปถ่าย ลายมือชื่อ เลขที่ประจำตัว ประชาชน ที่อยู่ ปัจจุบัน อีเมล หมายเลขโทรศัพท์ วันเดือนปีเกิด อายุ สถานภาพการสมรส สถานภาพ ทางทหาร ประวัติการศึกษา ประวัติการทำงาน ข้อมูลเครดิต</td>
+                            </tr>
+                            <tr>
+                                <td>ข้อมูลส่วนบุคคลที่มีความอ่อนไหว</td>
+                                <td>ได้แก่ ข้อมูลประวัติอาชญากรรม เชื้อชาติ ศาสนา ฯ</td>
+                            </tr>
+                            <tr>
+                                <td>ข้อมูลบุคคลที่สาม/บุคคลอ้างอิง</td>
+                                <td>ได้แก่ คู่สมรส สมาชิกในครอบครัว บุคคลติดต่อกรณีฉุกเฉิน โดยจัดเก็บ ข้อมูลส่วนบุคคล อันได้แก่ ชื่อ นามสกุล ความสัมพันธ์ หมายเลขโทรศัพท์ และข้อมูลอื่นๆ เท่าที่จำเป็น</td>
+                            </tr>
+                            <tr>
+                                <td>ข้อมูลด้านเทคนิค สำหรับผู้สมัครผ่านเว็บไซต์/ช่องทางออนไลน์ของบริษัท</td>
+                                <td>ได้แก่ ข้อมูลการเข้าใช้งานเว็บไซต์และระบบต่างๆ ข้อมูลจราจรทางคอมพิวเตอร์(Log) ข้อมูลการติดต่อและสื่อสารระหว่างเจ้าของข้อมูล และผู้ใช้งานรายอื่น ข้อมูลจากการบันทึกการใช้งาน เช่น ตัวระบุ อุปกรณ์ หมายเลข IP ของคอมพิวเตอร์ รหัสประจำตัวอุปกรณ์ ประเภทอุปกรณ์ ข้อมูลเครือข่ายมือถือ ข้อมูลการเชื่อมต่อ ข้อมูลตำแหน่งที่ตั้งทางภูมิศาสตร์ ประเภทเบราว์เซอร์ (Browser) ข้อมูลบันทึกการเข้าออกระบบต่างๆ หรือ เว็บไซต์ที่มีการเข้าถึงก่อนและหลัง (Referring Website) ข้อมูลบันทึกประวัติการใช้ ระบบข้อมูลบันทึกเวลาเข้าออกสำนักงาน ข้อมูลบันทึกการเข้าสู่ระบบ (Login Log) ข้อมูลรายการการทำธุรกรรม (Transaction log) ข้อมูลพฤติกรรมการใช้งาน สถิติการเข้าระบบ เวลาที่เยี่ยมชมระบบ (Access Time) ที่ได้เก็บรวบรวมผ่านคุกกี้ (Cookies) หรือเทคโนโลยีอื่นๆที่คล้ายกัน</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h2 class="font-bold"><u>การเก็บรวบรวมข้อมูล</u></h2>
+                    <ol>
+                        <li>
+                            <p class="font-medium">1.ได้รับข้อมูลส่วนบุคคลโดยตรง</p>
+                            บริษัทได้รับข้อมูลส่วนบุคคลของผู้สมัครงานโดยตรง โดยเก็บรวบรวมข้อมูลส่วนบุคคลจากระบวนการสรรหาและรับสมัครงาน หรือหนังสือให้ความยินยอม ทั้งนี้ในบางกรณีบริษัทอาจจะได้รับข้อมูลจากบุคคลที่สามในกรณีอื่นด้วย
+                        </li>
+                        <li>
+                            <p class="font-medium">2.ได้รับข้อมูลส่วนบุคคลของบุคคลอื่นโดยตรง</p>
+                            ข้อมูลส่วนบุคคลของบุคคลอื่นที่ผู้สมัครงานได้ให้ไว้กับบริษัทซึ่งอาจจะให้ข้อมูลส่วนบุคคลที่เกี่ยวกับบุคคลอื่น ได้แก่ บุคคลติดต่อกรณีฉุกเฉิน ซึ่งบริษัทใช้ข้อมูลเหล่านั้นเพื่อการติดต่อในกรณีที่เกี่ยวกับการสมัครงานเท่านั้น
+                        </li>
+                        <li>
+                            <p class="font-medium">3.บริษัทอาจรวบรวมข้อมูลส่วนบุคคลจากองค์กรอื่น</p>
+                            บริษัทอาจรวบรวมข้อมูลจากองค์กรอื่นเพื่อกระบวนการสรรหาและคัดเลือกพนักงาน ได้แก่ กรณีที่ผู้สมัครงานมีการสมัครงานผ่านตัวแทน รับจ้างจัดหางาน หรือเว็บไซต์หางาน เป็นต้น
+                        </li>
+                        <li>
+                            <p class="font-medium">4.บริษัทอาจจัดเก็บบันทึกข้อมูลการเข้าออกเว็บไซต์ (Log Files) ของท่าน</p> โดยจะจัดเก็บข้อมูลดังนี้ หมายเลขไอพี (IP Address) หรือเวลาการเข้าใช้งาน เป็นต้น
+                        </li>
+                    </ol>
+                    <br>
+                    <h2 class="font-bold"><u>วัตถุประสงค์ และฐานในการดำเนินการประมวลผลข้อมูล</u></h2>
+                    <p>
+                        บริษัทจะดำเนินการประมวลผลข้อมูลส่วนบุคคลของผู้สมัครงาน โดยจะกระทำโดยมีวัตถุประสงค์ ขอบเขต และใช้วิธีการที่ชอบด้วยกฎหมาย โปร่งใส และเป็นธรรมภายใต้ฐานการประมวลผลดังต่อไปนี้
+                    </p>
+                    <ol>
+                        <li>1.เพื่อการปฏิบัติตามพันธะสัญญาการจ้างงานของบริษัท หรือเพื่อใช้ในการดำเนินการตามคำขอก่อนที่จะเข้ามาเป็นพนักงานของบริษัทตามกระบวนการสมัครงาน</li>
+                        <li>2.เพื่อความจําเป็นในการปฏิบัติตามกฎหมาย และเพื่อประโยชน์โดยชอบด้วยกฎหมายของบริษัทซึ่งจะไม่ละเมิดสิทธิพื้นฐาน หรือสิทธิทางเสรีภาพของเจ้าของข้อมูล</li>
+                        <li>3.เพื่อรวบรวมข้อมูลเป็นฐานข้อมูลของบริษัท หรือข้อมูลเชิงสถิติเกี่ยวกับจำนวนผู้เยี่ยมชมเว็บไซต์</li>
+                    </ol>
+                    <p>
+                        บริษัทจะประมวลผลข้อมูลส่วนบุคคลของผู้สมัครงานตามความจำเป็นเพื่อประเมินความเหมาะสมของผู้สมัครงานต่อตำแหน่งงาน และเพื่อตรวจสอบความถูกต้องของข้อมูลที่ได้ให้ไว้กับบริษัท
+                    </p>
+                    <br>
+                    <table border="1" style="width:100%; border-collapse: collapse; border: 1px solid #ddd;">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%">วัตถุประสงค์ในการดำเนินการ</th>
+                                <th style="width: 70%">รายละเอียด</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. เพื่อกระบวนการสรรหาบุคลากร</td>
+                                <td>
+                                    1) บริษัทใช้ข้อมูลส่วนบุคคลของผู้สมัครงานเพื่อประเมินว่าผู้สมัครงานนั้น เหมาะสมกับบทบาทหน้าที่ในตำแหน่งงานที่บริษัทต้องการสรรหาอยู่หรือไม่ และเพื่อจัดการเรื่องของการสัมภาษณ์งาน หรือการประเมินต่างๆ เมื่อได้ทำการสมัครงานกับบริษัทโดยตรง หรือผ่านทางตัวแทนรับจ้างจัดหางาน หรือบุคคลที่สาม ซึ่งจะรวมถึงการติดต่อผู้สมัครงาน เพื่อตระเตรียม ดำเนินการประเมิน และให้ข้อมูลตอบกลับ (Feedback) เกี่ยวกับการประเมินผลและสัมภาษณ์ รวมถึงในกรณีที่บริษัทเสนอการจ้างงานแก่ผู้สมัครงาน<br>
+                                    2) เพื่อประเมินว่าผู้สมัครงานมีความเหมาะสมที่จะทำงานในตำแหน่งงานที่ได้สมัครมาหรือไม่ บริษัทอาจขอให้ผู้สมัครงานตอบคำถามเกี่ยวกับ รายละเอียดบุคลิกภาพโดย ข้อมูลนั้นอาจจะได้มาทั้งจากผู้สมัครงานเองหรือจากบริษัท<br>
+                                    3) ผู้จัดการในหน่วยงานที่เปิดรับสมัครงานหรือหน่วยงานที่เกี่ยวข้องของ บริษัทนั้น อาจมีการคัดสรรใบสมัครเพื่อการสัมภาษณ์ โดยจะยึดจาก รายละเอียดที่ผู้สมัครงานได้ให้ข้อมูลการสมัครงานไว้
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2. เพื่อตรวจสอบประวัติการทำงานก่อนการจ้างงาน</td>
+                                <td>
+                                    1) เพื่อตรวจสอบในกรณีที่ผู้สมัครงานเคยมีประวัติการทำงานกับบริษัท และเหตุผลที่ได้ลาออกไป รวมถึงตรวจสอบว่าเคยสมัครงานกับบริษัทมาก่อนหรือไม่ และตรวจสอบว่าผู้สมัครงานมีความสนใจในตำแหน่งงานอื่นในบริษัทหรือไม่<br>
+                                    2) เพื่อดำเนินการตรวจสอบก่อนการจ้างงาน เพื่อประเมินความสามารถในการทำงานของผู้สมัครงาน โดยเป็นไปตามที่กฎหมายอนุญาตให้ทำได้ ได้แก่ คุณสมบัติด้านวิชาชีพ ข้อมูลเครดิตบูโร ประวัติอาชญากรรม และการตรวจเช็คจากบุคคลอ้างอิงที่ผู้สมัครงานได้ให้ข้อมูลไว้กับบริษัท
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3. เพื่อการพิจารณาตำแหน่งงานอื่นที่เหมาะสมในอนาคต</td>
+                                <td>
+                                    1) หากผู้สมัครงานไม่ประสบความสำเร็จในการประเมินสำหรับตำแหน่งงานที่ได้สมัครไว้ บริษัทจะเก็บรายละเอียดของผู้สมัครงานในฐานข้อมูลของบริษัทเป็นเวลา 3 เดือนเพื่อที่บริษัทจะสามารถติดต่อในกรณีที่มีตำแหน่งงานใด ๆ ในอนาคตที่อาจจะเหมาะสม<br>
+                                    2) ในกรณีที่ผู้สมัครงานต้องการให้ลบข้อมูล ผู้สมัครงานสามารถติดต่อมายังหน่วยงานทรัพยากรบุคคลของบริษัทที่อีเมล hr@vbeyond.co.th
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4. เพื่อใช้งานด้านแอพพลิเคชั่น บนเครื่องมือ ส่วนตัว</td>
+                                <td>
+                                    ㆍข้อมูลบัญชีผู้ใช้งานแอพพลิเคชั่น (Account) เมื่อผู้ใช้งานใช้งานแอพพลิเคชั่นของบริษัทฯ บริษัทฯอาจเข้าถึง รวบรวมและประมวลผลข้อมูลเกี่ยวกับ บัญชีผู้ใช้งานแอพพลิเคชั่น (Account) ของผู้ใช้งาน สำหรับการตรวจสอบ Token และ/หรือ UDID ของเครื่องโทรศัพท์เคลื่อนที่/อุปกรณ์ดิจิตอล เพื่อการ log-in และตรวจสอบ account ผู้ใช้งาน หรือการจัดทำข้อความแจ้งโฆษณาประชาสัมพันธ์เกี่ยวกับแอพพลิเคชั่นไปยังผู้ใช้งาน<br>
+                                    คุกกี้และเทคโนโลยีที่คล้ายกัน (Cookies and Similar Technologies) บริษัทฯกับบริษัทในเครือ และ/หรือพันธมิตรทางธุรกิจของบริษัทฯ อาจใช้ เทคโนโลยีต่างๆ ในการรวบรวมและจัดเก็บข้อมูลเมื่อผู้ใช้งานเยี่ยมชมเว็บไซต์และ/หรือบริการของบริษัท โดยการใช้คุกกี้และเทคโนโลยีที่คล้ายกัน เพื่อระบุบราวเซอร์หรืออุปกรณ์ และ/หรือเพื่อรวบรวมและจัดเก็บข้อมูลเมื่อผู้ใช้งานมีการโต้ตอบกับบริการที่บริษัทฯให้กับบริษัทในเครือ และ/หรือพันธมิตร ทางธุรกิจของบริษัทฯ เช่น หัวข้อบริการที่สนใจ หรือ บริการโฆษณา เป็นต้น<br>
+                                    ข้อมูลที่ถูกบันทึก : เมื่อผู้ใช้งานเรียกดูข้อมูลและ/ หรือรายงานจากแอพพลิเคชั่น บริษัทจะบันทึกการเรียกดูข้อมูลและ/หรือเนื้อหาดังกล่าวไว้ในแหล่งรวบรวมดังต่อไปนี้ ในเซิร์ฟเวอร์ของบริษัทเอง และ/หรือของบริษัทในเครือ และ/หรือของคู่สัญญาที่ชื่อถือได้ของบริษัทที่ทำหน้าที่บริหารจัดการข้อมูลในแอพพลิเคชั่นตามสัญญา<br>
+                                    2.2 การเปิดเผยและใช้งานข้อมูลส่วนบุคคล<br>
+                                    ข้อมูลส่วนบุคคลของผู้ใช้งานที่บริษัทได้รับ ซึ่งสามารถบ่งบอกตัวบุคคลของผู้ใช้งานได้ และเป็นข้อมูลส่วนบุคคลที่มีความสมบูรณ์และเป็นปัจจุบัน จะถูกนำไป ใช้ให้เป็นไปตามวัตถุประสงค์การดำเนินงานของบริษัทฯเท่านั้น และบริษัทฯจะดำเนินมาตรการที่เข้มงวดในการรักษาความมั่นคงปลอดภัย ตลอดจนการป้องกัน มิให้มีการนำข้อมูลส่วนบุคคลไปใช้โดยมิได้รับอนุญาตจากผู้ใช้งานก่อน<br>
+                                    บริษัทฯจะใช้ เปิดเผยข้อมูลส่วนบุคคลของผู้ใช้งานได้ ตามความยินยอมของผู้ใช้งานโดยจะต้องเป็นการใช้ตามวัตถุประสงค์ของการเก็บรวบรวม จัดเก็บ ข้อมูลของบริษัทเท่านั้น<br>
+                                    บริษัทฯจะดูแลให้ผู้ปฏิบัติงานของบริษัทมิให้เปิดเผย แสดง หรือทำให้ปรากฏในลักษณะอื่นใดซึ่งข้อมูลส่วนบุคคลของผู้ใช้งานนอกเหนือไปจากวัตถุประสงค์หรือ ต่อบุคคลภายนอก เว้นแต่<br>
+                                    ㆍ เป็นกรณีที่กฎหมายกำหนด เช่น พระราชบัญญัติการประกอบกิจการโทรคมนาคม พระราชบัญญัติว่าด้วยการกระทำความผิดทางคอมพิวเตอร์ พระราช บัญญัติป้องกันและปราบปรามการฟอกเงิน เป็นต้น<br>
+                                    ได้รับความยินยอมโดยชัดแจ้งจากผู้ใช้งาน<br>
+                                    เป็นไปเพื่อประโยชน์เกี่ยวกับชีวิต สุขภาพ หรือความปลอดภัยของผู้ใช้งานและ/หรือผู้ใช้บริการอื่น<br>
+                                    เพื่อประโยชน์แก่การสอบสวนของพนักงานสอบสวน หรือการพิจารณาพิพากษาคดีของศาล<br>
+                                    เพื่อประโยชน์ในการศึกษา วิจัย หรือการจัดทำสถิติ หรือ เพื่อประโยชน์สาธารณะวัตถุประสงค์ในการรวบรวม จัดเก็บ ข้อมูลส่วนบุคคล<br>
+                                    บริษัทรวบรวม จัดเก็บ ใช้ ข้อมูลส่วนบุคคลของผู้ใช้งาน เพื่อการดำเนินงานของบริษัทฯในการให้บริการด้าน...การคำนวณและเรียกเก็บค่าใช้บริการ การศึกษา วิเคราะห์ข้อมูลซึ่งเป็นไปตามวัตถุประสงค์ของการดำเนินงานของบริษัท และเพื่อปรับปรุงคุณภาพของการให้บริการของบริษัทให้มีประสิทธิภาพมากยิ่งขึ้นบริษัทฯจะใช้ข้อมูลที่รวบรวมจากแอพพลิเคชั่นทั้งหมดของบริษัท เพื่อให้บริการ บำรุงรักษา ป้องกัน ปรับปรุง พัฒนาบริการใหม่ๆ และปกป้องบริษัทฯและผู้ใช้ งาน ตลอดจนเพื่อนำเสนอเนื้อหาที่ได้รับการปรับแต่ง (Customize) ให้เหมาะสมกับการใช้งานของผู้ใช้งานโดยเฉพาะ เช่น แสดงผลการค้นหาที่เกี่ยวข้องกับผู้ ใช้งาน แสดงโฆษณาประชาสัมพันธ์บริการที่ผู้ใช้งานอาจสนใจและเป็นประโยชน์แก่ผู้ใช้งาน<br>
+                                    "นอกจากนี้เมื่อผู้ใช้งานติดต่อมายังบริษัทฯ บริษัทฯอาจเก็บบันทึกข้อมูล ที่อยู่อีเมลล์ ปัญหา หรือข้อเสนอแนะของผู้ใช้งานผ่าน ""ช่องทางการติดต่อ"" เพื่อนำมาใช้ในการให้คำปรึกษา แนะนำวิธีการแก้ปัญหาที่เกี่ยวข้องกับการใช้งานอุปกรณ์ และแอพพลิเคชั่น ในการนำมาปรับปรุงและพัฒนาการให้บริการของบริษัท บริษัทในเครือ และพันธมิตรทางธุรกิจ และแจ้งให้ผู้ใช้งานทราบผ่านที่อยู่ที่ผู้ใช้งานแจ้งไว้"<br>
+                                    หากภายหลังมีการเปลี่ยนแปลงวัตถุประสงค์ในการเก็บรวบรวมข้อมูลส่วนบุคคล บริษัทฯจะประกาศให้ผู้ใช้งานทราบ การแจ้งล่วงหน้าให้ผู้ใช้งานทราบก่อน 15 วัน โดยการส่งทางจดหมายอิเล็กทรอนิกส์ หรือประกาศไว้ในหน้าแรกของเว็บไซต์ เว้นแต่กฎหมายจะกำหนดไว้เป็นอย่างอื่น<br>
+                                    2.1 ข้อมูลที่รวบรวมและเหตุผลที่รวบรวม<br>
+                                    ให้ผู้ใช้งานแจ้งหรือกรอกข้อมูลส่วนบุคคลของผู้ใช้งาน เช่น ชื่อ-นามสกุล ที่อยู่ หมายเลขโทรศัพท์มือถือ เป็นต้น สำหรับแอพพลิเคชั่นที่ต้องให้มีการลง ทะเบียนก่อนการใช้งาน เพื่อจัดเก็บและบันทึกไว้ในบัญชีผู้ใช้งาน ตลอดจนเพื่อใช้ในการจัดเก็บค่าใช้บริการต่างๆ ภายในแอพพลิเคชั่น<br>
+                                    บริษัทรวบรวมข้อมูลจากการใช้งานแอพพลิเคชั่นของผู้ใช้งาน ซึ่งประกอบด้วยข้อมูลอย่างน้อยดังนี้<br>
+                                    ㆍข้อมูลเครื่องโทรศัพท์เคลื่อนที่/อุปกรณ์: บริษัทจะรวบรวมข้อมูลหมายเลขโทรศัพท์เคลื่อนที่ ตลอดจนหมายเลขอุปกรณ์ ที่ทำให้บริษัททราบว่าผู้ใช้งานเข้า ใช้งานแอพพลิเคชั่นจากอุปกรณ์ ใด เพื่อนำมาเก็บไว้ที่ server ของบริษัท และใช้ปรับแต่งการให้บริการและวิเคราะห์ปัญหาที่เหมาะสมกับอุปกรณ์นั้นๆ และใช้ SMS สำหรับส่งข้อมูล OTP สำหรับการลงทะเบียนใช้งาน<br>
+                                    ข้อมูลกล้องถ่ายรูป (Camera) เมื่อผู้ใช้งานใช้งานแอพพลิเคชั่นนี้ บริษัทอาจเข้าถึงรวบรวม และประมวลผลข้อมูลรูปถ่าย วิดีโอ และสถานที่ของรูปถ่าย และ/หรือวิดีโอของผู้ใช้งาน เพื่อให้แอพพลิเคชั่นสามารถสแกน QR-Code อุปกรณ์ดิจิตอลที่ใช้งานได้ หรือ ใช้รูปภาพสำหรับแสดง profile ของผู้ใช้ งานแอพพลิเคชั่น<br>
+                                    ข้อมูลตำแหน่ง (Location) เมื่อผู้ใช้งานใช้งานแอพพลิเคชั่นของบริษัท บริษัทฯอาจเข้าถึง รวบรวมและประมวลผลข้อมูลเกี่ยวกับตำแหน่งที่แท้จริงของผู้ ใช้งานผ่านเทคโนโลยีที่หลากหลายในการระบุตำแหน่ง เช่น ที่อยู่ IP, GPS เซ็นเซอร์หรือเครื่องมืออื่นๆ ผ่านอุปกรณ์ ของบริษัทฯ เพื่อใช้ระบุตำแหน่ง ปัจจุบันของผู้ใช้บนแผนที่ และเส้นทาง<br>
+                                    ข้อมูลบัญชีผู้ใช้งานแอพพลิเคชั่น (Account) เมื่อผู้ใช้งานใช้งานแอพพลิเคชั่นของบริษัทฯ บริษัทฯอาจเข้าถึง รวบรวมและประมวลผลข้อมูลเกี่ยวกับ
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h2 class="font-bold"><u>ข้อจำกัดในการนำข้อมูลส่วนบุคคลไปใช้หรือเปิดเผย</u></h2>
+                    <ol>
+                        <li>1.บริษัทจะใช้ หรือเปิดเผย และแสดงข้อมูลของผู้สมัครงานเท่าที่จำเป็น ตามวัตถุประสงค์ของการเก็บรวบรวมข้อมูลส่วนบุคคลเท่านั้น โดยบริษัทจะกำกับดูแลพนักงาน หรือผู้ที่มีส่วนเกี่ยวข้องของบริษัทมิให้ใช้ หรือเปิดเผยข้อมูลของผู้สมัครงานให้แก่บุคคลภายนอก หรือบุคคลที่สามอย่างเคร่งครัด</li>
+                        <li>2.บริษัทจะไม่เปิดเผยข้อมูล หรือแสดงข้อมูล หรือทำให้ปรากฏในส่วนอื่นใดของข้อมูลส่วนบุคคลที่ไม่สอดคล้องกับวัตถุประสงค์เท่าที่ได้รับความยินยอมจากผู้สมัครงาน ทั้งนี้บริษัทจะรักษาข้อมูลของผู้สมัครงานไว้เป็นความลับ เว้นแต่ที่กฎหมายกำหนด</li>
+                        <li>3.บริษัทไม่มีนโยบายในการจำหน่าย แลกเปลี่ยน ถ่ายโอน หรือคัดลอกข้อมูลของผู้สมัครงานให้แก่บุคคลภายนอก และบุคคลที่สามที่ไม่มีส่วน เกี่ยวข้องตามแนวทางปฏิบัติในการคุ้มครองข้อมูลส่วนบุคคลของผู้สมัครงานไม่ว่าด้วยเหตุประการใด</li>
+                        <li>4.บริษัทมีการจำกัดสิทธิในการเข้าถึง ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลของผู้สมัครงานให้หน่วยงานและบุคคลภายในบริษัทเฉพาะที่เกี่ยวข้องเท่านั้น</li>
+                    </ol>
+                    <br>
+                    <h2 class="font-bold"><u>สิทธิของเจ้าของข้อมูล</u></h2>
+                    <p>
+                        สิทธิของผู้สมัครงาน ซึ่งเป็นเจ้าของข้อมูลส่วนบุคคลตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มีดังนี้
+                    </p>
+                    <ol>
+                        <li>1.สิทธิได้รับการแจ้งให้ทราบ โดยได้รับการแจ้งเกี่ยวกับการประมวลผลข้อมูลส่วนบุคคล วิธีการเก็บรวบรวม บุคคลที่จะได้รับข้อมูล เหตุผล และระยะเวลาที่จัดเก็บ</li>
+                        <li>2.สิทธิขอเข้าถึงและขอรับสำเนาข้อมูลส่วนบุคคลซึ่งอยู่ในความรับผิดชอบของบริษัท หรือขอให้เปิดเผยถึงการได้มาซึ่งข้อมูลส่วนบุคคลดังกล่าวที่ไม่ได้ให้ความยินยอม</li>
+                        <li>3.สิทธิขอรับข้อมูลส่วนบุคคลที่เกี่ยวกับตนจากบริษัทโดยอัตโนมัติและขอให้ส่งหรือโอนข้อมูลส่วนบุคคลไปยังผู้ควบคุมข้อมูลส่วนบุคคลอื่นด้วยวิธีการอัตโนมัติ</li>
+                        <li>4.สิทธิคัดค้านการเก็บรวบรวม ใช้หรือเปิดเผยข้อมูลส่วนบุคคลที่เกี่ยวกับเจ้าของข้อมูลส่วนบุคคล</li>
+                        <li>5.สิทธิขอให้บริษัทดำเนินการลบหรือทำลาย หรือทำให้ข้อมูลส่วนบุคคลเป็นข้อมูลที่ไม่สามารถระบุตัวบุคคลที่เป็นเจ้าของข้อมูลส่วนบุคคลได้</li>
+                        <li>6.สิทธิขอให้บริษัทระงับการใช้ข้อมูลส่วนบุคคลได้</li>
+                        <li>7.สิทธิแก้ไขข้อมูลส่วนบุคคลให้ถูกต้อง โดยขอให้บริษัทดำเนินการแก้ไขเพิ่มเติมให้ข้อมูลส่วนบุคคลนั้นถูกต้องเป็นปัจจุบัน สมบูรณ์ และไม่ ก่อให้เกิดความเข้าใจผิด</li>
+                        <li>8.สิทธิในการขอถอนความยินยอมซึ่งได้ให้ไว้กับบริษัทในการเก็บรวบรวม ประมวลผล ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล</li>
+                    </ol>
+                    <p>
+                        ทั้งนี้ผู้สมัครงานมีสิทธิที่จะยื่นคำขอใช้สิทธิร้องเรียนต่อบริษัท บางกรณีบริษัทอาจปฏิเสธการใช้สิทธิตามเหตุผลที่จะได้ แจ้งให้ทราบต่อไป ทั้งนี้ผู้สมัครงานสามารถร้องเรียนไปยังสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล หากไม่เห็นด้วยกับเหตุผลที่บริษัทชี้แจง
+                    </p>
+                    <p>
+                        การร้องขอใดๆเพื่อการใช้สิทธิตามที่กล่าวข้างต้น ผู้สมัครงานจะต้องกระทำเป็นลายลักษณ์อักษร และบริษัทจะใช้ความพยายามอย่างดีที่สุดที่จะดำเนินการหรือชี้แจงภายใน 30 วัน หรือไม่เกินตามระยะเวลาที่กฎหมายกำหนด โดยบริษัทจะปฏิบัติตามข้อกำหนดทางกฎหมายที่เกี่ยวข้องกับสิทธิของผู้สมัครงานในฐานะเจ้าของข้อมูลส่วนบุคคล ในกรณีที่ขอให้บริษัท ลบ ทำลาย กำจัดการประมวลผลข้อมูลส่วนบุคคล ระงับการใช้ชั่วคราว แปลง ข้อมูลส่วนบุคคลในรูปแบบข้อมูลที่ไม่สามารถระบุตัวตนเจ้าของ ข้อมูลส่วนบุคคลได้ หรือถอนความยินยอม อาจทำให้เกิดข้อจำกัดกับบริษัทในการดำเนินการตามกฎหมายที่เกี่ยวข้องได้ทั้งนี้ การใช้สิทธิดังกล่าวข้างต้น บริษัทขอสงวนสิทธิ์ในการคิดค่าใช้จ่ายที่เกี่ยวข้องและจำเป็นต่อการเข้าดำเนินการเกี่ยวกับข้อมูลส่วนบุคคลตามที่ผู้สมัครงานร้องขอ
+                    </p>
+                    <br>
+                    <h2 class="font-bold">การติดต่อบริษัท</h2>
+                    <p>
+                        ผู้สมัครงานสามารถติดต่อกับเจ้าหน้าที่หน่วยงานทรัพยากรบุคคลของบริษัทในกรณีที่มีข้อสงสัย ข้อเสนอแนะ ตามความยินยอมในการเก็บ รวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูล หรือขอใช้สิทธิของเจ้าของข้อมูลส่วนบุคคลได้ที่
+                    </p>
+                    <p>เจ้าหน้าที่หน่วยงานทรัพยากรบุคคล</p>
+                    <ul>
+                        <li>บริษัท วี บียอนด์ ดีเวลอปเม้นท์ จํากัด (มหาชน)</li>
+                        <li>อาคารเอ็มไพร์ทาวเวอร์ เลขที่1 ชั้น 24 ยูนิต 2401 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพมหานคร 10120</li>
+                        <li>หมายเลขติดต่อ : 02-006-8008 (จันทร์ - ศุกร์ : เวลา 10.00 น. - 17.00 น. ยกเว้นวันหยุดราชการ)</li>
+                        <li>อีเมล์ : hr@vbeyond.co.th</li>
+                    </ul>
+                    <p>
+                        ข้าพเจ้าเจ้าของข้อมูลในฐานะผู้สมัครงาน ได้อ่าน และรับทราบข้อมูลข้างต้นแล้ว และยินยอมให้บริษัทเก็บรวบรวม ประมวลผล ใช้ และ/หรือ เปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า ตามหนังสือให้ความยินยอมการเก็บรวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลฉบับนี้
+                    </p>
+
+                </div>
+
 
                 <!-- Section: Submit Button -->
                 <div class="flex justify-center md:justify-end my-8">
@@ -1436,16 +1754,19 @@
             // Dynamic Education Table
             function addEduRow() {
                 const template = document.getElementById('edu-row-template').content.cloneNode(true);
-                template.querySelector('.remove-row-btn').onclick = function(e) {
-                    const tbody = document.getElementById('edu-table-body');
-                    // เช็คจำนวนแถว
-                    if (tbody.querySelectorAll('tr').length > 1) {
-                        e.target.closest('tr').remove();
-                    }
-                    // ถ้ามีแค่ 1 แถว ไม่ต้องลบ
-                };
-                document.getElementById('edu-table-body').appendChild(template);
-                updateRemoveBtnState();
+                if (template) {
+                    template.querySelector('.remove-row-btn').onclick = function(e) {
+                        const tbody = document.getElementById('edu-table-body');
+                        // เช็คจำนวนแถว
+                        if (tbody.querySelectorAll('tr').length > 1) {
+                            e.target.closest('tr').remove();
+                        }
+                        // ถ้ามีแค่ 1 แถว ไม่ต้องลบ
+                    };
+                    document.getElementById('edu-table-body').appendChild(template);
+                    updateRemoveBtnState();
+                }
+               
             }
 
             // ฟังก์ชันสำหรับซ่อน/โชว์ปุ่มลบ
@@ -1544,9 +1865,11 @@
             }
 
             // Address handler
-            function addressHandler() {
+            function addressUser() {
                 return {
                     sameAsRegistered: false,
+
+                    // Address models
                     registered: {
                         address: '',
                         province: '',
@@ -1561,8 +1884,36 @@
                         subdistrict: '',
                         postcode: ''
                     },
+
+                    // Dropdown lists
+                    provinces: [],
+                    provinces_curr: [],
+                    amphoes: [],
+                    amphoes_curr: [],
+                    tambons: [],
+                    tambons_curr: [],
+                    zipcodes: [],
+                    zipcodes_curr: [],
+
+                    // Selected codes for dropdowns
+                    selectedProvince: '',
+                    selectedSecondProvince: '',
+                    selectedAmphoe: '',
+                    selectedSecondAmphoe: '',
+                    selectedTambon: '',
+                    selectedSecondTambon: '',
+
                     init() {
-                        // Sync เริ่มต้นเมื่อกด checkbox
+                        // Load province list on init
+                        fetch("{{ url('api/provinces') }}")
+                            .then(res => res.json())
+                            .then(data => {
+                                this.provinces = data;
+                                this.provinces_curr = data; // For current address
+                            });
+
+                    
+                        // Watch for "same as" toggle
                         this.$watch('sameAsRegistered', (value) => {
                             if (value) {
                                 this.copyAddress();
@@ -1571,20 +1922,138 @@
                             }
                         });
 
-                        // เฝ้าดูทุก key ของ registered แล้ว sync แบบ realtime ถ้า sameAsRegistered ถูกเลือก
-                        this.$watch('registered', (value) => {
-                            if (this.sameAsRegistered) {
-                                this.copyAddress();
-                            }
-                        }, {
-                            deep: true
-                        });
+                        // Watch any registered field changes and sync
+                        // this.$watch('registered', () => {
+                        //     if (this.sameAsRegistered) {
+                        //         this.copyAddress();
+                        //     }
+                        // }, { deep: true });
                     },
+
+                    loadAmphoes() {
+                        this.amphoes = [];
+                        this.tambons = [];
+                        this.zipcodes = [];
+                        this.selectedAmphoe = '';
+                        this.selectedTambon = '';
+                        this.registered.district = '';
+                        this.registered.subdistrict = '';
+                        this.registered.postcode = '';
+
+                        // Set province name
+                        const selectProvince = this.provinces.find(p => p.province == this.selectedProvince);
+                        
+                        this.registered.province = selectProvince ? selectProvince.province : '';
+
+                        fetch(`{{ url('api/amphoes') }}?province=${this.selectedProvince}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                this.amphoes = data;
+                                this.amphoes_curr = data; // For current address
+                            });
+                    },
+
+                    loadAmphoesCurr(){
+                        this.amphoes_curr = [];
+                        this.tambons_curr = [];
+                        this.zipcodes_curr = [];
+                        this.selectedSecondAmphoe = '';
+                        this.selectedSecondTambon = '';
+                        this.current.district = '';
+                        this.current.subdistrict = '';
+                        this.current.postcode = '';
+
+                        // Set province name
+                        const selectSecondProvince = this.provinces_curr.find(p => p.province == this.selectedSecondProvince);
+                        console.log('Selected Province:', selectSecondProvince);
+                        
+                        if (this.sameAsRegistered == false) {
+                            this.current.province = selectSecondProvince ? selectSecondProvince.province : '';
+                            console.log('Current Province:', this.current.province);
+                            
+                        }
+
+                        fetch(`{{ url('api/amphoes') }}?province=${this.selectedSecondProvince}`)
+                            .then(res => res.json())
+                            .then(data => this.amphoes_curr = data);
+                    },
+
+                    loadTambons() {
+                        this.tambons = [];
+                        this.zipcodes = [];
+                        this.selectedTambon = '';
+                        this.registered.subdistrict = '';
+                        this.registered.postcode = '';
+
+                        // Set amphoe name
+                        const selectAmphoe = this.amphoes.find(a => a.amphoe == this.selectedAmphoe);
+                        console.log('Selected Amphoe:',  selectAmphoe);
+                        
+                        this.registered.district = selectAmphoe ? selectAmphoe.amphoe : '';
+
+                        fetch(`{{ url('api/tambons') }}?province=${this.selectedProvince}&amphoe=${this.selectedAmphoe}`)
+                            .then(res => res.json())
+                            .then(data => this.tambons = data);
+                    },
+
+                    loadTambonsCurr() {
+                        this.tambons_curr = [];
+                        this.zipcodes_curr = [];
+                        this.selectedSecondTambon = '';
+                        this.current.subdistrict = '';
+                        this.current.postcode = '';
+
+                        // Set amphoe name
+                        const selectSecondAmphoe = this.amphoes_curr.find(a => a.amphoe == this.selectedSecondAmphoe);
+                        console.log('Selected Amphoe:',  selectSecondAmphoe);
+                        
+                        if (this.sameAsRegistered == false) {
+                            this.current.district = selectSecondAmphoe ? selectSecondAmphoe.amphoe : '';
+                        }
+
+                        fetch(`{{ url('api/tambons') }}?province=${this.selectedSecondProvince}&amphoe=${this.selectedSecondAmphoe}`)
+                            .then(res => res.json())
+                            .then(data => this.tambons_curr = data);
+                    },
+
+                    loadZipcode() {
+                        this.registered.postcode = '';
+
+                        // Set tambon name
+                        const selectTambon = this.tambons.find(t => t.tambon == this.selectedTambon);
+                        this.registered.subdistrict = selectTambon ? selectTambon.tambon : '';
+
+                        fetch(`{{ url('api/zipcodes') }}?province=${this.selectedProvince}&amphoe=${this.selectedAmphoe}&tambon=${this.selectedTambon}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.length > 0) {
+                                    this.registered.postcode = data[0].zipcode;
+                                }
+                            });
+                    },
+
+                    loadZipcodeCurr() {
+                        this.current.postcode = '';
+
+                        // Set tambon name
+                        const selectSecondTambon = this.tambons_curr.find(t => t.tambon == this.selectedSecondTambon);
+                        this.current.subdistrict = selectSecondTambon ? selectSecondTambon.tambon : '';
+
+                        fetch(`{{ url('api/zipcodes') }}?province=${this.selectedSecondProvince}&amphoe=${this.selectedSecondAmphoe}&tambon=${this.selectedSecondTambon}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.length > 0) {
+                                    this.current.postcode = data[0].zipcode;
+                                }
+                            });
+                    },
+
                     copyAddress() {
-                        this.current = {
-                            ...this.registered
-                        };
+                        this.current = { ...this.registered };
+                        console.log('Copying address:', this.current);
+                        
                     },
+
                     clearCurrent() {
                         this.current = {
                             address: '',
@@ -1593,9 +2062,11 @@
                             subdistrict: '',
                             postcode: ''
                         };
-                    }
-                };
+                    },
+                    
+                }
             }
+
 
             // Phone number formatter
             function phoneFormat() {
@@ -1646,11 +2117,29 @@
                         }
                     },
                     formatGPA(value) {
-                        let num = parseFloat(value.replace(/[^0-9.]/g, ''));
-                        if (isNaN(num)) return '';
-                        if (num > 4) num = 4.00;
-                        return num.toFixed(2);
+                        if (value) {
+                           let num = parseFloat(value.replace(/[^0-9.]/g, ''));
+                            if (isNaN(num)) return '';
+                            if (num > 4) num = 4.00;
+                            return num.toFixed(2); 
+                        }
+                        
                     }
+                    // formatGPA(value) {
+                    //     if (!value) return '';
+                    //     value = value.toString().replace(/[^0-9.]/g, '');
+                    //     const parts = value.split('.');
+                    //     let numStr = parts[0];
+                    //     if (parts.length > 1) {
+                    //         numStr += '.' + parts[1].slice(0, 2);
+                    //     }
+
+                    //     let num = parseFloat(numStr);
+                    //     if (isNaN(num)) return '';
+                    //     if (num > 4) num = 4.00;
+                    //     return num.toFixed(2);
+                    // }
+
                 };
             }
 
@@ -1663,13 +2152,13 @@
                     show: false,
 
                     async loadUniversities() {
-                        try {
-                            const res = await fetch('http://202.44.139.145/api/public/opendata/univ_uni_11_03_2563');
-                            const data = await res.json();
-                            this.universities = [...new Set(data.map(u => u.UNIV_NAME))]; // ลบชื่อซ้ำ
-                        } catch (error) {
-                            console.error('โหลดรายชื่อมหาวิทยาลัยไม่สำเร็จ:', error);
-                        }
+                        // try {
+                        //     const res = await fetch('http://202.44.139.145/api/public/opendata/univ_uni_11_03_2563');
+                        //     const data = await res.json();
+                        //     this.universities = [...new Set(data.map(u => u.UNIV_NAME))]; // ลบชื่อซ้ำ
+                        // } catch (error) {
+                        //     console.error('โหลดรายชื่อมหาวิทยาลัยไม่สำเร็จ:', error);
+                        // }
                     },
 
                     filterUniversities() {
@@ -1777,9 +2266,8 @@
                         position: '',
                         responsibility: '',
                         duration: '',
-                        salary: '',
+                        currentsalary: '',
                         otherIncome: '',
-                        totalIncome: '',
                         reason: ''
                     }],
                     addRow() {
@@ -1788,17 +2276,97 @@
                             position: '',
                             responsibility: '',
                             duration: '',
-                            salary: '',
+                            currentsalary: '',
                             otherIncome: '',
-                            totalIncome: '',
                             reason: ''
                         });
                     },
                     removeRow(idx) {
                         if (this.works.length > 1) this.works.splice(idx, 1);
+                    },
+                    formatNumber(value) {
+                        const numeric = value.replace(/[^\d]/g, '');
+                        return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                     }
                 };
             }
+            function modalAgreement() {
+                return {
+                    show: false,
+                    current: '',
+                    modalTitle: '',
+                    modalContent: '',
+                    openModal(type) {
+                        this.current = type;
+                        this.show = true;
+
+                        if (type === 'tos') {
+                            this.modalTitle = 'เงื่อนไขการให้บริการ';
+                            this.modalContent = `
+                                <p>รายละเอียดของเงื่อนไขการให้บริการ...</p>
+                                <p>คุณต้องยอมรับเพื่อดำเนินการต่อ</p>
+                            `;
+                        } else if (type === 'privacy') {
+                            this.modalTitle = 'นโยบายความเป็นส่วนตัว';
+                            // document.getElementById('pdpaContent').style.display = 'block';
+                            this.modalContent = document.getElementById('pdpaContent').innerHTML;
+                            // this.modalContent = `
+                            //     <p>รายละเอียดของนโยบายความเป็นส่วนตัว...</p>
+                            //     <p>เราเคารพข้อมูลของคุณ</p>
+                            // `;
+                        }
+                    },
+                    closeModal() {
+                        this.show = false;
+                        this.modalContent = '';
+                    },
+                    accept() {
+                        document.getElementById(this.current).checked = true;
+                        this.closeModal();
+                    }
+                };
+            }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const accordionItems = document.querySelectorAll('.accordion-item');
+
+                accordionItems.forEach(item => {
+                    const button = item.querySelector('.accordion-button');
+                    const content = item.querySelector('.accordion-content');
+                    const icon = button.querySelector('svg:last-child');
+
+                    button.addEventListener('click', () => {
+                        const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                        if (isExpanded) {
+                            content.style.maxHeight = '0px';
+                            icon.style.transform = 'rotate(0deg)';
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            icon.style.transform = 'rotate(180deg)';
+                        }
+                    });
+                });
+
+                const consentButton = document.getElementById('consent-button');
+                const modal = document.getElementById('consent-modal');
+                const closeModalButton = document.getElementById('close-modal-button');
+
+                consentButton.addEventListener('click', () => {
+                    modal.classList.remove('hidden');
+                });
+
+                closeModalButton.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                });
+
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            });
         </script>
         <script src="//unpkg.com/alpinejs" defer></script>
     </body>
