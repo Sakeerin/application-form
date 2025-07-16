@@ -22,6 +22,10 @@ Route::get('/register-form', function () {
     return view('main');
 });
 
+Route::get('/apply-form', function () {
+    return view('test');
+});
+
 Route::get('/template-form', function () {
     return view('template');
 });
