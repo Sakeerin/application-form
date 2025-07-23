@@ -5,11 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationController extends Controller
 {
+    public function index(){
+        try {
+            $apiVBnext = env('API_VBNEXT');
+            $apiToken = env('API_TOKEN_AUTH');
+            $url = "{$apiVBnext}/hr/getPositionApply";
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiToken
+            ])->post($url);
+
+            if ($response->successful()) {
+                $position = json_decode($response->getBody(), true);
+            } else {
+                $position = [];
+            }
+
+            return view('main', [
+                'positions' => $position['data'],
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        
+    }
+
     public function store(Request $request){
         // dd($request->all());
+        // dd($request->getSchemeAndHttpHost());
+        $datetime = now()->format('Y-m-d H:i:s');
         $apply = new Application();
         $apply->position = $request->input('position');
         $apply->salary = $request->input('salary');
@@ -146,10 +176,64 @@ class ApplicationController extends Controller
         $apply->reference_phone = $request->input('reference_phone');
         $apply->application_source = $request->input('application_source');
         $apply->start_work = $request->input('start_work');
-        $apply->tos = $request->input('tos') === '1' ? 1 : 0;
         $apply->privacy = $request->input('privacy') === '1' ? 1 : 0;
         $apply->save();
         $lastId = $apply->id;
+
+        // Send email to user after saving application
+        try {
+            $userEmail = $request->input('email');
+            $subject = 'Application Received';
+            $userData = [
+                'name' => $request->input('name_thai'),
+                'position' => $request->input('position'),
+                'datetime' => $datetime,
+            ];
+            $userMessage = view('emails.application_received', $userData)->render();
+
+            if (config('mail.driver') !== 'log') {
+                Mail::send([], [], function ($message) use ($userEmail, $subject, $userMessage) {
+                    $message->from('noreply@vbeyond.co.th', 'HR Apply Job Team')
+                    ->to($userEmail)
+                    ->subject($subject)
+                    ->setBody($userMessage, 'text/html');
+                });
+            } else {
+                Log::info('Mail driver is set to log. User email is not sent.');
+            }
+        } catch (\Exception $e) {
+            Log::error('User email sending failed: ' . $e->getMessage());
+        }
+
+        // Send email to admin after saving application
+        try {
+            $adminEmail = 'sakeerin.k@vbeyond.co.th';
+            $adminSubject = 'New Application Submitted';
+            $adminData = [
+                'name' => $request->input('name_thai'),
+                'email' => $request->input('email'),
+                'position' => $request->input('position'),
+                'datetime' => $datetime,
+            ];
+            $adminMessage = view('emails.application_admin', $adminData)->render();
+
+            if (config('mail.driver') !== 'log') {
+                Mail::send([], [], function ($message) use ($adminEmail, $adminSubject, $adminMessage) {
+                    $message->from('noreply@vbeyond.co.th', 'HR Apply Job Team')
+                    ->to($adminEmail)
+                    ->subject($adminSubject)
+                    ->setBody($adminMessage, 'text/html');
+                });
+            } else {
+                Log::info('Mail driver is set to log. Admin email is not sent.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Admin email sending failed: ' . $e->getMessage());
+        }
+
+        // Call the saveConsent function to handle PDPA logic
+        // $this->saveConsent($request);
+
         $educations = json_decode($request->input('educations'), true);
         $isEmptyEdu = empty(array_filter($educations, function ($edu) {
             return array_filter($edu); // True if at least one value is not empty
@@ -210,7 +294,6 @@ class ApplicationController extends Controller
 
             $path = null;
             if ($request->hasFile($fileKey)) {
-                // $path = $request->file($fileKey)->store('uploads/certification', 'public');
                 $file = $request->file($fileKey);
                 $extension = $file->getClientOriginalExtension();
                 $filename = now()->format('Ymd_His') . '_' . uniqid() . '.' . $extension;
@@ -260,8 +343,7 @@ class ApplicationController extends Controller
                 $company = $work['company'];
                 $position = $work['position'];
                 $responsibility = $work['responsibility'];
-                $duration = $work['duration'] ?? 0;
-                // $salary = $work['salary'];
+                $duration = $work['duration'];
                 $otherIncome = $work['otherIncome'];
                 $reason = $work['reason'];
                 $currentsalary = $work['currentsalary'];
@@ -273,7 +355,6 @@ class ApplicationController extends Controller
                     'position' => $position,
                     'responsibility' => $responsibility,
                     'duration' => $duration,
-                    // 'salary' => $salary,
                     'otherIncome' => $otherIncome,
                     'reason' => $reason,
                     'currentsalary' => $currentsalary,
@@ -281,7 +362,58 @@ class ApplicationController extends Controller
             }
         }
         
-        // dd($works);
         return redirect()->back()->with('success', 'Apply successfully!');
+    }
+
+    private function saveConsent(Request $request)
+    {
+        // Get the host and dynamically set the referrerName based on the form
+        $host = $request->getSchemeAndHttpHost();
+        $referrerName = "{$host}/apply-form";
+
+        // Prepare the identify_data
+        $identifyData = array_filter([
+            'name' => 'ชื่อ-สกุล',
+            'email' => 'อีเมล์',
+            'phone' => 'เบอร์โทรศัพท์',
+            'address' => 'ที่อยู่',
+            'id_card' => 'รหัสบัตรประชาชน',
+        ]);
+
+        $nameParts = explode(' ', $request->name_thai, 2);
+        $dataSubject_Name = $nameParts[0]; // First part of the name
+        $dataSubject_Surname = isset($nameParts[1]) ? $nameParts[1] : ''; // Rest as surname
+
+        // Prepare consent data for API request
+        $consentData = [
+            'formName' => 'แบบฟอร์มสมัครงาน',
+            'dataSubject_Name' => $dataSubject_Name,
+            'dataSubject_Surname' => $dataSubject_Surname,
+            'email' => $request->email,
+            'identify_data' => implode(',', $identifyData),
+            'time_Period' => 3650,
+            'purpose' => 'ยืนยันและยอมรับนโยบายความเป็นส่วนตัว',
+            'ip' => $request->ip(),
+            'referrerName' => $referrerName,
+        ];
+
+        // Call the Add Consent API
+        $client = new \GuzzleHttp\Client();
+        $apiUrl = env('T_REG_API_URL') . '/Consent';
+        $apiKey = env('T_REG_API_KEY');
+
+        try {
+            $response = $client->post($apiUrl, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $consentData,
+            ]);
+
+            return json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Error calling Add Consent API: ' . $e->getMessage()];
+        }
     }
 }

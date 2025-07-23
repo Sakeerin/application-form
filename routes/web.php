@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\http\Controllers\ApplicationController;
+use App\Http\Controllers\ApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,20 +14,33 @@ use App\http\Controllers\ApplicationController;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+// Route::get('/register-form', function () {
+//     return view('main');
+// });
+
+// Route::get('/apply-test', function () {
+//     return view('test');
+// });
+
+// Route::get('/template-form', function () {
+//     return view('template');
+// });
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/apply-form');
 });
 
-Route::get('/register-form', function () {
-    return view('main');
-});
+Route::get('/apply-form', [ApplicationController::class,'index'])->name('index');
 
-Route::get('/apply-form', function () {
-    return view('test');
-});
 
-Route::get('/template-form', function () {
-    return view('template');
-});
 Route::post('/store', [ApplicationController::class,'store'])->name('store');
+
+// Route Fallback
+Route::fallback(function () {
+    return redirect('/apply-form');
+});
 

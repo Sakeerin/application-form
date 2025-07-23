@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Register')
+@section('title', 'Apply Job')
 
 @section('content')
 
     <body class="bg-gray-50 min-h-screen overflow-auto md:py-10">
+
+        @php
+            $positionId = request()->query('position_id');
+        @endphp
+
         <div class="max-w-4xl mx-auto space-y-10">
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded relative" role="alert">
@@ -108,29 +113,34 @@
 
                     <!-- Basic Info -->
                     <div class="md:col-span-2 grid grid-cols-1 gap-4 md:m-8">
-                        <div>
-                            <label for="position" class="block text-gray-700 font-semibold mb-1">ตำแหน่งที่สมัคร <span
-                                    class="text-red-500">*</span></label>
-                            <select name="position" id="position" required
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                                <option value="">-- กรุณาเลือก --</option>
-                                <option value="Chief Executive Officer">Chief Executive Officer</option>
-                                <option value="Executive Assistant to the CEO">Executive Assistant to the CEO</option>
-                                <option value="Assistant to the CEO">Assistant to the CEO</option>
-                                <option value="Driver">Driver</option>
-                                <option value="Agent Wealth International Manager">Agent Wealth International Manager</option>
-                                <option value="Senior Secretary Manager">Senior Secretary Manager</option>
-                                <option value="Secretary to the CEO Manager  Level 2">Secretary to the CEO Manager  Level 2</option>
-                                <option value="Assistant Secretary to the CEO">Assistant Secretary to the CEO</option>
-                                <option value="Internal Audit Manager">Internal Audit Manager</option>
-                                <option value="Internal Audit Supervisor">Internal Audit Supervisor</option>
-                                <option value="Internal Audit Officer">Internal Audit Officer</option>
-                                <option value="Chief Operating Officer">Chief Operating Officer</option>
-                                <option value="Senior Human Resource and Admin Manager">Senior Human Resource and Admin Manager</option>
-                                <option value="Assistant Human Resource and Admin Manager ">Assistant Human Resource and Admin Manager </option>
-                                <option value="Human Resource and Admin Supervisor">Human Resource and Admin Supervisor</option>
-                                <option value="Recruitment Supervisor">Recruitment Supervisor</option>
-                            </select>
+                        <div x-data="positionSelect()" class="relative">
+                            <label for="position" class="block text-gray-700 font-semibold mb-1">
+                                ตำแหน่งที่สมัคร <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                required
+                                x-model="search"
+                                placeholder="ค้นหาตำแหน่ง..."
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 mb-2 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                @focus="showList = true"
+                                @input="showList = true"
+                                @blur="setTimeout(() => showList = false, 200)"
+                            >
+                            <input type="hidden" name="position" :value="search">
+                            <div class="absolute z-10 w-full bg-white border border-gray-300 rounded shadow max-h-60 overflow-y-auto"
+                                x-show="showList"
+                                x-transition>
+                                <template x-for="p in filtered()" :key="p.id">
+                                    <div
+                                        class="px-3 py-2 hover:bg-green-100 cursor-pointer"
+                                        @mousedown.prevent="selected = p.id; search = p.position; showList = false"
+                                        x-text="p.position">
+                                    </div>
+                                </template>
+                                <template x-if="filtered().length === 0">
+                                    <div class="px-3 py-2 text-gray-400">ไม่พบตำแหน่ง</div>
+                                </template>
+                            </div>
                         </div>
                         <div x-data="fnSalary()">
                             <label for="salary" class="block text-gray-700 font-semibold mb-1">
@@ -259,11 +269,25 @@
 
                         <!-- วันเดือนปีเกิด -->
                         <div class="flex items-center grid grid-cols-1 gap-4 items-center">
-                            <div>
+                            {{-- <div>
                                 <label for="birthdate" class="block text-gray-700 font-semibold mb-1">วัน/เดือน/ปีเกิด
                                     <span class="text-red-500">*</span></label>
                                 <input type="date" name="birthdate" id="birthdate" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                            </div> --}}
+                            <div x-data>
+                                <label for="birthdate" class="block text-gray-700 font-semibold mb-1">
+                                    วัน/เดือน/ปีเกิด <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="date"
+                                    name="birthdate"
+                                    id="birthdate"
+                                    required
+                                    x-model="$store.ageData.birthdate"
+                                    @change="$store.ageData.updateAge()"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                >
                             </div>
                         </div>
 
@@ -300,11 +324,26 @@
                     </div>
 
                     <div class="flex items-end grid grid-cols-4 gap-6 items-end"> <!--Row 5 -->
-                        <div>
+                        <div x-data>
                             <label for="age" class="block text-gray-700 font-semibold">อายุ (ปี) <span
                                     class="text-red-500">*</span></label>
-                            <input type="number" name="age" id="age" readonly placeholder="--"
-                                class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-200 text-gray-700">
+                            {{-- <input type="number" name="age" id="age" readonly placeholder="--" required
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-200 text-gray-700"> --}}
+                                 <input
+                                    type="number"
+                                    name="age"
+                                    id="age"
+                                    :value="$store.ageData.age"
+                                    readonly
+                                    min="1"
+                                    required
+                                    placeholder="--"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-200 text-gray-700"
+                                    :class="{'border-red-500': $store.ageData.age <= 0}"
+                                >
+                                <template x-if="$store.ageData.age <= 0 && $store.ageData.birthdate">
+                                    <p class="text-red-500 text-sm mt-1">กรุณากรอกวันเกิดที่ถูกต้อง</p>
+                                </template>
                         </div>
                         <div>
                             <label for="nationality" class="block text-gray-700 font-semibold">สัญชาติ <span
@@ -819,9 +858,6 @@
                                             inputmode="numeric"
                                             @input="edu.graduate_year = edu.graduate_year.toString().slice(0, 4)"
                                             required>
-                                    {{-- <input type="number" name="edu_gradyear" id="edu_gradyear"
-                                        class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
-                                        x-model="edu.graduate_year" inputmode="number" maxlength="4" required> --}}
                                 </div>
 
                                 <!-- ปุ่มลบ -->
@@ -1254,7 +1290,7 @@
                             <div>
                                 <p class="font-medium text-gray-800">2.
                                     รายชื่อสถาบันทางการเงินที่ท่านเคยใช้บริการหรือใช้บริการย้อนหลังอยู่ ณ ปัจจุบัน</p>
-                                <input type="text" id="q2" name="q2"
+                                <input type="text" id="q2" name="q2" required
                                     class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-3 py-2 bg-gray-50">
                             </div>
 
@@ -1478,15 +1514,6 @@
                     <div x-data="modalAgreement()" class="p-4 sm:p-8">
                         <div class="grid justify-center gap-4">
 
-                            <!-- Checkbox: Terms of Service -->
-                            {{-- <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
-                                <input type="checkbox" id="tos" name="tos" value="1" required class="accent-green-600 w-4 h-4">
-                                <label for="tos" class="font-medium">ยอมรับ</label>
-                                <a href="#" @click.prevent="openModal('tos')" class="text-blue-600 hover:underline">
-                                    เงื่อนไขการให้บริการ
-                                </a>
-                            </div> --}}
-
                             <!-- Checkbox: Privacy Policy -->
                             <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
                                 <input type="checkbox" id="privacy" name="privacy" value="1" required class="accent-green-600 w-4 h-4">
@@ -1700,7 +1727,7 @@
                     <p>เจ้าหน้าที่หน่วยงานทรัพยากรบุคคล</p>
                     <ul>
                         <li>บริษัท วี บียอนด์ ดีเวลอปเม้นท์ จํากัด (มหาชน)</li>
-                        <li>อาคารเอ็มไพร์ทาวเวอร์ เลขที่1 ชั้น 24 ยูนิต 2401 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพมหานคร 10120</li>
+                        <li>อาคารเอ็มไพร์ทาวเวอร์ เลขที่1 ชั้น 47 ยูนิต 4701, 4711, 4712 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพมหานคร 10120</li>
                         <li>หมายเลขติดต่อ : 02-006-8008 (จันทร์ - ศุกร์ : เวลา 10.00 น. - 17.00 น. ยกเว้นวันหยุดราชการ)</li>
                         <li>อีเมล์ : hr@vbeyond.co.th</li>
                     </ul>
@@ -1722,6 +1749,26 @@
         </div>
 
         <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('ageData', {
+                    age: '',
+                    birthdate: '',
+                    updateAge() {
+                        if (this.birthdate) {
+                            const birthDate = new Date(this.birthdate);
+                            const today = new Date();
+                            let age = today.getFullYear() - birthDate.getFullYear();
+                            const m = today.getMonth() - birthDate.getMonth();
+                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                age--;
+                            }
+                            this.age = age > 0 ? age : 0;
+                        } else {
+                            this.age = '';
+                        }
+                    }
+                });
+            });
             // Image Preview Handler
             const input = document.getElementById('image1');
             const preview = document.getElementById('preview');
@@ -1752,6 +1799,27 @@
 
                 ageInput.value = age >= 0 ? age : '';
             });
+
+            function positionSelect() {
+                return {
+                    search: '',
+                    selected: '{{ $positionId ?? '' }}',
+                    showList: false,
+                    positions: @json($positions) || [],
+                    filtered() {
+                        if (!this.search) return this.positions;
+                        return this.positions.filter(p => p.position && p.position.toLowerCase().includes(this.search.toLowerCase()));
+                    },
+                    init() {
+                        if (this.selected) {
+                            const found = this.positions.find(p => p.id == this.selected);
+                            if (found) {
+                                this.search = found.position;
+                            }
+                        }
+                    }
+                }
+            }
 
             // Dynamic Education Table
             function addEduRow() {
@@ -2127,21 +2195,7 @@
                         }
                         
                     }
-                    // formatGPA(value) {
-                    //     if (!value) return '';
-                    //     value = value.toString().replace(/[^0-9.]/g, '');
-                    //     const parts = value.split('.');
-                    //     let numStr = parts[0];
-                    //     if (parts.length > 1) {
-                    //         numStr += '.' + parts[1].slice(0, 2);
-                    //     }
-
-                    //     let num = parseFloat(numStr);
-                    //     if (isNaN(num)) return '';
-                    //     if (num > 4) num = 4.00;
-                    //     return num.toFixed(2);
-                    // }
-
+                    
                 };
             }
 
