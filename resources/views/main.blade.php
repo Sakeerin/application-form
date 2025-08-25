@@ -8,13 +8,22 @@
 
         @php
             $positionId = request()->query('position_id');
+            $success = session('success');
+            $error = session('error');
         @endphp
 
         <div class="max-w-4xl mx-auto space-y-10">
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded relative" role="alert">
-                    <strong class="font-bold">สำเร็จ! </strong>
+                    <strong class="font-bold">ส่งใบสมัครงานสำเร็จ! </strong>
                     <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">ส่งใบสมัครงานไม่สำเร็จ กรุณาลองอีกครั้ง! </strong>
+                    <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
 
@@ -39,10 +48,16 @@
             </div>
 
             <!-- Section: Profile & Basic Info -->
-            <form autocomplete="off" action="{{ route('store') }}" method="POST" enctype="multipart/form-data">
+            <form 
+                id="applyForm" x-data="fileRequired()" 
+                @submit.prevent="handleSubmit($el)"
+                autocomplete="off" 
+                action="{{ route('store') }}" 
+                method="POST" 
+                enctype="multipart/form-data">
                 @csrf
                 <!-- Section: ใส่รูป ตำแหน่ง etc. -->
-                <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
+                {{-- <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
                     <!-- Profile Image -->
                     <div class="flex flex-col items-center justify-start col-span-1" x-data="{
                         previewUrl: '',
@@ -151,16 +166,101 @@
                                 x-model="salary" @input="salary = formatNumber($event.target.value)">
                         </div>
                     </div>
+                </div> --}}
+                <!-- Avatar (required) -->
+                <!-- Profile Image -->
+                <div class="grid md:grid-cols-3 gap-8 bg-white rounded-xl shadow-md p-8">
+
+                    <!-- Profile Image (now uses the same pick()/names/errors pattern) -->
+                    <div class="flex flex-col items-center justify-start col-span-1">
+                    <div id="image-container"
+                        :class="errors.avatar
+                                    ? 'border-red-500 border-4'
+                                    : (isDragOver ? 'border-green-700 border-4' : 'border-green-500 border-4')"
+                        class="relative w-[200px] h-[200px] rounded-full border-dashed flex items-center justify-center bg-gray-100 hover:bg-green-100 transition mb-4"
+                        @dragover.prevent="isDragOver = true"
+                        @dragenter.prevent="isDragOver = true"
+                        @dragleave.prevent="isDragOver = false"
+                        @drop="onDropAvatar($event)">
+
+                        <input type="file" id="image1" name="img_user" accept=".jpg,.jpeg,.png"
+                            class="hidden"
+                            x-ref="avatar"
+                            @change="pick('avatar', $refs.avatar)" />
+
+                        <label for="image1" class="cursor-pointer absolute inset-0 flex flex-col items-center justify-center">
+                        <template x-if="!avatarPreview">
+                            <div id="image-placeholder" class="flex flex-col items-center justify-center">
+                            <span class="text-gray-300 text-4xl"><i class="fa-regular fa-image"></i></span>
+                            <span class="text-xs text-gray-500">ลากหรือคลิก</span>
+                            </div>
+                        </template>
+
+                        <img x-show="avatarPreview" :src="avatarPreview" id="preview" name="imgUser"
+                            class="w/full h/full object-cover rounded-full" />
+                        </label>
+                    </div>
+
+                    <span class="text-xs text-gray-400 text-center">รองรับ .jpg, .png, .jpeg (สูงสุด 2MB)</span>
+
+                    <!-- show dynamic error for avatar -->
+                    <p class="text-red-500 text-xs mt-2" x-show="errors.avatar">กรุณาอัปโหลดรูปภาพ</p>
+                    <p class="text-red-500 text-xs mt-1" x-show="avatarError" x-text="avatarError"></p>
+
+                    <!-- show selected file name (same as other inputs) -->
+                    <span class="text-sm text-blue-600 font-bold mt-1"
+                            x-show="names.avatar" x-text="`: ${names.avatar}`"></span>
+                    </div>
+
+
+                    <!-- Basic Info (layout unchanged) -->
+                    <div class="md:col-span-2 grid grid-cols-1 gap-4 md:m-8">
+                        <div x-data="positionSelect()" class="relative">
+                            <label for="position" class="block text-gray-700 font-semibold mb-1">
+                            ตำแหน่งที่สมัคร <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                required
+                                x-model="search"
+                                placeholder="ค้นหาตำแหน่ง..."
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 mb-2 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                @focus="showList = true"
+                                @input="showList = true"
+                                @blur="setTimeout(() => showList = false, 200)">
+                            <input type="hidden" name="position" :value="search">
+                            <div class="absolute z-10 w-full bg-white border border-gray-300 rounded shadow max-h-60 overflow-y-auto"
+                                x-show="showList"
+                                x-transition>
+                            <template x-for="p in filtered()" :key="p.id">
+                                <div class="px-3 py-2 hover:bg-green-100 cursor-pointer"
+                                    @mousedown.prevent="selected = p.id; search = p.position; showList = false"
+                                    x-text="p.position"></div>
+                            </template>
+                            <template x-if="filtered().length === 0">
+                                <div class="px-3 py-2 text-gray-400">ไม่พบตำแหน่ง</div>
+                            </template>
+                            </div>
+                        </div>
+
+                        <div x-data="fnSalary()">
+                            <label for="salary" class="block text-gray-700 font-semibold mb-1">
+                            เงินเดือนที่คาดหวัง <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="salary" name="salary" required inputmode="numeric"
+                                class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                x-model="salary" @input="salary = formatNumber($event.target.value)">
+                        </div>
+                    </div>
                 </div>
                 <!-- Section: Required Documents (input file แบบ custom ปุ่ม upload) -->
                 <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">
                         เอกสารประกอบการสมัครงาน
                     </h2>
-                    <div class="grid md:grid-cols-3 grid-cols-2 gap-2 flex justify-between">
+                    <div class="grid md:grid-cols-3 grid-cols-2 gap-2 flex justify-between" >
 
                         <!-- สำเนาทะเบียนบ้าน -->
-                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                        {{-- <div x-init="fnDocuments($el)" class="flex flex-col items-center">
                             <label for="file_house"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาทะเบียนบ้าน">
@@ -169,78 +269,176 @@
                                 <span>สำเนาทะเบียนบ้าน</span>
                             </label>
                             <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
-                        </div>
+                        </div> --}}
 
                         <!-- สำเนาบัตรประชาชน -->
-                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                        {{-- <div x-init="fnDocuments($el)" class="flex flex-col items-center">
                             <label for="file_id"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาบัตรประชาชน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
-                                <input type="file" class="hidden" id="file_id" name="file_id">
+                                <input type="file" class="hidden" id="file_id" name="file_id" required>
                                 <span>สำเนาบัตรประชาชน</span>
                             </label>
                             <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
-                        </div>
+                        </div> --}}
 
                         <!-- สำเนาวุฒิการศึกษา -->
-                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                        {{-- <div x-init="fnDocuments($el)" class="flex flex-col items-center">
                             <label for="file_edu"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
                                 title="อัปโหลดสำเนาวุฒิการศึกษา">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
-                                <input type="file" class="hidden" id="file_edu" name="file_edu">
+                                <input type="file" class="hidden" id="file_edu" name="file_edu" required>
                                 <span>สำเนาวุฒิการศึกษา</span>
                             </label>
                             <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
+                        </div> --}}
+                         {{-- :class="errors.avatar ? 'border-red-500 border-4' --}}
+
+                        <!-- สำเนาบัตรประชาชน -->
+                        <div class="flex flex-col items-center">
+                            <label for="file_id" class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                :class="{
+                                    'border-red-500 border-1': errors.id,
+                                    'border-green-200 border-2': !errors.id
+                                }">
+                                <i class="fa-solid fa-file-arrow-up mr-1" style="color:#16a34a;"></i>
+                                <span>สำเนาบัตรประชาชน</span>
+                                <input type="file" id="file_id" name="file_id"
+                                    x-ref="id" @change="pick('id', $refs.id)">
+                            </label>
+                            <span class="text-sm text-blue-600 font-bold mt-1"
+                                    x-show="names.id" x-text="`: ${names.id}`"></span>
+                            <p class="text-red-500 text-xs mt-1" x-show="errors.id">กรุณาอัปโหลดไฟล์นี้</p>
                         </div>
 
-                        <!-- สำเนาใบผ่านงาน -->
+                        <!-- สำเนาทะเบียนบ้าน -->
+                        <div class="flex flex-col items-center">
+                            <label for="file_house" class="cursor-pointer flex items-center pl-2 h-10 w-40 rounded hover:bg-green-50 transition border"
+                                :class="{
+                                    'border-red-500 border-1': errors.house,
+                                    'border-green-200 border-2': !errors.house
+                                }">
+                                <i class="fa-solid fa-file-arrow-up mr-1" style="color:#16a34a;"></i>
+                                <span>สำเนาทะเบียนบ้าน</span>
+                                <input type="file" id="file_house" name="file_house"
+                                    x-ref="house" @change="pick('house', $refs.house)">
+                            </label>
+                            <span class="text-sm text-blue-600 font-bold mt-1"
+                                    x-show="names.house" x-text="`: ${names.house}`"></span>
+                            <p class="text-red-500 text-xs mt-1" x-show="errors.house">กรุณาอัปโหลดไฟล์นี้</p>
+                        </div>
+
+                        <!-- สำเนาวุฒิการศึกษา -->
+                        <div class="flex flex-col items-center">
+                            <label for="file_edu" class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                :class="{
+                                    'border-red-500 border-1': errors.edu,
+                                    'border-green-200 border-2': !errors.edu
+                                }">
+                                <i class="fa-solid fa-file-arrow-up mr-1" style="color:#16a34a;"></i>
+                                <span>สำเนาวุฒิการศึกษา</span>
+                                <input type="file" id="file_edu" name="file_edu"
+                                    x-ref="edu" @change="pick('edu', $refs.edu)">
+                            </label>
+                            <span class="text-sm text-blue-600 font-bold mt-1"
+                                    x-show="names.edu" x-text="`: ${names.edu}`"></span>
+                            <p class="text-red-500 text-xs mt-1" x-show="errors.edu">กรุณาอัปโหลดไฟล์นี้</p>
+                        </div>
+
+
+                        <!-- Resume/CV -->
+                        <div class="flex flex-col items-center">
+                            <label for="file_cv" class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                :class="{
+                                    'border-red-500 border-1': errors.cv,
+                                    'border-green-200 border-2': !errors.cv
+                                }">
+                                <i class="fa-solid fa-file-arrow-up mr-1" style="color:#16a34a;"></i>
+                                <span>Resume/CV</span>
+                                <input type="file" id="file_cv" name="file_cv"
+                                    x-ref="cv" @change="pick('cv', $refs.cv)">
+                            </label>
+                            <span class="text-sm text-blue-600 font-bold mt-1"
+                                    x-show="names.cv" x-text="`: ${names.cv}`"></span>
+                            <p class="text-red-500 text-xs mt-1" x-show="errors.cv">กรุณาอัปโหลดไฟล์นี้</p>
+                        </div>
+
+                        <!-- สำเนาสลิปเงินเดือน -->
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_slip_payment"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                title="อัปโหลดสำเนาสลิปเงินเดือน">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_slip_payment" name="file_slip_payment">
+                                <span>สำเนาสลิปเงินเดือน</span>
+                            </label>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
+                        </div>
+
+                        <!-- สำเนารับรองการทำงาน -->
                         <div x-init="fnDocuments($el)" class="flex flex-col items-center">
                             <label for="file_work"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
-                                title="อัปโหลดสำเนาใบผ่านงาน">
+                                title="อัปโหลดสำเนารับรองการทำงาน">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
                                 <input type="file" class="hidden" id="file_work" name="file_work">
-                                <span>สำเนาใบผ่านงาน</span>
+                                <span class="text-sm">สำเนารับรองการทำงาน</span>
                             </label>
                             <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
 
-                        <!-- สำเนาใบผ่านทหาร -->
+                        <!-- สำเนารับรองผ่านทหาร -->
                         <div x-init="fnDocuments($el)" class="flex flex-col items-center">
                             <label for="file_military"
                                 class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
-                                title="อัปโหลดสำเนาใบผ่านทหาร">
+                                title="อัปโหลดสำเนารับรองผ่านทหาร">
                                 <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
                                 <input type="file" class="hidden" id="file_military" name="file_military">
-                                <span>สำเนาใบผ่านทหาร</span>
+                                <span class="text-sm">สำเนารับรองผ่านทหาร</span>
                             </label>
                             <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
                         </div>
+
+                        <!-- สำเนาเปลี่ยนชื่อ-นามสกุล -->
+                        <div x-init="fnDocuments($el)" class="flex flex-col items-center">
+                            <label for="file_change_name"
+                                class="cursor-pointer flex items-center pl-2 h-10 w-40 border border-gray-300 rounded hover:bg-green-50 transition"
+                                title="อัปโหลดสำเนาเปลี่ยนชื่อ-นามสกุล">
+                                <i class="fa-solid fa-file-arrow-up text-green-600"></i>&nbsp;
+                                <input type="file" class="hidden" id="file_change_name" name="file_change_name">
+                                <span>สำเนาเปลี่ยนชื่อ-สกุล</span>
+                            </label>
+                            <span class="text-xs font-bold text-blue-600 mt-1 hidden filename"></span>
+                        </div>
+
                     </div>
                 </div>
 
                 <!-- Section: Personal Info -->
-                <div class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
+                <div x-data="{ prefix: '' }" class="bg-white rounded-xl shadow-md p-8 space-y-6 mt-8">
                     <h2 class="text-lg font-bold text-green-600">ข้อมูลส่วนตัว</h2>
-                    <div class="grid md:justify-start">
+                    <div  class="grid md:justify-start">
                         <label class="block text-gray-700 font-semibold mb-1">คำนำหน้าชื่อ <span
                                 class="text-red-500">*</span></label>
                         <div class="flex gap-4 grid grid-cols-3 items-center">
                             <div class="flex items-center gap-2">
                                 <input type="radio" id="prefix-mr" name="prefix" value="นาย" required
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer"
+                                    x-model="prefix">
                                 <label for="prefix-mr">นาย / Mr.</label>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input type="radio" id="prefix-ms" name="prefix" value="นาง" required
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer"
+                                    x-model="prefix">
                                 <label for="prefix-ms">นาง / Ms.</label>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input type="radio" id="prefix-mrs" name="prefix" value="นางสาว" required
-                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
+                                    class="w-[15px] h-[15px] accent-green-600 cursor-pointer"
+                                    x-model="prefix">
                                 <label for="prefix-mrs">นางสาว / Mrs.</label>
                             </div>
                         </div>
@@ -252,6 +450,9 @@
                             <label for="name_thai" class="block text-gray-700 font-semibold mb-1">
                                 ชื่อ-นามสกุล (ไทย) <span class="text-red-500">*</span>
                             </label>
+                            <!-- Hidden dummy input to prevent autofill -->
+                            <input type="text" name="fake_name" style="display:none" aria-hidden="true" autocomplete="off">
+
                             <input type="text" id="name_thai" name="name_thai" data-lang="thai" x-model="value"
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="ชื่อ - นามสกุล ภาษาไทย" required>
@@ -269,12 +470,6 @@
 
                         <!-- วันเดือนปีเกิด -->
                         <div class="flex items-center grid grid-cols-1 gap-4 items-center">
-                            {{-- <div>
-                                <label for="birthdate" class="block text-gray-700 font-semibold mb-1">วัน/เดือน/ปีเกิด
-                                    <span class="text-red-500">*</span></label>
-                                <input type="date" name="birthdate" id="birthdate" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
-                            </div> --}}
                             <div x-data>
                                 <label for="birthdate" class="block text-gray-700 font-semibold mb-1">
                                     วัน/เดือน/ปีเกิด <span class="text-red-500">*</span>
@@ -287,6 +482,7 @@
                                     x-model="$store.ageData.birthdate"
                                     @change="$store.ageData.updateAge()"
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                    autocomplete="off"
                                 >
                             </div>
                         </div>
@@ -296,17 +492,23 @@
                             <label for="thai_id" class="block text-gray-700 font-semibold mb-1">
                                 เลขที่บัตรประชาชน <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="thai_id" name="thai_id" required
+                            {{-- <input type="text" id="thai_id" name="thai_id" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                 placeholder="X-XXXX-XXXXX-XX-X" maxlength="17" autocomplete="off"
-                                oninput="formatThaiID(this)">
+                                oninput="formatThaiID(this)"> --}}
+                                <input type="text" id="thai_id" name="thai_id" required
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                    placeholder="X-XXXX-XXXXX-XX-X" maxlength="17" autocomplete="off"
+                                    oninput="formatThaiID(this)" onblur="validateThaiID(this)">
+                                <p id="thai_id_error" class="text-red-500 text-sm mt-1 hidden">กรุณากรอกเลขบัตรประชาชนให้ครบ 13 หลัก</p>
                         </div>
                     </div>
                     <div class="flex items-end grid md:grid-cols-3 gap-4 items-end "> <!-- Row 4 -->
                         <div>
                             <label for="nickname_thai" class="block text-gray-700 font-semibold mb-1">ชื่อเล่น
-                                (ไทย)</label>
-                            <input type="text" name="nickname_thai" id="nickname_thai"
+                                (ไทย) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="nickname_thai" id="nickname_thai" required
                                 class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                         </div>
                         <div>
@@ -379,7 +581,7 @@
                         </div>
                     </div>
                     {{-- สถานภาพทางทหาร --}}
-                    <div>
+                    <div x-show="prefix === 'นาย'" x-transition>
                         <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางทหาร :</label>
                         <div class="flex gap-6 mb-2 md:justify-between">
                             <label class="flex items-center gap-2" for="military_pending">
@@ -414,9 +616,9 @@
                     <h2 class="text-lg font-bold text-green-600">ข้อมูลครอบครัว</h2>
                     <div class="flex items-center gap-4 grid md:grid-cols-[20%_80%]">
                         <!-- Row 1 -->
-                        <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส :</label>
+                        <label class="block text-gray-700 font-semibold mb-1">สถานภาพทางสมรส <span class="text-red-500">*</span> :</label>
                         <div class="flex gap-4">
-                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status" value="โสด"
+                            <label class="flex items-center gap-2"><input type="radio" id="single" name="status" value="โสด" required
                                     class="w-[15px] h-[15px] accent-green-600 cursor-pointer">
                                 โสด</label>
                             <label class="flex items-center gap-2"><input type="radio" id="married" name="status" value="สมรส"
@@ -448,7 +650,8 @@
 
                             <!-- ช่องใส่จำนวนบุตร -->
                             <div x-show="hasChildren === 'มี'" x-transition class="mt-2">
-                                <input type="number" name="children_count" id="children_count" min="1"
+                                <span class="text-red-500">*</span>
+                                <input type="number" name="children_count" id="children_count" min="1" :required="hasChildren === 'มี'"
                                     class="w-40 h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"
                                     placeholder="ระบุจำนวนบุตร">
                             </div>
@@ -461,8 +664,8 @@
                             <!-- ข้อมูลพ่อ-แม่ -->
                             <!-- ชื่อ-นามสกุล บิดา -->
                             <div>
-                                <label for="dadname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล บิดา</label>
-                                <input type="text" name="dadname" id="dadname"
+                                <label for="dadname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล บิดา <span class="text-red-500">*</span></label>
+                                <input type="text" name="dadname" id="dadname" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <!-- อาชีพ บิดา -->
@@ -490,8 +693,8 @@
 
                             <!-- ชื่อ-นามสกุล มารดา -->
                             <div>
-                                <label for="momname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล มารดา</label>
-                                <input type="text" name="momname" id="momname"
+                                <label for="momname" class="block text-gray-700 font-semibold">ชื่อ-นามสกุล มารดา <span class="text-red-500">*</span></label>
+                                <input type="text" name="momname" id="momname" required
                                     class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                             </div>
                             <!-- อาชีพ มารดา -->
@@ -552,7 +755,7 @@
                             <div>
                                 <label for="province" class="block text-gray-700 font-semibold mb-1">จังหวัด <span
                                         class="text-red-500">*</span></label>
-                               <select x-model="selectedProvince" @change="loadAmphoes" name="province" class="w-full border rounded-lg px-3 h-10">
+                               <select x-model="selectedProvince" @change="loadAmphoes" name="province" class="w-full border rounded-lg px-3 h-10" required>
                                     <option value="">กรุณาเลือกจังหวัด</option>
                                     <template x-for="p in provinces" :key="p.province_id">
                                         <option :value="p.province" x-text="p.province"></option>
@@ -562,7 +765,7 @@
                             <div>
                                 <label for="district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต <span
                                         class="text-red-500">*</span></label>
-                                <select x-model="selectedAmphoe" @change="loadTambons" name="district" class="w-full border rounded-lg px-3 h-10">
+                                <select x-model="selectedAmphoe" @change="loadTambons" name="district" class="w-full border rounded-lg px-3 h-10" required>
                                     <option value="">กรุณาเลือกอำเภอ</option>
                                     <template x-for="a in amphoes" :key="a.amphoe_id">
                                         <option :value="a.amphoe" x-text="a.amphoe"></option>
@@ -572,7 +775,7 @@
                             <div>
                                 <label for="subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง <span
                                         class="text-red-500">*</span></label>
-                                <select x-model="selectedTambon" @change="loadZipcode" name="subdistrict" class="w-full border rounded-lg px-3 h-10">
+                                <select x-model="selectedTambon" @change="loadZipcode" name="subdistrict" class="w-full border rounded-lg px-3 h-10" required>
                                     <option value="">กรุณาเลือกตำบล</option>
                                     <template x-for="t in tambons" :key="t.tambon_id">
                                         <option :value="t.tambon" x-text="t.tambon"></option>
@@ -583,7 +786,7 @@
                                 <label for="postcode" class="block text-gray-700 font-semibold mb-1">รหัสไปรษณีย์ <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" x-model="registered.postcode" name="postcode" readonly class="w-full border rounded-lg px-3 h-10 bg-gray-100"
-                                    placeholder="รหัสไปรษณีย์" />
+                                    placeholder="รหัสไปรษณีย์" required />
                             </div>
                         </div>
 
@@ -603,7 +806,7 @@
                                         ที่อยู่ปัจจุบัน <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" id="curr_address" x-model="current.address" name="curr_address"
-                                        :readonly="sameAsRegistered"
+                                        :readonly="sameAsRegistered" :required="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                         placeholder="เลขที่/หมู่บ้าน/ซอย/ถนน">
                                 </div>
@@ -613,7 +816,7 @@
                                     <label for="curr_address" class="block text-gray-700 font-semibold mb-1">
                                         ที่อยู่ปัจจุบัน <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address"
+                                    <input type="text" id="curr_address" x-model="current.address" name="curr_address" :required="!sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
                                         placeholder="เลขที่/หมู่บ้าน/ซอย">
                                 </div>
@@ -621,14 +824,14 @@
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
                                         <span class="text-red-500">*</span></label>
                                     <input type="text" id="curr_province" x-model="current.province" name="curr_province" 
-                                        :readonly="sameAsRegistered"
+                                        :readonly="sameAsRegistered" :required="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div x-show="!sameAsRegistered">
                                     <label for="curr_province" class="block text-gray-700 font-semibold mb-1">จังหวัด
                                         <span class="text-red-500">*</span></label>
                                     <input type="hidden" name="select_province" x-model="current.province">
-                                    <select x-model="selectedSecondProvince" @change="loadAmphoesCurr" name="curr_province" class="w-full border rounded-lg px-3 h-10">
+                                    <select x-model="selectedSecondProvince" @change="loadAmphoesCurr" name="curr_province" class="w-full border rounded-lg px-3 h-10" :required="!sameAsRegistered">
                                     <option value="">กรุณาเลือกจังหวัด</option>
                                         <template x-for="p in provinces_curr" :key="p.province_id">
                                             <option :value="p.province" x-text="p.province"></option>
@@ -639,7 +842,7 @@
                                     <label for="curr_district" class="block text-gray-700 font-semibold mb-1">อำเภอ/เขต
                                         <span class="text-red-500">*</span></label>
                                     <input type="text" id="curr_district" x-model="current.district" name="curr_district"
-                                        :readonly="sameAsRegistered"
+                                        :readonly="sameAsRegistered" :required="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
                                 </div>
                                 <div x-show="!sameAsRegistered">
@@ -647,7 +850,7 @@
                                         <span class="text-red-500">*</span>
                                     </label>
                                     <input type="hidden" name="select_district" x-model="current.district">
-                                    <select x-model="selectedSecondAmphoe" @change="loadTambonsCurr" name="curr_district" class="w-full border rounded-lg px-3 h-10">
+                                    <select x-model="selectedSecondAmphoe" @change="loadTambonsCurr" name="curr_district" class="w-full border rounded-lg px-3 h-10" :required="!sameAsRegistered">
                                         <option value="">กรุณาเลือกอำเภอ</option>
                                         <template x-for="a in amphoes_curr" :key="a.amphoe_id">
                                             <option :value="a.amphoe" x-text="a.amphoe"></option>
@@ -658,14 +861,14 @@
                                     <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
                                         <span class="text-red-500">*</span></label>
                                     <input type="text" id="curr_subdistrict" x-model="current.subdistrict" name="curr_subdistrict"
-                                        :readonly="sameAsRegistered"
+                                        :readonly="sameAsRegistered" :required="sameAsRegistered"
                                         class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50">
                                 </div>
                                 <div x-show="!sameAsRegistered">
                                     <label for="curr_subdistrict" class="block text-gray-700 font-semibold mb-1">ตำบล/แขวง
                                         <span class="text-red-500">*</span></label>
                                     <input type="hidden" name="select_subdistrict" x-model="current.subdistrict">
-                                    <select x-model="selectedSecondTambon" @change="loadZipcodeCurr" name="curr_subdistrict" class="w-full border rounded-lg px-3 h-10">
+                                    <select x-model="selectedSecondTambon" @change="loadZipcodeCurr" name="curr_subdistrict" class="w-full border rounded-lg px-3 h-10" :required="!sameAsRegistered">
                                         <option value="">กรุณาเลือกตำบล</option>
                                         <template x-for="t in tambons_curr" :key="t.tambon_id">
                                             <option :value="t.tambon" x-text="t.tambon"></option>
@@ -694,10 +897,17 @@
                                         <label for="phone_mobile" class="block text-gray-700 font-semibold mb-1">
                                             เบอร์โทรศัพท์ <span class="text-red-500">*</span>
                                         </label>
-                                        <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
+                                        {{-- <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
                                             @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric"
-                                            pattern="\d{3}-\d{3}-\d{4}" required
-                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
+                                            pattern="\d{3}-\d{3}-\d{4}" required placeholder="XXX-XXX-XXXX"
+                                            class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"> --}}
+                                            <input type="text" id="phone_mobile" name="phone_mobile" x-model="phone"
+                                                @input="phone = formatPhone(phone); validatePhone()"
+                                                maxlength="12" inputmode="numeric"
+                                                placeholder="XXX-XXX-XXXX" required
+                                                class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
+
+                                            <p x-show="error" class="text-red-500 text-sm mt-1">กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก</p>
                                     </div>
 
                                     <div>
@@ -856,6 +1066,7 @@
                                             class="w-full border focus:ring-2 focus:ring-green-400 rounded-lg h-10 px-2 py-1 bg-gray-50"
                                             x-model="edu.graduate_year"
                                             inputmode="numeric"
+                                            placeholder="ปี พ.ศ. เช่น 2560"
                                             @input="edu.graduate_year = edu.graduate_year.toString().slice(0, 4)"
                                             required>
                                 </div>
@@ -1155,9 +1366,8 @@
                 </div>
 
                 <!-- Section Work Experience: ประวัติการทำงาน -->
-                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnWorkExperience()">
+                {{-- <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnWorkExperience()">
                     <input type="hidden" name="works" :value="JSON.stringify(works)">
-                    <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
                         <button type="button"
@@ -1173,12 +1383,10 @@
 
                     <div class="rounded-lg space-y-6">
                         <template x-for="(work, idx) in works" :key="idx">
-                            <!-- แถวข้อมูลแต่ละรายการ -->
                             <div class="grid gap-4" :class="idx !== 0 ? 'border-t border-gray-500 pt-8 mt-4' : ''">
                                 <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน 
-                                            {{-- <span class="text-red-500">*</span> --}}
                                         </label>
                                         <input type="text" name="work_company" x-model="work.company"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
@@ -1186,7 +1394,6 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง 
-                                            {{-- <span class="text-red-500">*</span> --}}
                                         </label>
                                         <input type="text" name="work_position" x-model="work.position"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
@@ -1196,7 +1403,6 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ 
-                                        {{-- <span class="text-red-500">*</span> --}}
                                     </label>
                                     <input type="text" name="work_respon" x-model="work.responsibility"
                                         class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
@@ -1206,7 +1412,6 @@
                                 <div class="grid grid-cols-3 gap-4 items-end">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน 
-                                            {{-- <span class="text-red-500">*</span> --}}
                                         </label>
                                         <input type="text" name="work_duration" x-model="work.duration"
                                             class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
@@ -1215,7 +1420,6 @@
                                     <div x-data="fnSalary()">
                                         <label for="currentsalary"
                                             class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด 
-                                            {{-- <span class="text-red-500">*</span> --}}
                                         </label>
                                         <input type="text" id="currentsalary" name="currentsalary"
                                             x-model="work.currentsalary"
@@ -1236,7 +1440,6 @@
                                     <div class="flex items-end">
                                         <div class="flex-1">
                                             <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก 
-                                                {{-- <span class="text-red-500">*</span> --}}
                                                 </label>
                                             <input type="text" name="work_reason" x-model="work.reason"
                                                 class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
@@ -1259,7 +1462,127 @@
                             </div>
                         </template>
                     </div>
+                </div> --}}
+                
+                <div class="bg-white rounded-xl shadow-md p-8 mt-8" x-data="fnWorkExperience()">
+                    <!-- keep your current behavior (do not clear works) -->
+                    <input type="hidden" name="works" :value="JSON.stringify(works)">
+
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-green-600">ประวัติการทำงาน</h2>
+                        <button type="button" x-show="isExperienced"
+                        class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-full flex items-center gap-1 text-sm"
+                        @click="addRow()">
+                        <i class="fa-solid fa-plus"></i> เพิ่มข้อมูล
+                        </button>
+                    </div>
+
+                    <!-- NEW: Experience choice (uses boolean, not string) -->
+                    <div class="flex items-center gap-6 mb-3">
+                        <label class="inline-flex items-center gap-2">
+                        <input type="radio" name="experience_flag" :checked="isExperienced" @change="hasExperience = true">
+                        <span>มีประสบการณ์</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2">
+                        <input type="radio" name="experience_flag" :checked="!isExperienced" @change="hasExperience = false">
+                        <span>ไม่มีประสบการณ์</span>
+                        </label>
+                    </div>
+
+                    <p class="text-xs text-gray-500 mt-2 ml-1">
+                        <span class="text-red-500">* </span>เรียงจากใหม่ไปเก่าสุด
+                    </p>
+
+                    <div class="rounded-lg space-y-6">
+                        <template x-for="(work, idx) in works" :key="idx">
+                        <!-- แถวข้อมูลแต่ละรายการ -->
+                        <div class="grid gap-4" :class="idx !== 0 ? 'border-t border-gray-500 pt-8 mt-4' : ''">
+                            <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">สถานที่ทำงาน <span class="text-red-500" x-show="isExperienced">* </span></label>
+                                <input type="text" name="work_company" x-model="work.company"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="บริษัท เอบีซี จำกัด"
+                                :required="isExperienced">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง <span class="text-red-500" x-show="isExperienced">* </span></label>
+                                <input type="text" name="work_position" x-model="work.position"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="ตำแหน่งงานที่ทำ"
+                                :required="isExperienced">
+                            </div>
+                            </div>
+
+                            <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">งานที่รับผิดชอบ <span class="text-red-500" x-show="isExperienced">* </span></label>
+                            <input type="text" name="work_respon" x-model="work.responsibility"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="เช่น ดูแลระบบ, เขียนโปรแกรม, ประสานงาน ฯลฯ"
+                                :required="isExperienced">
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาการทำงาน <span class="text-red-500" x-show="isExperienced">* </span></label>
+                                <input type="text" name="work_duration" x-model="work.duration"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="เช่น 1 ปี 10 เดือน"
+                                :required="isExperienced">
+                            </div>
+
+                            <!-- REMOVED nested x-data to avoid scope issues -->
+                            <div>
+                                <label for="currentsalary" class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนล่าสุด <span class="text-red-500" x-show="isExperienced">* </span></label>
+                                <input type="text" id="currentsalary" name="currentsalary"
+                                x-model="work.currentsalary"
+                                @input="work.currentsalary = formatNumber($event.target.value)" inputmode="numeric"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="เช่น 30,000"
+                                :required="isExperienced">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">รายได้อื่น ๆ</label>
+                                <input type="text" name="work_income" x-model="work.otherIncome"
+                                @input="work.otherIncome = formatNumber($event.target.value)" inputmode="numeric"
+                                class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                placeholder="ระบุเป็นตัวเลข">
+                            </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-[83%_15%] gap-4 items-end">
+                            <div class="flex items-end">
+                                <div class="flex-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุที่ออก <span class="text-red-500" x-show="isExperienced">* </span></label>
+                                <input type="text" name="work_reason" x-model="work.reason"
+                                    class="w-full h-10 border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-400 rounded-lg px-2 py-1"
+                                    placeholder="เช่น หมดสัญญา, เปลี่ยนสายงาน"
+                                    :required="isExperienced">
+                                </div>
+                                <button type="button"
+                                class="ml-2 mb-1 text-red-500 font-bold py-2 px-2 md:hidden" title="ลบแถว"
+                                @click="removeRow(idx)" :disabled="works.length === 1"
+                                :class="works.length === 1 ? 'opacity-40 cursor-not-allowed' : ''">
+                                <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            <button type="button"
+                                class="text-red-500 font-bold px-2 py-2 hidden md:block self-end" title="ลบแถว"
+                                @click="removeRow(idx)" :disabled="works.length === 1"
+                                :class="works.length === 1 ? 'opacity-40 cursor-not-allowed' : ''">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
                 </div>
+
+
+
+
 
                 <!-- Section : คำถามเพิ่มเติม -->
                 <div class="bg-white rounded-xl shadow-md p-8 mt-8">
@@ -1275,7 +1598,7 @@
                     <div class="grid md:grid-cols-2 gap-8 text-sm text-gray-800">
                         <!-- Left Column -->
                         <div class="space-y-6">
-                            <div class="space-y-4">
+                            {{-- <div class="space-y-4">
                                 <p class="font-medium text-gray-800">1.
                                     ท่านเคยเป็นหนี้อยู่ในระหว่างการติดสัญญากับสถาบันการเงินหรือไม่</p>
                                 <div class="flex gap-4">
@@ -1285,18 +1608,40 @@
                                             value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div>
+                            {{-- <div>
                                 <p class="font-medium text-gray-800">2.
                                     รายชื่อสถาบันทางการเงินที่ท่านเคยใช้บริการหรือใช้บริการย้อนหลังอยู่ ณ ปัจจุบัน</p>
                                 <input type="text" id="q2" name="q2" required
                                     class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-3 py-2 bg-gray-50">
+                            </div> --}}
+
+                            <div class="space-y-4">
+                                <p class="font-medium text-gray-800">1. ท่านเคยเล่นหรือเคยเกี่ยวข้องกับการพนันใด ๆ หรือไม่
+                                </p>
+                                <div class="flex gap-4">
+                                    <label for="q1_yes"><input type="radio" id="q1_yes" name="q1"
+                                            value="เคย"> เคย</label>
+                                    <label for="q1_no"><input type="radio" id="q1_no" name="q1"
+                                            value="ไม่เคย" required>
+                                        ไม่เคย</label>
+                                </div>
                             </div>
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">3. ท่านเคยเล่นหรือเคยเกี่ยวข้องกับการพนันใด ๆ หรือไม่
-                                </p>
+                                <p class="font-medium text-gray-800">2. ท่านเคยต้องโทษหรือต้องคดีอาญาหรือไม่</p>
+                                <div class="flex gap-4">
+                                    <label for="q2_yes"><input type="radio" id="q2_yes" name="q2"
+                                            value="เคย"> เคย</label>
+                                    <label for="q2_no"><input type="radio" id="q2_no" name="q2"
+                                            value="ไม่เคย" required>
+                                        ไม่เคย</label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <p class="font-medium text-gray-800">3. ท่านเคยเสพสิ่งเสพติดหรือของมึนเมาหรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q3_yes"><input type="radio" id="q3_yes" name="q3"
                                             value="เคย"> เคย</label>
@@ -1307,45 +1652,23 @@
                             </div>
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">4. ท่านเคยต้องโทษหรือต้องคดีอาญาหรือไม่</p>
+                                <p class="font-medium text-gray-800">4. ท่านไม่ใช่บุคคลตั้งครรภ์ใช่หรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q4_yes"><input type="radio" id="q4_yes" name="q4"
-                                            value="เคย"> เคย</label>
-                                    <label for="q4_no"><input type="radio" id="q4_no" name="q4"
-                                            value="ไม่เคย" required>
-                                        ไม่เคย</label>
-                                </div>
-                            </div>
-
-                            <div class="space-y-4">
-                                <p class="font-medium text-gray-800">5. ท่านเคยเสพสิ่งเสพติดหรือของมึนเมาหรือไม่</p>
-                                <div class="flex gap-4">
-                                    <label for="q5_yes"><input type="radio" id="q5_yes" name="q5"
-                                            value="เคย"> เคย</label>
-                                    <label for="q5_no"><input type="radio" id="q5_no" name="q5"
-                                            value="ไม่เคย" required>
-                                        ไม่เคย</label>
-                                </div>
-                            </div>
-
-                            <div class="space-y-4">
-                                <p class="font-medium text-gray-800">6. ท่านไม่ใช่บุคคลตั้งครรภ์ใช่หรือไม่</p>
-                                <div class="flex gap-4">
-                                    <label for="q6_yes"><input type="radio" id="q6_yes" name="q6"
                                             value="ใช่"> ใช่</label>
-                                    <label for="q6_no"><input type="radio" id="q6_no" name="q6"
+                                    <label for="q4_no"><input type="radio" id="q4_no" name="q4"
                                             value="ไม่ใช่" required>
                                         ไม่ใช่</label>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">7. ท่านเคยมีประวัติการรักษาหรือโรคประจำตัว
+                                <p class="font-medium text-gray-800">5. ท่านเคยมีประวัติการรักษาหรือโรคประจำตัว
                                     หรือรักษาทางจิตหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q7_yes"><input type="radio" id="q7_yes" name="q7"
+                                    <label for="q5_yes"><input type="radio" id="q5_yes" name="q5"
                                             value="เคย"> เคย</label>
-                                    <label for="q7_no"><input type="radio" id="q7_no" name="q7"
+                                    <label for="q5_no"><input type="radio" id="q5_no" name="q5"
                                             value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
@@ -1355,30 +1678,30 @@
                         <!-- Right Column -->
                         <div class="space-y-6">
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">8.
+                                <p class="font-medium text-gray-800">6.
                                     ท่านเคยขึ้นทะเบียนเป็นผู้ประกันตนกับสำนักงานประกันสังคมหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q8_yes"><input type="radio" id="q8_yes" name="q8"
+                                    <label for="q6_yes"><input type="radio" id="q6_yes" name="q6"
                                             value="เคย" required> เคย</label>
-                                    <label for="q8_no"><input type="radio" id="q8_no" name="q8"
+                                    <label for="q6_no"><input type="radio" id="q6_no" name="q6"
                                             value="ไม่เคย">
                                         ไม่เคย</label>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">9. ท่านยอมรับการทดลองงาน 119 วันหรือไม่</p>
+                                <p class="font-medium text-gray-800">7. ท่านยอมรับการทดลองงาน 90-119 วันหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q9_yes"><input type="radio" id="q9_yes" name="q9"
+                                    <label for="q7_yes"><input type="radio" id="q7_yes" name="q7"
                                             value="ยอมรับ" required>
                                         ยอมรับ</label>
-                                    <label for="q9_no"><input type="radio" id="q9_no" name="q9"
+                                    <label for="q7_no"><input type="radio" id="q97o" name="q7"
                                             value="ไม่ยอมรับ">
                                         ไม่ยอมรับ</label>
                                 </div>
                             </div>
 
-                            <div class="space-y-4">
+                            {{-- <div class="space-y-4">
                                 <p class="font-medium text-gray-800">10.
                                     ท่านเคยเข้าร่วมกิจกรรมของคณะกรรมการลูกจ้าง/สหภาพแรงงานหรือไม่</p>
                                 <div class="flex gap-4">
@@ -1389,9 +1712,9 @@
                                             value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="space-y-4">
+                            {{-- <div class="space-y-4">
                                 <p class="font-medium text-gray-800">11. ท่านมีภาระค่าใช้จ่ายในครอบครัวหรือไม่</p>
                                 <div class="flex gap-4">
                                     <label for="q11_yes"><input type="radio" id="q11_yes" name="q11"
@@ -1400,26 +1723,26 @@
                                             value="ไม่มี">
                                         ไม่มี</label>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">12. ท่านเคยได้รับการรักษาโรคร้ายแรงหรือไม่</p>
+                                <p class="font-medium text-gray-800">8. ท่านเคยได้รับการรักษาโรคร้ายแรงหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q12_yes"><input type="radio" id="q12_yes" name="q12"
+                                    <label for="q8_yes"><input type="radio" id="q8_yes" name="q8"
                                             value="เคย">
                                         เคย</label>
-                                    <label for="q12_no"><input type="radio" id="q12_no" name="q12"
+                                    <label for="q8_no"><input type="radio" id="q8_no" name="q8"
                                             value="ไม่เคย" required>
                                         ไม่เคย</label>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <p class="font-medium text-gray-800">13. ในครอบครัวท่านเคยมีโรคติดต่อร้ายแรงหรือไม่</p>
+                                <p class="font-medium text-gray-800">9. ในครอบครัวท่านเคยมีโรคติดต่อร้ายแรงหรือไม่</p>
                                 <div class="flex gap-4">
-                                    <label for="q13_yes"><input type="radio" id="q13_yes" name="q13"
+                                    <label for="q9_yes"><input type="radio" id="q9_yes" name="q9"
                                             value="มี"> มี</label>
-                                    <label for="q13_no"><input type="radio" id="q13_no" name="q13"
+                                    <label for="q9_no"><input type="radio" id="q9_no" name="q9"
                                             value="ไม่มี" required>
                                         ไม่มี</label>
                                 </div>
@@ -1458,9 +1781,16 @@
                                 <label class="block text-gray-700 font-semibold">
                                     เบอร์โทรศัพท์ <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="reference_phone" name="reference_phone" x-model="phone"
-                                    @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
+                                {{-- <input type="text" id="reference_phone" name="reference_phone" x-model="phone"
+                                    @input="phone = formatPhone(phone)" maxlength="12" inputmode="numeric" required placeholder="XXX-XXX-XXXX"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400"> --}}
+                                    <input type="text" id="reference_phone" name="reference_phone" x-model="phone"
+                                        @input="phone = formatPhone(phone); validatePhone()"
+                                        maxlength="12" inputmode="numeric"
+                                        placeholder="XXX-XXX-XXXX" required
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 bg-gray-50 focus:ring-2 focus:ring-green-400">
+
+                                    <p x-show="error" class="text-red-500 text-sm mt-1">กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก</p>
                             </div>
                         </div>
                     </div>
@@ -1475,31 +1805,44 @@
 
                     <div>
                         <div class="flex items-center grid md:grid-cols-2 gap-6 items-end mt-6">
-                            <div>
+                            <div x-data="{ source: '' }">
                                 <label class="block text-gray-700 font-semibold">ท่านทราบข่าวการรับสมัครจาก</label>
-                                <select name="application_source" id="application_source" required
-                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50">
+                                <select
+                                    name="application_source"
+                                    id="application_source"
+                                    required
+                                    x-model="source"
+                                    class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                >
                                     <option value="" disabled selected>กรุณาเลือก</option>
-                                    <!-- เว็บไซต์หางาน -->
-                                    <option value="jobbkk">JobBKK</option>
-                                    <option value="jobthai">JobThai</option>
-                                    <option value="thaijob">ThaiJob</option>
-                                    <option value="jobtopgun">JobTopGun</option>
-
-                                    <!-- โซเชียลมีเดีย -->
+                                    <option value="jobbkk">Jobbkk</option>
+                                    <option value="jobthai">Jobthai</option>
+                                    <option value="jobsdb">Jobsdb</option>
+                                    <option value="jobtopgun">Jobtopgun</option>
                                     <option value="facebook">Facebook</option>
-                                    <option value="tiktok">TikTok</option>
                                     <option value="instagram">Instagram</option>
-                                    <option value="linkedin">LinkedIn</option>
-
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="linkedin">Linkedin</option>
                                     <option value="friend">เพื่อน/คนรู้จักแนะนำ</option>
-                                    <option value="company_website">เว็บไซต์บริษัทโดยตรง</option>
-
-                                    <!-- งานกิจกรรม -->
-                                    <option value="jobfair">Job Fair</option>
+                                    <option value="jobfair">Jobfair</option>
                                     <option value="other">อื่นๆ</option>
                                 </select>
+                                <!-- Show input when select "other" -->
+                                <div x-show="source === 'other' || source === 'friend'" x-transition>
+                                    <label for="application_source_other" class="block text-gray-700 font-semibold mt-3">
+                                        โปรดระบุแหล่งที่มา
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="application_source_other"
+                                        id="application_source_other"
+                                        :required="source === 'other'"
+                                        class="w-full h-10 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-400 bg-gray-50"
+                                        placeholder="โปรดระบุ"
+                                    >
+                                </div>
                             </div>
+                            
 
                             <div x-data="{ today: '' }" x-init="today = new Date().toISOString().split('T')[0]">
                                 <label class="block text-gray-700 font-semibold mb-1">วันที่พร้อมเริ่มปฏิบัติงาน <span class="text-red-500">*</span></label>
@@ -1511,8 +1854,14 @@
 
                     <!-- Section: เงื่อนไขการให้บริการและข้อมูลส่วนบุคคล -->
 
-                    <div x-data="modalAgreement()" class="p-4 sm:p-8">
+                    <div x-data="modalAgreement()" x-init="openModal('privacy')"  class="p-4 sm:p-8">
                         <div class="grid justify-center gap-4">
+
+                             <!-- Checkbox: Terms of Service -->
+                            <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
+                                <input type="checkbox" id="tos" name="tos" value="1" required class="accent-green-600 w-4 h-4">
+                                <label for="tos" class="font-medium">ข้าพเจ้าขอรับรองว่า<span class="text-blue-600">ข้อความดังกล่าวข้างต้นเป็นความจริงทุกประการ</span></label>
+                            </div>
 
                             <!-- Checkbox: Privacy Policy -->
                             <div class="flex items-center flex-wrap text-sm text-gray-700 gap-2">
@@ -1522,6 +1871,15 @@
                                     นโยบายความเป็นส่วนตัว
                                 </a>
                             </div>
+
+                            <div>
+                                <span class="text-red-500 text-xs mt-2" x-show="errors.avatar">กรุณาอัปโหลดรูปภาพ</span>
+                                <span class="text-red-500 text-xs mt-2" x-show="errors.house">กรุณาอัปโหลดสำเนาทะเบียนบ้าน</span>
+                                <span class="text-red-500 text-xs mt-2" x-show="errors.id">กรุณาอัปโหลดสำเนาบัตรประชาชน</span>
+                                <span class="text-red-500 text-xs mt-2" x-show="errors.edu">กรุณาอัปโหลดสำเนาวุฒิการศึกษา</span>
+                                <span class="text-red-500 text-xs mt-2" x-show="errors.cv">กรุณาอัปโหลด Resume/CV</span>
+                            </div>
+                            
                         </div>
 
                         <!-- Modal -->
@@ -1572,29 +1930,29 @@
                         บริษัทได้รับข้อมูลส่วนบุคคลของผู้สมัครงาน และได้เก็บรวบรวมและประมวลผลตามหนังสือให้ความยินยอมการเก็บ รวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลฉบับนี้โดยบริษัทได้จัดเก็บรวบรวม และประมวลผลข้อมูลส่วนบุคคลเท่าที่จำเป็นตามวัตถุประสงค์ในการเก็บรวบรวม ประมวลผล ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลของบริษัท ทั้งนี้ได้จำแนกประเภทของข้อมูลส่วนบุคคลดังนี้
                     </p>
                     <br>
-                    <table border="1" style="width:100%; border: 1px solid #ddd;">
+                    <table border="1" style="width:100%; border: 1px solid #ddd; margin: 0;">
                         <thead>
-                            <tr>
-                                <th style="width: 30%">ประเภทของข้อมูลส่วนบุคคล</th>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <th style="width: 30%; border-right: #ddd 1px solid;">ประเภทของข้อมูลส่วนบุคคล</th>
                                 <th style="width: 70%">รายละเอียด</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="ml-3">ข้อมูลส่วนบุคคลพื้นฐาน</td>
-                                <td>ได้แก่ คำนำหน้าชื่อ นามสกุล ชื่อเล่น รูปถ่าย ลายมือชื่อ เลขที่ประจำตัว ประชาชน ที่อยู่ ปัจจุบัน อีเมล หมายเลขโทรศัพท์ วันเดือนปีเกิด อายุ สถานภาพการสมรส สถานภาพ ทางทหาร ประวัติการศึกษา ประวัติการทำงาน ข้อมูลเครดิต</td>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <td style="border-right: #ddd 1px solid; vertical-align: top; padding-left:5px;">ข้อมูลส่วนบุคคลพื้นฐาน</td>
+                                <td style="padding: 2px;">ได้แก่ คำนำหน้าชื่อ นามสกุล ชื่อเล่น รูปถ่าย ลายมือชื่อ เลขที่ประจำตัว ประชาชน ที่อยู่ ปัจจุบัน อีเมล หมายเลขโทรศัพท์ วันเดือนปีเกิด อายุ สถานภาพการสมรส สถานภาพ ทางทหาร ประวัติการศึกษา ประวัติการทำงาน ข้อมูลเครดิต</td>
                             </tr>
-                            <tr>
-                                <td>ข้อมูลส่วนบุคคลที่มีความอ่อนไหว</td>
-                                <td>ได้แก่ ข้อมูลประวัติอาชญากรรม เชื้อชาติ ศาสนา ฯ</td>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <td style="border-right: #ddd 1px solid; padding-left:5px;">ข้อมูลส่วนบุคคลที่มีความอ่อนไหว</td>
+                                <td style="padding: 2px;">ได้แก่ ข้อมูลประวัติอาชญากรรม เชื้อชาติ ศาสนา ฯ</td>
                             </tr>
-                            <tr>
-                                <td>ข้อมูลบุคคลที่สาม/บุคคลอ้างอิง</td>
-                                <td>ได้แก่ คู่สมรส สมาชิกในครอบครัว บุคคลติดต่อกรณีฉุกเฉิน โดยจัดเก็บ ข้อมูลส่วนบุคคล อันได้แก่ ชื่อ นามสกุล ความสัมพันธ์ หมายเลขโทรศัพท์ และข้อมูลอื่นๆ เท่าที่จำเป็น</td>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <td style="border-right: #ddd 1px solid; vertical-align: top; padding-left:5px;">ข้อมูลบุคคลที่สาม/บุคคลอ้างอิง</td>
+                                <td style="padding: 2px;">ได้แก่ คู่สมรส สมาชิกในครอบครัว บุคคลติดต่อกรณีฉุกเฉิน โดยจัดเก็บ ข้อมูลส่วนบุคคล อันได้แก่ ชื่อ นามสกุล ความสัมพันธ์ หมายเลขโทรศัพท์ และข้อมูลอื่นๆ เท่าที่จำเป็น</td>
                             </tr>
-                            <tr>
-                                <td>ข้อมูลด้านเทคนิค สำหรับผู้สมัครผ่านเว็บไซต์/ช่องทางออนไลน์ของบริษัท</td>
-                                <td>ได้แก่ ข้อมูลการเข้าใช้งานเว็บไซต์และระบบต่างๆ ข้อมูลจราจรทางคอมพิวเตอร์(Log) ข้อมูลการติดต่อและสื่อสารระหว่างเจ้าของข้อมูล และผู้ใช้งานรายอื่น ข้อมูลจากการบันทึกการใช้งาน เช่น ตัวระบุ อุปกรณ์ หมายเลข IP ของคอมพิวเตอร์ รหัสประจำตัวอุปกรณ์ ประเภทอุปกรณ์ ข้อมูลเครือข่ายมือถือ ข้อมูลการเชื่อมต่อ ข้อมูลตำแหน่งที่ตั้งทางภูมิศาสตร์ ประเภทเบราว์เซอร์ (Browser) ข้อมูลบันทึกการเข้าออกระบบต่างๆ หรือ เว็บไซต์ที่มีการเข้าถึงก่อนและหลัง (Referring Website) ข้อมูลบันทึกประวัติการใช้ ระบบข้อมูลบันทึกเวลาเข้าออกสำนักงาน ข้อมูลบันทึกการเข้าสู่ระบบ (Login Log) ข้อมูลรายการการทำธุรกรรม (Transaction log) ข้อมูลพฤติกรรมการใช้งาน สถิติการเข้าระบบ เวลาที่เยี่ยมชมระบบ (Access Time) ที่ได้เก็บรวบรวมผ่านคุกกี้ (Cookies) หรือเทคโนโลยีอื่นๆที่คล้ายกัน</td>
+                            <tr style="border-bottom: #ddd 1px solid; ">
+                                <td style="border-right: #ddd 1px solid; vertical-align: top; padding-left:5px;">ข้อมูลด้านเทคนิค สำหรับผู้สมัครผ่านเว็บไซต์/ช่องทางออนไลน์ของบริษัท</td>
+                                <td style="padding: 2px;">ได้แก่ ข้อมูลการเข้าใช้งานเว็บไซต์และระบบต่างๆ ข้อมูลจราจรทางคอมพิวเตอร์(Log) ข้อมูลการติดต่อและสื่อสารระหว่างเจ้าของข้อมูล และผู้ใช้งานรายอื่น ข้อมูลจากการบันทึกการใช้งาน เช่น ตัวระบุ อุปกรณ์ หมายเลข IP ของคอมพิวเตอร์ รหัสประจำตัวอุปกรณ์ ประเภทอุปกรณ์ ข้อมูลเครือข่ายมือถือ ข้อมูลการเชื่อมต่อ ข้อมูลตำแหน่งที่ตั้งทางภูมิศาสตร์ ประเภทเบราว์เซอร์ (Browser) ข้อมูลบันทึกการเข้าออกระบบต่างๆ หรือ เว็บไซต์ที่มีการเข้าถึงก่อนและหลัง (Referring Website) ข้อมูลบันทึกประวัติการใช้ ระบบข้อมูลบันทึกเวลาเข้าออกสำนักงาน ข้อมูลบันทึกการเข้าสู่ระบบ (Login Log) ข้อมูลรายการการทำธุรกรรม (Transaction log) ข้อมูลพฤติกรรมการใช้งาน สถิติการเข้าระบบ เวลาที่เยี่ยมชมระบบ (Access Time) ที่ได้เก็บรวบรวมผ่านคุกกี้ (Cookies) หรือเทคโนโลยีอื่นๆที่คล้ายกัน</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1633,37 +1991,39 @@
                     <br>
                     <table border="1" style="width:100%; border-collapse: collapse; border: 1px solid #ddd;">
                         <thead>
-                            <tr>
-                                <th style="width: 30%">วัตถุประสงค์ในการดำเนินการ</th>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <th style="width: 30%; border-right: #ddd 1px solid;">วัตถุประสงค์ในการดำเนินการ</th>
                                 <th style="width: 70%">รายละเอียด</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1. เพื่อกระบวนการสรรหาบุคลากร</td>
-                                <td>
+                            <tr style="border-bottom: #ddd 1px solid;">
+                                <td style="border-right: #ddd 1px solid; vertical-align: top; padding: 2px">
+                                    <p>1. เพื่อกระบวนการสรรหาบุคลากร</p>
+                                </td>
+                                <td style="padding: 2px;">
                                     1) บริษัทใช้ข้อมูลส่วนบุคคลของผู้สมัครงานเพื่อประเมินว่าผู้สมัครงานนั้น เหมาะสมกับบทบาทหน้าที่ในตำแหน่งงานที่บริษัทต้องการสรรหาอยู่หรือไม่ และเพื่อจัดการเรื่องของการสัมภาษณ์งาน หรือการประเมินต่างๆ เมื่อได้ทำการสมัครงานกับบริษัทโดยตรง หรือผ่านทางตัวแทนรับจ้างจัดหางาน หรือบุคคลที่สาม ซึ่งจะรวมถึงการติดต่อผู้สมัครงาน เพื่อตระเตรียม ดำเนินการประเมิน และให้ข้อมูลตอบกลับ (Feedback) เกี่ยวกับการประเมินผลและสัมภาษณ์ รวมถึงในกรณีที่บริษัทเสนอการจ้างงานแก่ผู้สมัครงาน<br>
                                     2) เพื่อประเมินว่าผู้สมัครงานมีความเหมาะสมที่จะทำงานในตำแหน่งงานที่ได้สมัครมาหรือไม่ บริษัทอาจขอให้ผู้สมัครงานตอบคำถามเกี่ยวกับ รายละเอียดบุคลิกภาพโดย ข้อมูลนั้นอาจจะได้มาทั้งจากผู้สมัครงานเองหรือจากบริษัท<br>
                                     3) ผู้จัดการในหน่วยงานที่เปิดรับสมัครงานหรือหน่วยงานที่เกี่ยวข้องของ บริษัทนั้น อาจมีการคัดสรรใบสมัครเพื่อการสัมภาษณ์ โดยจะยึดจาก รายละเอียดที่ผู้สมัครงานได้ให้ข้อมูลการสมัครงานไว้
                                 </td>
                             </tr>
-                            <tr>
-                                <td>2. เพื่อตรวจสอบประวัติการทำงานก่อนการจ้างงาน</td>
-                                <td>
+                            <tr style="border-bottom: #ddd 1px solid; vertical-align: top;">
+                                <td style="border-right: #ddd 1px solid; padding: 2px;">2. เพื่อตรวจสอบประวัติการทำงานก่อนการจ้างงาน</td>
+                                <td style="padding: 2px;">
                                     1) เพื่อตรวจสอบในกรณีที่ผู้สมัครงานเคยมีประวัติการทำงานกับบริษัท และเหตุผลที่ได้ลาออกไป รวมถึงตรวจสอบว่าเคยสมัครงานกับบริษัทมาก่อนหรือไม่ และตรวจสอบว่าผู้สมัครงานมีความสนใจในตำแหน่งงานอื่นในบริษัทหรือไม่<br>
                                     2) เพื่อดำเนินการตรวจสอบก่อนการจ้างงาน เพื่อประเมินความสามารถในการทำงานของผู้สมัครงาน โดยเป็นไปตามที่กฎหมายอนุญาตให้ทำได้ ได้แก่ คุณสมบัติด้านวิชาชีพ ข้อมูลเครดิตบูโร ประวัติอาชญากรรม และการตรวจเช็คจากบุคคลอ้างอิงที่ผู้สมัครงานได้ให้ข้อมูลไว้กับบริษัท
                                 </td>
                             </tr>
-                            <tr>
-                                <td>3. เพื่อการพิจารณาตำแหน่งงานอื่นที่เหมาะสมในอนาคต</td>
-                                <td>
+                            <tr style="border-bottom: #ddd 1px solid; vertical-align: top;">
+                                <td style="border-right: #ddd 1px solid; padding: 2px;">3. เพื่อการพิจารณาตำแหน่งงานอื่นที่เหมาะสมในอนาคต</td>
+                                <td style="padding: 2px;">
                                     1) หากผู้สมัครงานไม่ประสบความสำเร็จในการประเมินสำหรับตำแหน่งงานที่ได้สมัครไว้ บริษัทจะเก็บรายละเอียดของผู้สมัครงานในฐานข้อมูลของบริษัทเป็นเวลา 3 เดือนเพื่อที่บริษัทจะสามารถติดต่อในกรณีที่มีตำแหน่งงานใด ๆ ในอนาคตที่อาจจะเหมาะสม<br>
                                     2) ในกรณีที่ผู้สมัครงานต้องการให้ลบข้อมูล ผู้สมัครงานสามารถติดต่อมายังหน่วยงานทรัพยากรบุคคลของบริษัทที่อีเมล hr@vbeyond.co.th
                                 </td>
                             </tr>
-                            <tr>
-                                <td>4. เพื่อใช้งานด้านแอพพลิเคชั่น บนเครื่องมือ ส่วนตัว</td>
-                                <td>
+                            <tr style="border-bottom: #ddd 1px solid; vertical-align: top;">
+                                <td style="border-right: #ddd 1px solid; padding: 2px;">4. เพื่อใช้งานด้านแอพพลิเคชั่น บนเครื่องมือ ส่วนตัว</td>
+                                <td style="padding: 2px;">
                                     ㆍข้อมูลบัญชีผู้ใช้งานแอพพลิเคชั่น (Account) เมื่อผู้ใช้งานใช้งานแอพพลิเคชั่นของบริษัทฯ บริษัทฯอาจเข้าถึง รวบรวมและประมวลผลข้อมูลเกี่ยวกับ บัญชีผู้ใช้งานแอพพลิเคชั่น (Account) ของผู้ใช้งาน สำหรับการตรวจสอบ Token และ/หรือ UDID ของเครื่องโทรศัพท์เคลื่อนที่/อุปกรณ์ดิจิตอล เพื่อการ log-in และตรวจสอบ account ผู้ใช้งาน หรือการจัดทำข้อความแจ้งโฆษณาประชาสัมพันธ์เกี่ยวกับแอพพลิเคชั่นไปยังผู้ใช้งาน<br>
                                     คุกกี้และเทคโนโลยีที่คล้ายกัน (Cookies and Similar Technologies) บริษัทฯกับบริษัทในเครือ และ/หรือพันธมิตรทางธุรกิจของบริษัทฯ อาจใช้ เทคโนโลยีต่างๆ ในการรวบรวมและจัดเก็บข้อมูลเมื่อผู้ใช้งานเยี่ยมชมเว็บไซต์และ/หรือบริการของบริษัท โดยการใช้คุกกี้และเทคโนโลยีที่คล้ายกัน เพื่อระบุบราวเซอร์หรืออุปกรณ์ และ/หรือเพื่อรวบรวมและจัดเก็บข้อมูลเมื่อผู้ใช้งานมีการโต้ตอบกับบริการที่บริษัทฯให้กับบริษัทในเครือ และ/หรือพันธมิตร ทางธุรกิจของบริษัทฯ เช่น หัวข้อบริการที่สนใจ หรือ บริการโฆษณา เป็นต้น<br>
                                     ข้อมูลที่ถูกบันทึก : เมื่อผู้ใช้งานเรียกดูข้อมูลและ/ หรือรายงานจากแอพพลิเคชั่น บริษัทจะบันทึกการเรียกดูข้อมูลและ/หรือเนื้อหาดังกล่าวไว้ในแหล่งรวบรวมดังต่อไปนี้ ในเซิร์ฟเวอร์ของบริษัทเอง และ/หรือของบริษัทในเครือ และ/หรือของคู่สัญญาที่ชื่อถือได้ของบริษัทที่ทำหน้าที่บริหารจัดการข้อมูลในแอพพลิเคชั่นตามสัญญา<br>
@@ -1747,7 +2107,57 @@
                 </div>
             </form>
         </div>
+        {{-- <script>
+            window.fnDocuments = function (root) {
+                const fileInput       = root.querySelector('input[type="file"]');
+                const filenameDisplay = root.querySelector('.filename');
+                const errorDisplay    = root.querySelector('.file-error');
 
+                fileInput.addEventListener('change', () => {
+                    const file = fileInput.files[0];
+                    if (file) {
+                        filenameDisplay.textContent = `: ${file.name}`;
+                        filenameDisplay.classList.remove('hidden');
+                        errorDisplay?.classList.add('hidden');
+                    } else {
+                        filenameDisplay.textContent = '';
+                        filenameDisplay.classList.add('hidden');
+                    }
+                });
+
+                fileInput.addEventListener('blur', () => {
+                    if (!fileInput.files.length) errorDisplay?.classList.remove('hidden');
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const form = document.querySelector('form');
+                if (!form) return;
+
+                form.addEventListener('submit', (e) => {
+                    let valid = true;
+                    let firstErrorBlock = null;
+
+                    form.querySelectorAll('.req-doc').forEach(input => {
+                        const wrapper      = input.closest('[x-init]');
+                        const errorDisplay = wrapper?.querySelector('.file-error');
+
+                        if (!input.files.length) {
+                            errorDisplay?.classList.remove('hidden');
+                            if (!firstErrorBlock) firstErrorBlock = wrapper;
+                            valid = false;
+                        } else {
+                            errorDisplay?.classList.add('hidden');
+                        }
+                    });
+
+                    if (!valid) {
+                        e.preventDefault();
+                        firstErrorBlock?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+        </script> --}}
         <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.store('ageData', {
@@ -1821,6 +2231,259 @@
                 }
             }
 
+            // function profileImage() {
+            //     return {
+            //         previewUrl: '',
+            //         errorMsg: '',
+            //         isDragOver: false,
+
+            //         handleFiles(files) {
+            //             this.errorMsg = '';
+            //             if (!files || !files.length) return;
+            //             const file = files[0];
+
+            //             // type check
+            //             if (!['image/jpeg','image/png','image/jpg'].includes(file.type)) {
+            //                 this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+            //                 this.clear();
+            //                 return;
+            //             }
+
+            //             // size check (<= 2MB)
+            //             if (file.size > 2 * 1024 * 1024) {
+            //                 this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+            //                 this.clear();
+            //                 return;
+            //             }
+
+            //             const reader = new FileReader();
+            //             reader.onload = (e) => { this.previewUrl = e.target.result; };
+            //             reader.readAsDataURL(file);
+            //         },
+
+            //         onDrop(e) {
+            //             e.preventDefault();
+            //             this.isDragOver = false;
+            //             const files = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : null;
+            //             this.handleFiles(files);
+            //         },
+
+            //         triggerInput() {
+            //             if (this.$refs.fileInput) this.$refs.fileInput.click();
+            //         },
+
+            //         clear() {
+            //             this.previewUrl = '';
+            //             if (this.$refs.fileInput) this.$refs.fileInput.value = '';
+            //         },
+
+            //         // for form submit
+            //         validate() {
+            //             const hasFile = this.$refs.fileInput
+            //                 && this.$refs.fileInput.files
+            //                 && this.$refs.fileInput.files.length > 0;
+
+            //             if (!hasFile) {
+            //                 this.errorMsg = 'กรุณาอัปโหลดรูปภาพ';
+            //                 this.$nextTick(() => this.$el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+            //                 return false;
+            //             }
+            //             if (this.errorMsg) return false;
+            //             return true;
+            //         }
+            //     };
+            // }
+
+            // function avatarUploader() {
+            //     return {
+            //         previewUrl: '',
+            //         errorMsg: '',
+            //         isDragOver: false,
+
+            //         handleFiles(files) {
+            //         this.errorMsg = '';
+            //         if (!files?.length) return;
+            //         const file = files[0];
+
+            //         // ประเภทไฟล์
+            //         if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+            //             this.errorMsg = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+            //             this.clear();
+            //             return;
+            //         }
+
+            //         // ขนาดไฟล์ (2MB)
+            //         if (file.size > 2 * 1024 * 1024) {
+            //             this.errorMsg = 'ไฟล์มีขนาดเกิน 2MB';
+            //             this.clear();
+            //             return;
+            //         }
+
+            //         // แสดงตัวอย่าง
+            //         const reader = new FileReader();
+            //         reader.onload = (e) => { this.previewUrl = e.target.result; };
+            //         reader.readAsDataURL(file);
+            //         },
+
+            //         onDrop(e) {
+            //         e.preventDefault();
+            //         this.isDragOver = false;
+            //         const files = e.dataTransfer?.files || [];
+            //         this.handleFiles(files);
+            //         },
+
+            //         triggerInput() { this.$refs.fileInput.click(); },
+
+            //         clear() {
+            //         this.previewUrl = '';
+            //         if (this.$refs.fileInput) this.$refs.fileInput.value = '';
+            //         },
+
+            //         // ✅ Validate before submit
+            //         validate() {
+            //         const hasFile = this.$refs.fileInput && this.$refs.fileInput.files && this.$refs.fileInput.files.length > 0;
+            //         if (!hasFile) {
+            //             this.errorMsg = 'กรุณาอัปโหลดรูปภาพ';
+            //             return false;
+            //         }
+            //         if (!this.previewUrl) {
+            //             // just in case: no preview generated means something failed
+            //             this.errorMsg = 'ไม่สามารถแสดงตัวอย่างรูปได้ กรุณาลองอัปโหลดอีกครั้ง';
+            //             return false;
+            //         }
+            //         this.errorMsg = '';
+            //         return true;
+            //         }
+            //     };
+            // }
+
+            // function fileRequired() {
+            //     return {
+            //         names:  { house: '', id: '', edu: '' },
+            //         errors: { house: true, id: true, edu: true },
+
+            //         pick(which, el) {
+            //             const f = el.files[0] || null;
+            //             this.names[which]  = f ? f.name : '';
+            //             this.errors[which] = !f; // toggle error immediately for that field
+            //         },
+
+            //         validateAll() {
+            //             let ok = true;
+            //             for (const k of ['house','id','edu']) {
+            //                 const el = this.$refs[k];
+            //                 const hasFile = el && el.files && el.files.length > 0;
+            //                 this.errors[k] = !hasFile;
+            //                 if (!hasFile) ok = false;
+            //             }
+            //             return ok;
+            //         },
+
+            //         // ← call on submit
+            //         handleSubmit(formEl) {
+            //             const ok = this.validateAll();         // recompute all errors
+            //             if (!ok || Object.values(this.errors).some(Boolean)) {
+            //                 // still has errors → stop (return false)
+            //                 return false;
+            //             }
+            //             formEl.submit(); // all good → send
+            //         }
+                    
+            //     }
+            // }
+            function fileRequired() {
+                return {
+                    // existing:
+                    names:  { house: '', id: '', edu: '', cv: '', avatar: '' },
+                    errors: { house: true, id: true, edu: true, cv: true, avatar: true },
+
+                    // avatar preview / state
+                    avatarPreview: '',
+                    avatarError: '',
+                    isDragOver: false,
+
+                    // same pick() for all, now includes 'avatar'
+                    pick(which, el) {
+                        const f = el?.files?.[0] || null;
+                        this.names[which]  = f ? f.name : '';
+                        this.errors[which] = !f;
+
+                        if (which === 'avatar') this.validateAvatarFile(f);
+                    },
+
+                    // validate type/size and generate preview
+                    validateAvatarFile(file) {
+                        if (!file) {
+                            this.avatarError = '';
+                            this.avatarPreview = '';
+                            this.errors.avatar = true;
+                            alert('กรุณาเลือกไฟล์รูปภาพ');
+                            return;
+                        }
+                        const okType = ['image/jpeg','image/png','image/jpg'].includes(file.type);
+                        if (!okType) {
+                            this.avatarError = 'รองรับเฉพาะไฟล์ .jpg, .jpeg, .png เท่านั้น';
+                            this.avatarPreview = '';
+                            this.errors.avatar = true;
+                            return;
+                        }
+                        if (file.size > 2 * 1024 * 1024) {
+                            this.avatarError = 'ไฟล์มีขนาดเกิน 2MB';
+                            this.avatarPreview = '';
+                            this.errors.avatar = true;
+                            return;
+                        }
+                        this.avatarError = '';
+                        this.errors.avatar = false;
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => { this.avatarPreview = e.target.result; };
+                        reader.readAsDataURL(file);
+                    },
+
+                    // drag & drop helper (puts file into the real input)
+                    onDropAvatar(e) {
+                        e.preventDefault();
+                        this.isDragOver = false;
+
+                        const file = e.dataTransfer?.files?.[0];
+                        if (!file || !this.$refs.avatar) return;
+
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        this.$refs.avatar.files = dt.files;
+
+                        this.pick('avatar', this.$refs.avatar);
+                    },
+
+                    // (keep your existing validateDocs()/handleSubmit() if you have them)
+                    // Example:
+                    validateDocs() {
+                        let ok = true;
+                        for (const k of ['house','id','edu', 'cv']) {
+                            const el = this.$refs[k];
+                            const has = el && el.files && el.files.length > 0;
+                            this.errors[k] = !has;
+                            if (!has) ok = false;
+                        }
+                        return ok;
+                    },
+                    handleSubmit(formEl) {
+                        const docsOK   = this.validateDocs();
+                        const avatarOK = !this.errors.avatar && this.$refs.avatar?.files?.length > 0;
+                        if (docsOK && avatarOK) {
+                            formEl.submit();
+                        } else {
+                            const first = ['avatar','house','id','edu', 'cv'].find(k => this.errors[k]);
+                            if (first && this.$refs[first]) {
+                            this.$refs[first].focus();
+                            this.$refs[first].closest('label')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                    }
+                }
+            }
+
             // Dynamic Education Table
             function addEduRow() {
                 const template = document.getElementById('edu-row-template').content.cloneNode(true);
@@ -1877,6 +2540,18 @@
                 input.value = formatted;
             }
 
+            // Thai ID validation function
+            function validateThaiID(input) {
+                const digits = input.value.replace(/\D/g, ''); // Remove hyphens
+                const errorEl = document.getElementById('thai_id_error');
+                
+                if (digits.length !== 13) {
+                    errorEl.classList.remove('hidden');
+                } else {
+                    errorEl.classList.add('hidden');
+                }
+            }
+
             // Salary
             function fnSalary() {
                 return {
@@ -1905,6 +2580,42 @@
                     }
                 });
             }
+            // File handler for showing filenames
+            // function fnDocuments(root) {
+            //     const fileInput = root.querySelector('input[type="file"]');
+            //     const filenameDisplay = root.querySelector('.filename');
+            //     const errorDisplay = root.querySelector('.file-error');
+
+            //     fileInput.addEventListener('change', () => {
+            //         if (fileInput.files.length > 0) {
+            //         filenameDisplay.textContent = `: ${fileInput.files[0].name}`;
+            //         filenameDisplay.classList.remove('hidden');
+            //         errorDisplay.classList.add('hidden');
+            //         } else {
+            //         filenameDisplay.textContent = '';
+            //         filenameDisplay.classList.add('hidden');
+            //         }
+            //     });
+            // }
+
+            // Validate all 3 required file inputs before submit
+            // document.querySelector('form').addEventListener('submit', function (e) {
+            //     let valid = true;
+
+            //     document.querySelectorAll('.req-doc').forEach(input => {
+            //         const errorDisplay = input.closest('div').querySelector('.file-error');
+            //         if (!input.files.length) {
+            //         errorDisplay.classList.remove('hidden');
+            //         valid = false;
+            //         } else {
+            //         errorDisplay.classList.add('hidden');
+            //         }
+            //     });
+
+            //     if (!valid) {
+            //         e.preventDefault(); // stop form from submitting
+            //     }
+            // });
 
             //name input formatter
             function fnNameInput(root) {
@@ -2139,9 +2850,29 @@
 
 
             // Phone number formatter
+            // function phoneFormat() {
+            //     return {
+            //         phone: '',
+            //         formatPhone(value) {
+            //             value = value.replace(/\D/g, '');
+            //             if (value.length > 10) value = value.slice(0, 10);
+
+            //             // จัดรูปแบบ xxx-xxx-xxxx
+            //             if (value.length > 6) {
+            //                 return value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6);
+            //             } else if (value.length > 3) {
+            //                 return value.slice(0, 3) + '-' + value.slice(3);
+            //             } else {
+            //                 return value;
+            //             }
+            //         }
+            //     };
+            // }
             function phoneFormat() {
                 return {
                     phone: '',
+                    error: false,
+
                     formatPhone(value) {
                         value = value.replace(/\D/g, '');
                         if (value.length > 10) value = value.slice(0, 10);
@@ -2154,6 +2885,11 @@
                         } else {
                             return value;
                         }
+                    },
+
+                    validatePhone() {
+                        const digits = this.phone.replace(/\D/g, '');
+                        this.error = (digits.length !== 10);
                     }
                 };
             }
@@ -2315,62 +3051,97 @@
             }
 
             // Work Experience Handler
+            // function fnWorkExperience() {
+            //     return {
+            //         works: [{
+            //             company: '',
+            //             position: '',
+            //             responsibility: '',
+            //             duration: '',
+            //             currentsalary: '',
+            //             otherIncome: '',
+            //             reason: ''
+            //         }],
+            //         addRow() {
+            //             this.works.push({
+            //                 company: '',
+            //                 position: '',
+            //                 responsibility: '',
+            //                 duration: '',
+            //                 currentsalary: '',
+            //                 otherIncome: '',
+            //                 reason: ''
+            //             });
+            //         },
+            //         removeRow(idx) {
+            //             if (this.works.length > 1) this.works.splice(idx, 1);
+            //         },
+            //         formatNumber(value) {
+            //             const numeric = value.replace(/[^\d]/g, '');
+            //             return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            //         }
+            //     };
+            // }
             function fnWorkExperience() {
+                const empty = () => ({
+                    company: '', position: '', responsibility: '',
+                    duration: '', currentsalary: '', otherIncome: '', reason: ''
+                });
+
                 return {
-                    works: [{
-                        company: '',
-                        position: '',
-                        responsibility: '',
-                        duration: '',
-                        currentsalary: '',
-                        otherIncome: '',
-                        reason: ''
-                    }],
-                    addRow() {
-                        this.works.push({
-                            company: '',
-                            position: '',
-                            responsibility: '',
-                            duration: '',
-                            currentsalary: '',
-                            otherIncome: '',
-                            reason: ''
-                        });
+                    // source of truth
+                    hasExperience: true,
+
+                    // convenient boolean you can trust anywhere
+                    get isExperienced() {
+                    return this.hasExperience === true; // stays boolean
                     },
-                    removeRow(idx) {
-                        if (this.works.length > 1) this.works.splice(idx, 1);
-                    },
-                    formatNumber(value) {
-                        const numeric = value.replace(/[^\d]/g, '');
-                        return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+                    works: [empty()],
+
+                    addRow() { this.works.push(empty()); },
+                    removeRow(i) { if (this.works.length > 1) this.works.splice(i, 1); },
+
+                    formatNumber(v) {
+                    const s = (v ?? '').toString().replace(/[^\d]/g, '');
+                    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                     }
                 };
             }
+
             function modalAgreement() {
                 return {
                     show: false,
                     current: '',
                     modalTitle: '',
                     modalContent: '',
+                    isSuccess: '{{ $success ?? '' }}',
+                    isError: '{{ $error ?? '' }}',
                     openModal(type) {
-                        this.current = type;
-                        this.show = true;
+                        console.log(this.isSuccess != '', this.isError != '', type);
+                        
+                        // Only show modal if not success and not error
+                        if ((this.isSuccess != '') || (this.isError != '') && type === 'privacy') {
+                            this.show = false;
+                            this.modalContent = '';
+                            // return;
+                        }else if((this.isSuccess == '') || (this.isError == '')){
+                            this.current = type;
+                            this.show = true;
 
-                        if (type === 'tos') {
-                            this.modalTitle = 'เงื่อนไขการให้บริการ';
-                            this.modalContent = `
-                                <p>รายละเอียดของเงื่อนไขการให้บริการ...</p>
-                                <p>คุณต้องยอมรับเพื่อดำเนินการต่อ</p>
-                            `;
-                        } else if (type === 'privacy') {
-                            this.modalTitle = 'นโยบายความเป็นส่วนตัว';
-                            // document.getElementById('pdpaContent').style.display = 'block';
-                            this.modalContent = document.getElementById('pdpaContent').innerHTML;
-                            // this.modalContent = `
-                            //     <p>รายละเอียดของนโยบายความเป็นส่วนตัว...</p>
-                            //     <p>เราเคารพข้อมูลของคุณ</p>
-                            // `;
+                            // if (type === 'tos') {
+                            //     this.modalTitle = 'เงื่อนไขการให้บริการ';
+                            //     this.modalContent = `
+                            //         <p>รายละเอียดของเงื่อนไขการให้บริการ...</p>
+                            //         <p>คุณต้องยอมรับเพื่อดำเนินการต่อ</p>
+                            //     `;
+                            // } else 
+                            if (type === 'privacy') {
+                                this.modalTitle = 'นโยบายความเป็นส่วนตัว';
+                                this.modalContent = document.getElementById('pdpaContent').innerHTML;
+                            }
                         }
+                        
                     },
                     closeModal() {
                         this.show = false;
@@ -2382,6 +3153,45 @@
                     }
                 };
             }
+
+   
+
+
+
+            // function formValidator() {
+            //         return {
+            //             showAlert: false,
+            //             validateForm(form) {
+            //                 const requiredFields = {
+            //                     position: form.querySelector('[name="position"]')?.value,
+            //                     salary: form.querySelector('[name="salary"]')?.value,
+            //                     prefix: form.querySelector('[name="prefix"]:checked')?.value,
+            //                     name_thai: form.querySelector('[name="name_thai"]')?.value,
+            //                     name_eng: form.querySelector('[name="name_eng"]')?.value,
+            //                     birthdate: form.querySelector('[name="birthdate"]')?.value,
+            //                     thai_id: form.querySelector('[name="thai_id"]')?.value,
+            //                     age: form.querySelector('[name="age"]')?.value,
+            //                     nationality: form.querySelector('[name="nationality"]')?.value,
+            //                     ethnicity: form.querySelector('[name="ethnicity"]')?.value,
+            //                     address: form.querySelector('[name="address"]')?.value,
+            //                     province: form.querySelector('[name="province"]')?.value,
+            //                     district: form.querySelector('[name="district"]')?.value,
+            //                     subdistrict: form.querySelector('[name="subdistrict"]')?.value,
+            //                     postcode: form.querySelector('[name="postcode"]')?.value,
+            //                     phone_mobile: form.querySelector('[name="phone_mobile"]')?.value,
+            //                     email: form.querySelector('[name="email"]')?.value,
+            //                 };
+            //                 for (const value of Object.values(requiredFields)) {
+            //                     if (!value || value.trim() === '') {
+            //                         this.showAlert = true;
+            //                         return false;
+            //                     }
+            //                 }
+            //                 this.showAlert = false;
+            //                 return true;
+            //             }
+            //         }
+            //     }
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -2420,6 +3230,17 @@
                 modal.addEventListener('click', (event) => {
                     if (event.target === modal) {
                         modal.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const form = document.getElementById('applyForm');
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (form.reportValidity()) {
+                      form.requestSubmit(); // runs native validation first
                     }
                 });
             });

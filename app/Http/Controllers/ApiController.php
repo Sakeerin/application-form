@@ -74,6 +74,7 @@ class ApiController extends Controller
 
         // Update application logic here
         $app->application_status = $request->input('status');
+        $app->remark = $request->input('reason') ?? '';
         $app->save();
 
         return response()->json([
